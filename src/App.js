@@ -14,7 +14,7 @@ function App() {
     
       {/* Render the CheckoutForm component */}
       <Checkout/>
-      <Footer />
+      <Footer/>
     </div>
   );
 }
