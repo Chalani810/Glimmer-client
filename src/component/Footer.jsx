@@ -2,7 +2,7 @@ import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#f1281a] text-white">
+    <footer className="bg-[#f1281a] text-white py-12">	
       {/* Top Section */}
       <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-5 gap-10">
         {/* Logo + tagline */}
@@ -62,9 +62,8 @@ const Footer = () => {
           </p>
         </div>
       </div>
-
       {/* Bottom Bar */}
-      <div className="bg-[#262626] py-4 px-6">
+      <div className="bg-[#262626] max-w-7xl mx-auto px-6 py-8 rounded-lg" >
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm font-semibold text-white">
             2025 UI DESIGN All Rights Reserved.
@@ -77,6 +76,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
+
     </footer>
   );
 };
