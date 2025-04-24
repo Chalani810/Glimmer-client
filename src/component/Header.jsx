@@ -6,8 +6,9 @@ const Header = () => {
     <header className="bg-white shadow-sm py-4 px-8 flex items-center justify-between">
       {/* Left: Logo */}
       <div className="text-2xl font-extrabold">
-        <span className="text-black">Glim</span>
-        <span className="text-red-600">mer</span>
+        <span className="text-black">Gli</span>
+        <span className="text-red-600">mm</span>
+        <span className="text-black">er</span>
       </div>
 
       {/* Center: Navigation */}
