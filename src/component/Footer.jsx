@@ -7,9 +7,11 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-5 gap-10">
         {/* Logo + tagline */}
         <div>
-          <h1 className="text-3xl font-extrabold text-black">
-            Gl<span className="text-white">immer</span>
-          </h1>
+        <h1 className="text-3xl font-extrabold">
+        <span className="text-black">Gli</span>
+        <span className="text-white-600">mm</span>
+        <span className="text-black">er</span>
+       </h1>
           <p className="mt-4 text-white font-semibold leading-6">
             Don’t Wait! It’s Time To Plan <br />
             Unforgettable Events And Create <br />
