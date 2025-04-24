@@ -1,14 +1,19 @@
 
 import './App.css';
 import Header from "./component/Header";
+import './index.css';
+import Checkout from "./pages/Checkout"; // Import Checkout
 import Footer from "./component/Footer";
-import "./styles.css";
+
 
 
 function App() {
   return (
     <div>
-      <Header />
+     <Header />
+    
+      {/* Render the CheckoutForm component */}
+      <Checkout/>
       <Footer />
     </div>
   );
