@@ -1,4 +1,4 @@
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Header from "./component/Header";
 import './index.css';
@@ -7,17 +7,26 @@ import Checkout from "./pages/Checkout"; // Import Checkout
 import Footer from "./component/Footer";
 
 
-
 function App() {
   return (
-    <div>
-     <Header />
-    <AboutUs/>
-      {/* Render the CheckoutForm component */}
-      <Checkout/>
-      <Footer/>
-    </div>
+    <Router>
+      <Header />
+
+      {/* Routing between pages */}
+      <Routes>
+        {/* Default route - Checkout */}
+        <Route path="/" element={<AboutUs />} />
+
+      
+
+        {/* Checkout route */}
+        <Route path="/checkout" element={<AboutUs />} />
+
+      </Routes>
+
+      <Footer />
+    </Router>
   );
 }
 
-export default App;
+export default App;

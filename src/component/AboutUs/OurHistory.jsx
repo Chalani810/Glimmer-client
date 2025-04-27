@@ -1,33 +1,37 @@
-// OurHistory.jsx
-import React from 'react';
-import HistoryImage from '../../assets/our-history.jpg';
+import React from "react";
+import HistoryImage from "../../assets/our-history.jpg"; // Main background image
+import HistorySmallImage from "../../assets/our-journey.jpg"; // Small overlapping image
 
 const OurHistory = () => {
   return (
-    <section className="py-12 px-6">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-8">
-        
-        {/* Left Side Image */}
-        <div className="flex-1">
+    <section className="py-16 px-6 bg-white">
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
+        <div className="relative w-full md:w-1/2 flex justify-center">
           <img
             src={HistoryImage}
             alt="Our History"
-            className="rounded-lg shadow-lg w-full h-auto object-cover"
+            className="w-80 h-96 object-cover rounded-lg"
+          />
+
+          <img
+            src={HistorySmallImage}
+            alt="Our Milestones"
+            className="w-60 h-80 object-cover rounded-lg border-4 border-white shadow-xl absolute top-10 left-10"
           />
         </div>
 
-        {/* Right Side Text */}
         <div className="flex-1">
-          <h2 className="text-4xl font-bold mb-4">Our Journey</h2>
-          <p className="text-gray-600">
-            Since our founding, we've been committed to quality, innovation, and customer satisfaction in event rentals.
+          <h2 className="text-4xl font-bold mb-6">Our Journey</h2>
+          <p className="text-gray-600 leading-relaxed">
+            Since our founding, Glimmer has been dedicated to delivering
+            unforgettable moments. Our journey reflects growth, innovation, and
+            a commitment to excellence across every event and project we
+            undertake.
           </p>
         </div>
-
       </div>
     </section>
   );
 };
 
 export default OurHistory;
-

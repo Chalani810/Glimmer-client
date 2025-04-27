@@ -1,5 +1,6 @@
 // pages/AboutUs.jsx
 import React from 'react';
+import { Link } from "react-router-dom";
 
 // Importing sections from AboutUs components
 import { CraftingExcellence, OurHistory, Testimonials, Stats } from '../component/AboutUs';
