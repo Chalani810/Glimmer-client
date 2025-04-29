@@ -1,5 +1,6 @@
 import React from "react";
 import { FiSearch, FiShoppingCart } from "react-icons/fi";
+import { Link } from "react-router-dom"; // ✅ Import Link
 
 const Header = () => {
   return (
@@ -13,7 +14,7 @@ const Header = () => {
 
       {/* Center: Navigation */}
       <nav className="space-x-8 font-semibold hidden md:flex">
-        <a href="#" className="text-red-600">Home</a>
+        <Link to="/home" className="text-red-600">Home</Link> {/*Home Page naviagtion */}
         <a href="#" className="text-black hover:text-red-600">About Us</a>
         <a href="#" className="text-black hover:text-red-600">Events</a>
         <a href="#" className="text-black hover:text-red-600">Contact Us</a>
@@ -26,9 +27,14 @@ const Header = () => {
           <FiShoppingCart className="text-2xl" />
           <span className="absolute top-0 right-0 h-2 w-2 bg-red-600 rounded-full"></span>
         </div>
-        <button className="bg-white px-4 py-1 rounded-full shadow text-sm font-medium hover:shadow-md">
-          Sign Up
-        </button>
+
+        {/* Sign Up Button as a Link */}
+        <Link to="/signup">
+          <button className="bg-white px-4 py-1 rounded-full shadow text-sm font-medium hover:shadow-md">
+            Sign Up
+          </button>
+        </Link>
+        
         <button className="bg-red-600 text-white px-4 py-1 rounded-full text-sm font-medium hover:bg-red-700">
           Login
         </button>
