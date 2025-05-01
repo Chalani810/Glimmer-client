@@ -13,6 +13,8 @@ import AdminAddEvent from "./pages/AdminAddEvent";
 import AboutUs from "./pages/AboutUs";
 import Footer from "./component/Footer";
 import Cart from "./pages/Cart"; // Import Cart
+import AdminProduct from "./pages/AdminProduct";
+import CustomerViewEvent from "./pages/CustomerViewEvent";
 import Invoice from "./pages/Invoice"; // Import Invoice
 import AdminBills from "./pages/AdminBills"; // Import AdminBills
 //import Footer from "./component/Footer";
@@ -32,11 +34,17 @@ function AppWithRoutes() {
     <>
       {location.pathname !== "/AdminEvents" &&
         location.pathname !== "/AdminAddEvent" && <Header />}
-
       {/* Routing between pages */}
       <Routes>
         {/* Default route - Checkout */}
-        <Route path="/" element={<Checkout />} />
+
+        <Route path="/adminevents" element={<AdminEvents />} />
+
+        <Route path="/adminaddevent" element={<AdminAddEvent />} />
+
+        <Route path="/Checkout" element={<Checkout />} />
+        <Route path="/adminproduct" element={<AdminProduct />} />
+        <Route path="/customerviewevent" element={<CustomerViewEvent />} />
 
         {/* Cart route */}
         <Route path="/cart" element={<Cart />} />
@@ -46,17 +54,17 @@ function AppWithRoutes() {
 
         {/* Invoice route  */}
         <Route path="/invoice" element={<Invoice />} />
-
         <Route path="/AdminEvents" element={<AdminEvents />} />
         <Route path="/AdminAddEvent" element={<AdminAddEvent />} />
 
         <Route path="/checkout" element={<AboutUs />} />
 
         <Route path="/admin-bills" element={<AdminBills />} />
+          
       </Routes>
 
-      {location.pathname !== "/AdminEvents" &&
-        location.pathname !== "/AdminAddEvent" && <Footer />}
+      {location.pathname !== '/AdminEvents' && location.pathname !== '/AdminAddEvent' && <Footer />}
+      
     </>
   );
 }

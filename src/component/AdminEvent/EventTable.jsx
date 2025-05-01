@@ -2,8 +2,21 @@
 import React from "react";
 import { FaCamera, FaEdit, FaTrash } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import axios from "axios";
 
-const EventTable = () => {
+const EventTable = ({ events, fetchEventsForDelete }) => {
+  const handleDelete = async (e, eventId) => {
+    e.preventDefault();
+    try {
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_URL}/event/${eventId}` // Concatenate eventId with URL
+      );
+      fetchEventsForDelete();
+      console.log("Event deleted successfully:", response.data);
+    } catch (error) {
+      console.error("Delete error:", error);
+    }
+  };
   return (
     <div className="bg-white rounded shadow overflow-x-auto">
       <table className="min-w-full">
@@ -17,21 +30,29 @@ const EventTable = () => {
           </tr>
         </thead>
         <tbody>
-          {[...Array(7)].map((_, idx) => (
-            <tr key={idx} className="border-t">
+          {events.map((event, idx) => (
+            <tr key={event._id || idx} className="border-t">
               <td className="p-2">
-                <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                  <FaCamera />
+                <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
+                  <img
+                    src={`${event.photoUrl}`}
+                    alt={event.title}
+                    className="object-cover w-full h-full"
+                  />
                 </div>
               </td>
-              <td className="p-2">Plan your dream wedding</td>
-              <td className="p-2">Lorem ipsum dolor sit amet consectetur.</td>
+              <td className="p-2">{event.title}</td>
+              <td className="p-2">{event.description}</td>
               <td className="p-2">
                 <input type="checkbox" className="toggle toggle-sm" />
               </td>
               <td className="p-2 flex gap-2">
                 <FaEdit className="text-blue-500 cursor-pointer" />
-                <FaTrash className="text-red-500 cursor-pointer" />
+                <FaTrash
+                  className="text-red-500 cursor-pointer"
+                  onClick={(e) => handleDelete(e, event._id)}
+                />
+
                 <BsThreeDotsVertical className="cursor-pointer" />
               </td>
             </tr>
