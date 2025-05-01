@@ -17,26 +17,26 @@ const OrderRow = ({ order, onStatusChange, onDelete, onView, onEdit }) => {
 
   return (
     <tr className="border-b hover:bg-gray-50 transition">
-      <td className="px-4 py-3">{order.orderNumber}</td>
-      <td className="px-4 py-3">{order.eventName}</td>
-      <td className="px-4 py-3">{order.eventDate}</td>
-      <td className="px-4 py-3">Rs. {order.totalAmount}</td>
-      <td className="px-4 py-3">Rs. {order.advancePayment}</td>
-      <td className="px-4 py-3">
-        Rs. {order.totalAmount - order.advancePayment}
+      <td className="px-4 py-3">{order.orderId}</td>
+      <td className="px-4 py-3">test</td>
+      <td className="px-4 py-3">test</td>
+      <td className="px-4 py-3 text-right">
+        {Number(order.totalAmount).toFixed(2)}
+      </td>
+      <td className="px-4 py-3 text-right">
+        {Number(order.advancePayment).toFixed(2)}
+      </td>
+      <td className="px-4 py-3 text-right">
+        {Number(order.totalAmount - order.advancePayment).toFixed(2)}
       </td>
       <td className="px-4 py-3">
-        <select
-          value={order.status}
-          onChange={(e) => onStatusChange(order._id, e.target.value)}
+        <span
           className={`text-sm px-2 py-1 rounded ${getStatusClasses(
             order.status
           )}`}
         >
-          <option value="Pending">Pending</option>
-          <option value="Completed">Completed</option>
-          <option value="Rejected">Rejected</option>
-        </select>
+          {order.status}
+        </span>
       </td>
       <td className="px-4 py-3 text-right flex justify-end gap-3">
         <button onClick={onView} className="text-blue-600 hover:text-blue-800">
@@ -48,10 +48,7 @@ const OrderRow = ({ order, onStatusChange, onDelete, onView, onEdit }) => {
         >
           <FaEdit className="w-4 h-4" />
         </button>
-        <button
-          onClick={onDelete}
-          className="text-red-600 hover:text-red-800"
-        >
+        <button onClick={onDelete} className="text-red-600 hover:text-red-800">
           <FaTrash className="w-4 h-4" />
         </button>
       </td>

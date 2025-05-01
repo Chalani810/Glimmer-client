@@ -39,29 +39,36 @@ const CheckoutForm = () => {
       return;
     }
   
-    const payload = {
-      orderNumber: formData.orderNumber,
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
-      address: formData.address,
-      telephone: formData.telephone,
-      mobile: formData.mobile,
-      contactMethod: formData.contactMethod,
-      comment: formData.comment,
-      totalAmount: formData.totalAmount,
-      advancePayment: formData.advancePayment,
-    };
+    // Create FormData object
+    const formDataToSend = new FormData();
+    
+    // Append all fields to FormData
+    formDataToSend.append('orderNumber', formData.orderNumber);
+    formDataToSend.append('firstName', formData.firstName);
+    formDataToSend.append('lastName', formData.lastName);
+    formDataToSend.append('email', formData.email);
+    formDataToSend.append('address', formData.address);
+    formDataToSend.append('telephone', formData.telephone);
+    formDataToSend.append('mobile', formData.mobile);
+    formDataToSend.append('contactMethod', formData.contactMethod);
+    formDataToSend.append('comment', formData.comment);
+    formDataToSend.append('totalAmount', formData.totalAmount);
+    formDataToSend.append('advancePayment', formData.advancePayment);
+    
+    // Append the file if it exists
+    if (formData.slip) {
+      formDataToSend.append('slip', formData.slip);
+    }
   
-    console.log("Sending payload:", payload);
+    console.log("Sending form data:", Object.fromEntries(formDataToSend.entries()));
   
     try {
       const response = await axios.post(
         `${apiUrl}/checkout/add`,
-        payload,
+        formDataToSend,
         { 
           headers: { 
-            "Content-Type": "application/json"
+            'Content-Type': 'multipart/form-data'  // Important for file uploads
           } 
         }
       );

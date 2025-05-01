@@ -6,7 +6,7 @@ import Popup from "../component/AdminEvent/Popup";
 import axios from "axios";
 
 const EventsPage = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [formData, setFormData] = useState({
     eventName: "",
@@ -55,7 +55,7 @@ const EventsPage = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/event/add`,
+        `${apiUrl}/event/add`,
         formDataToSend,
         {
           headers: {
