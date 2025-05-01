@@ -12,6 +12,8 @@ import Header from "./component/Header";
 import './index.css';
 import AboutUs  from './pages/AboutUs';
 import Footer from "./component/Footer";
+import AdminProduct from "./pages/AdminProduct";
+import CustomerViewEvent from "./pages/CustomerViewEvent";
 import Cart from "./pages/Cart"; // Import Cart	
 import Invoice from "./pages/Invoice"; // Import Invoice
 
@@ -27,14 +29,21 @@ function AppWithRoutes() {
   const location = useLocation();
 
   return (
-    <Router>
-      {location.pathname !== '/AdminEvents' && location.pathname !== '/AdminAddEvent' && <Header />}
+    <>
+      {location.pathname !== '/adminevents' && location.pathname !== '/adminaddevent' && <Header />}
       
 
       {/* Routing between pages */}
       <Routes>
         {/* Default route - Checkout */}
-        <Route path="/" element={<Checkout />} />
+
+        <Route path="/adminevents" element={<AdminEvents />} />
+
+        <Route path="/adminaddevent" element={<AdminAddEvent />} />
+
+        <Route path="/Checkout" element={<Checkout />} />
+        <Route path="/adminproduct" element={<AdminProduct />} />
+        <Route path="/customerviewevent" element={<CustomerViewEvent />} />
 
         {/* Cart route */}
         <Route path="/cart" element={<Cart />} />
@@ -44,22 +53,13 @@ function AppWithRoutes() {
 
         {/* Invoice route  */}
         <Route path="/invoice" element={<Invoice />} />
-
-        <Route path="/AdminEvents" element={<AdminEvents />} />
-        <Route path="/AdminAddEvent" element={<AdminAddEvent />} />
+        <Route path="/checkout" element={<AboutUs />} />
           
-            <Route path="/checkout" element={<AboutUs />} />
-          
-          
-        {/* 404 Not Found route */}
-
-        
       </Routes>
 
       {location.pathname !== '/AdminEvents' && location.pathname !== '/AdminAddEvent' && <Footer />}
       
-    </Router>
-    <>
+    </>
   );
 }
 
