@@ -1,6 +1,6 @@
 import React from "react";
 import { FiSearch, FiShoppingCart } from "react-icons/fi";
-import { Link } from "react-router-dom"; // ✅ Import Link
+import { Link } from "react-router-dom"; // Import Link
 
 const Header = () => {
   return (
@@ -36,7 +36,7 @@ const Header = () => {
         </Link>
         
         <button className="bg-red-600 text-white px-4 py-1 rounded-full text-sm font-medium hover:bg-red-700">
-          Login
+          Sign In
         </button>
       </div>
     </header>

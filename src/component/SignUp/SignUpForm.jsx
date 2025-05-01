@@ -78,7 +78,7 @@ const SignUpForm = () => {
 
   return (
     <div className="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-md">
-      <h2 className="text-2xl font-bold mb-2 text-center">Get Started Now</h2>
+      <h2 className="text-2xl font-bold mb-2 text-center">Get started now</h2>
       <p className="text-gray-500 text-center mb-6">
         Enter your credentials to create your account
       </p>

@@ -7,9 +7,11 @@ import AdminEvents from "./pages/AdminEvents";
 import AdminAddEvent from './pages/AdminAddEvent';
 import AboutUs  from './pages/AboutUs';
 import SignUpPage from "./pages/SignUp"; // Import SignUpPage
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LoginPage from "./pages/SignInPage"; //Import LoginPage
 import Checkout from "./pages/Checkout"; // Import Checkout
 import HomePage from "./pages/HomePage"; // Import Home Page
+import FeedbackPage from "./pages/FeedbackPage"; // Import Feedback Page
+import ProfilePage from "./pages/CustomerProfilePage"; // Import Customer Profile Page
 import Footer from "./component/Footer";
 
 function App() {
@@ -45,6 +47,16 @@ function AppWithRoutes() {
 
         {/* Sign Up page route */}
         <Route path="/signup" element={<SignUpPage />} />
+        
+        {/* Sign In page route */}
+        <Route path="/signin" element={<LoginPage />} />
+
+        {/* Customer Profile page route */}
+        <Route path="/customerprofile" element={<ProfilePage />} />
+
+        {/* Customer Feedback page route */}
+        <Route path="/feedback" element={<FeedbackPage />} />
+
       </Routes>
 
       {location.pathname !== '/AdminEvents' && location.pathname !== '/AdminAddEvent' && <Footer />}
