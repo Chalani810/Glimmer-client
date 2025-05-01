@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import './App.css';
 import Header from "./component/Header";
@@ -5,9 +6,16 @@ import './index.css';
 import Checkout from "./pages/Checkout";
 import AdminEvents from "./pages/AdminEvents";
 import AdminAddEvent from './pages/AdminAddEvent';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './App.css';
+import Header from "./component/Header";
+import './index.css';
+import AboutUs  from './pages/AboutUs';
 import Footer from "./component/Footer";
 import AdminProduct from "./pages/AdminProduct";
 import CustomerViewEvent from "./pages/CustomerViewEvent";
+import Cart from "./pages/Cart"; // Import Cart	
+import Invoice from "./pages/Invoice"; // Import Invoice
 
 function App() {
   return (
@@ -25,8 +33,9 @@ function AppWithRoutes() {
       {location.pathname !== '/adminevents' && location.pathname !== '/adminaddevent' && <Header />}
       
 
+      {/* Routing between pages */}
       <Routes>
-        <Route path="/" element={<Checkout />} />
+        {/* Default route - Checkout */}
 
         <Route path="/adminevents" element={<AdminEvents />} />
 
@@ -36,12 +45,22 @@ function AppWithRoutes() {
         <Route path="/adminproduct" element={<AdminProduct />} />
         <Route path="/customerviewevent" element={<CustomerViewEvent />} />
 
+        {/* Cart route */}
+        <Route path="/cart" element={<Cart />} />
+
+        {/* Checkout route */}
+        <Route path="/checkout" element={<Checkout />} />
+
+        {/* Invoice route  */}
+        <Route path="/invoice" element={<Invoice />} />
+        <Route path="/checkout" element={<AboutUs />} />
+          
       </Routes>
 
-      {location.pathname !== '/adminevents' && location.pathname !== '/adminaddevent' && <Footer />}
+      {location.pathname !== '/AdminEvents' && location.pathname !== '/AdminAddEvent' && <Footer />}
       
     </>
   );
 }
 
-export default App;
+export default App;
