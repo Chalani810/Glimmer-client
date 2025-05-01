@@ -1,19 +1,24 @@
-
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import './App.css';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
+import "./App.css";
 import Header from "./component/Header";
-import './index.css';
+import "./index.css";
 import AdminEvents from "./pages/AdminEvents";
-import AdminAddEvent from './pages/AdminAddEvent';
-import AboutUs  from './pages/AboutUs';
+import AdminAddEvent from "./pages/AdminAddEvent";
+import AboutUs from "./pages/AboutUs";
 import SignUpPage from "./pages/SignUp"; // Import SignUpPage
 import Checkout from "./pages/Checkout"; // Import Checkout
 import HomePage from "./pages/HomePage"; // Import Home Page
 import Footer from "./component/Footer";
-import AdminProduct from "./pages/AdminProduct";
-import CustomerViewEvent from "./pages/CustomerViewEvent";
-import Cart from "./pages/Cart"; // Import Cart	
+import Cart from "./pages/Cart"; // Import Cart
 import Invoice from "./pages/Invoice"; // Import Invoice
+import EmployeeManagement from "./pages/EmployeeManagement";
+import React from 'react';
+import ContactUs from './pages/ContactUs';
 
 function App() {
   return (
@@ -23,46 +28,46 @@ function App() {
   );
 }
 
+
+
 function AppWithRoutes() {
   const location = useLocation();
 
   return (
     <>
-      {location.pathname !== '/adminevents' && location.pathname !== '/adminaddevent' && <Header />}
-      
+      {location.pathname !== "/AdminEvents" &&
+        location.pathname !== "/AdminAddEvent" && <Header />}
 
       {/* Routing between pages */}
       <Routes>
-        {/* Default route - Checkout */}
-
-        <Route path="/adminevents" element={<AdminEvents />} />
+        <Route path="/AdminEvents" element={<AdminEvents />} />
 
         <Route path="/adminaddevent" element={<AdminAddEvent />} />
 
         <Route path="/Checkout" element={<Checkout />} />
-        <Route path="/adminproduct" element={<AdminProduct />} />
-        <Route path="/customerviewevent" element={<CustomerViewEvent />} />
 
         {/* Cart route */}
         <Route path="/cart" element={<Cart />} />
 
-        {/* Checkout route */}
-        <Route path="/checkout" element={<Checkout />} />
-
         {/* Invoice route  */}
         <Route path="/invoice" element={<Invoice />} />
-          
-          <Route path="/" element={<AboutUs />} />
+
+        <Route path="/" element={<AboutUs />} />
         <Route path="/home" element={<HomePage />} />
 
         <Route path="/signup" element={<SignUpPage />} />
+
+        <Route path="/" element={<AboutUs />} />
+        <Route path="/employeeManagement" element={<EmployeeManagement />} />
+
+        <Route path="/contactUs" element={<ContactUs />} />
       </Routes>
 
-      {location.pathname !== '/AdminEvents' && location.pathname !== '/AdminAddEvent' && <Footer />}
-      
+      {location.pathname !== "/AdminEvents" &&
+        location.pathname !== "/AdminAddEvent" &&
+        location.pathname !== "/employeeManagement" && <Footer />}
     </>
   );
 }
-
 
 export default App;

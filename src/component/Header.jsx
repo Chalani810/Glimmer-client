@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FiSearch, FiShoppingCart } from "react-icons/fi";
-import { Link } from "react-router-dom"; // ✅ Import Link
 
 const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
