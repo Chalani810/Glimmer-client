@@ -3,15 +3,13 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import './App.css';
 import Header from "./component/Header";
 import './index.css';
-import Checkout from "./pages/Checkout";
 import AdminEvents from "./pages/AdminEvents";
 import AdminAddEvent from './pages/AdminAddEvent';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
-import Header from "./component/Header";
-import './index.css';
 import AboutUs  from './pages/AboutUs';
+import SignUpPage from "./pages/SignUp"; // Import SignUpPage
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Checkout from "./pages/Checkout"; // Import Checkout
+import HomePage from "./pages/HomePage"; // Import Home Page
 import Footer from "./component/Footer";
 
 function App() {
@@ -39,6 +37,14 @@ function AppWithRoutes() {
         <Route path="/Checkout" element={<Checkout />} />
           <Route path="/" element={<AboutUs />} />
             <Route path="/checkout" element={<AboutUs />} />
+               {/* Home Page route */}
+        <Route path="/home" element={<HomePage />} />
+
+        {/* Default route - Checkout */}
+        <Route path="/checkout" element={<Checkout />} />
+
+        {/* Sign Up page route */}
+        <Route path="/signup" element={<SignUpPage />} />
       </Routes>
 
       {location.pathname !== '/AdminEvents' && location.pathname !== '/AdminAddEvent' && <Footer />}
@@ -46,4 +52,5 @@ function AppWithRoutes() {
   );
 }
 
-export default App;
+
+export default App;
