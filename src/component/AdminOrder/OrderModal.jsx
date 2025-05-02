@@ -150,6 +150,16 @@ const OrderModal = ({ order, onClose }) => {
                     {order.contactMethod}
                   </span>
                 </p>
+                <div className="space-y-3">
+                <p className="text-gray-600">
+                  <span className="font-medium text-gray-700">
+                    Participated Guests Count:
+                  </span>{" "}
+                  <span className="text-gray-800 capitalize">
+                    {order.guestcount}
+                  </span>
+                </p>
+                </div>
                 <p className="text-gray-600 md:col-span-2">
                   <span className="font-medium text-gray-700">Address:</span>{" "}
                   <span className="text-gray-800">

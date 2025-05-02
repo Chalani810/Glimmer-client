@@ -15,6 +15,7 @@ import Footer from "./component/Footer";
 import Cart from "./pages/Cart"; // Import Cart
 import Invoice from "./pages/Invoice"; // Import Invoice
 import AdminBills from "./pages/AdminBills"; // Import AdminBills
+import OrderSummary  from "./pages/OrderSummary";
 //import Footer from "./component/Footer";
 
 function App() {
@@ -54,6 +55,7 @@ function AppWithRoutes() {
         <Route path="/AdminAddEvent" element={<AdminAddEvent />} />
 
         <Route path="/checkout" element={<AboutUs />} />
+        <Route path="/ordersummary" element={<OrderSummary />} />
 
         <Route path="/admin-bills" element={<AdminBills />} />
           

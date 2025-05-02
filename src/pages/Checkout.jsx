@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import FormInput from "../component/Checkout/FormInput";
 import ContactDropdown from "../component/Checkout/ContactDropdown";
+import GuestCountDropdown from "../component/Checkout/GuestCountDropdown";
 import FileUpload from "../component/Checkout/FileUpload";
 
 const CheckoutForm = () => {
@@ -17,6 +18,7 @@ const CheckoutForm = () => {
     telephone: "",
     mobile: "",
     contactMethod: "call",
+    guestcount: "less than 50",
     comment: "",
     totalAmount: "",
     advancePayment: "",
@@ -51,6 +53,7 @@ const CheckoutForm = () => {
     formDataToSend.append('telephone', formData.telephone);
     formDataToSend.append('mobile', formData.mobile);
     formDataToSend.append('contactMethod', formData.contactMethod);
+    formDataToSend.append('guestcount', formData.guestcount);
     formDataToSend.append('comment', formData.comment);
     formDataToSend.append('totalAmount', formData.totalAmount);
     formDataToSend.append('advancePayment', formData.advancePayment);
@@ -86,6 +89,7 @@ const CheckoutForm = () => {
         telephone: "",
         mobile: "",
         contactMethod: "call",
+        guestcount: "less than 50",
         comment: "",
         totalAmount: "",
         advancePayment: "",
@@ -132,6 +136,7 @@ const CheckoutForm = () => {
         <FormInput label="Telephone" value={formData.telephone} onChange={(val) => handleChange("telephone", val)} />
         <FormInput label="Mobile" value={formData.mobile} onChange={(val) => handleChange("mobile", val)} />
         <ContactDropdown value={formData.contactMethod} onChange={(val) => handleChange("contactMethod", val)} />
+        <GuestCountDropdown value={formData.guestcount} onChange={(val) => handleChange("guestcount", val)} />
         <FormInput label="Comment" value={formData.comment} onChange={(val) => handleChange("comment", val)} />
         <FormInput label="Total Amount" value={formData.totalAmount} onChange={(val) => handleChange("totalAmount", val)} />
         <FormInput label="Advance Payment" value={formData.advancePayment} onChange={(val) => handleChange("advancePayment", val)} />
@@ -152,6 +157,7 @@ const CheckoutForm = () => {
                 telephone: "",
                 mobile: "",
                 contactMethod: "call",
+                guestcount: "",
                 comment: "",
                 totalAmount: "",
                 advancePayment: "",

@@ -80,6 +80,9 @@ const OrderTable = () => {
               <th className="px-6 py-2">Full Amount (Rs)</th>
               <th className="px-6 py-2">Advance Payment (Rs)</th>
               <th className="px-6 py-2">Due Payment (Rs)</th>
+              <th className="px-6 py-2">Contact Method</th>
+              <th className="px-6 py-2">Guest Count</th>
+              <th className="px-6 py-2">Assigned Employee</th>
               <th className="px-6 py-2">Status</th>
               <th className="px-6 py-2 text-right">Action</th>
             </tr>
