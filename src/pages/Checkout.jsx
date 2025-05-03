@@ -40,6 +40,33 @@ const CheckoutForm = () => {
       setMessage("Please fill in all required fields.");
       return;
     }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^\d{10}$/; // 10-digit number
+
+  if (!formData.firstName || !formData.lastName || !formData.email) {
+    setIsSuccess(false);
+    setMessage("Please fill in all required fields.");
+    return;
+  }
+
+  if (!emailRegex.test(formData.email)) {
+    setIsSuccess(false);
+    setMessage("Please enter a valid email address.");
+    return;
+  }
+
+  if (!phoneRegex.test(formData.mobile)) {
+    setIsSuccess(false);
+    setMessage("Please enter a valid 10-digit mobile number.");
+    return;
+  }
+  
+  if (formData.telephone && !phoneRegex.test(formData.telephone)) {
+    setIsSuccess(false);
+    setMessage("Please enter a valid 10-digit telephone number.");
+    return;
+  }
   
     // Create FormData object
     const formDataToSend = new FormData();
