@@ -7,18 +7,22 @@ import {
 import "./App.css";
 import Header from "./component/Header";
 import "./index.css";
-import AdminEvents from "./pages/AdminEvents";
-import AdminAddEvent from "./pages/AdminAddEvent";
-import AboutUs from "./pages/AboutUs";
 import SignUpPage from "./pages/SignUp"; // Import SignUpPage
-import Checkout from "./pages/Checkout"; // Import Checkout
 import HomePage from "./pages/HomePage"; // Import Home Page
-import Footer from "./component/Footer";
-import Cart from "./pages/Cart"; // Import Cart
-import Invoice from "./pages/Invoice"; // Import Invoice
 import EmployeeManagement from "./pages/EmployeeManagement";
 import React from 'react';
 import ContactUs from './pages/ContactUs';
+import Checkout from "./pages/Checkout";
+import AdminEvents from "./pages/AdminEvents";
+import AdminAddEvent from "./pages/AdminAddEvent";
+import AboutUs from "./pages/AboutUs";
+import Footer from "./component/Footer";
+import Cart from "./pages/Cart"; // Import Cart
+import Invoice from "./pages/Invoice"; // Import Invoice
+import AdminBills from "./pages/AdminBills"; // Import AdminBills
+import OrderSummary  from "./pages/OrderSummary";
+//import Footer from "./component/Footer";
+
 
 function App() {
   return (
@@ -52,15 +56,24 @@ function AppWithRoutes() {
         {/* Invoice route  */}
         <Route path="/invoice" element={<Invoice />} />
 
+
         <Route path="/" element={<AboutUs />} />
         <Route path="/home" element={<HomePage />} />
 
         <Route path="/signup" element={<SignUpPage />} />
 
-        <Route path="/" element={<AboutUs />} />
         <Route path="/employeeManagement" element={<EmployeeManagement />} />
 
         <Route path="/contactUs" element={<ContactUs />} />
+
+        <Route path="/AdminEvents" element={<AdminEvents />} />
+        <Route path="/AdminAddEvent" element={<AdminAddEvent />} />
+
+        <Route path="/checkout" element={<AboutUs />} />
+        <Route path="/ordersummary" element={<OrderSummary />} />
+
+        <Route path="/admin-bills" element={<AdminBills />} />
+          
       </Routes>
 
       {location.pathname !== "/AdminEvents" &&
