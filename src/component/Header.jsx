@@ -21,10 +21,11 @@ const Header = () => {
 
       {/* Center: Navigation */}
       <nav className="space-x-8 font-semibold hidden md:flex">
-        <Link to="/home" className="text-red-600">Home</Link> {/*Home Page naviagtion */}
-        <a href="#" className="text-black hover:text-red-600">About Us</a>
+        <Link to="/home" className="text-black hover:text-red-600">Home</Link> {/*Home Page naviagtion */}
+        <Link to="/AboutUs" className="text-black hover:text-red-600">About Us</Link>
         <a href="#" className="text-black hover:text-red-600">Events</a>
-        <a href="#" className="text-black hover:text-red-600">Contact Us</a>
+        <Link to="/contactUs" className="text-black hover:text-red-600">Contact Us</Link>
+        
       </nav>
 
       {/* Right: Icons & Buttons */}

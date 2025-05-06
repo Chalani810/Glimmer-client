@@ -19,6 +19,7 @@ import Invoice from "./pages/Invoice"; // Import Invoice
 import EmployeeManagement from "./pages/EmployeeManagement";
 import React from 'react';
 import ContactUs from './pages/ContactUs';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
@@ -36,7 +37,8 @@ function AppWithRoutes() {
   return (
     <>
       {location.pathname !== "/AdminEvents" &&
-        location.pathname !== "/AdminAddEvent" && <Header />}
+        location.pathname !== "/AdminAddEvent" && 
+        location.pathname !=="/EmployeeManagement" && <Header />}
 
       {/* Routing between pages */}
       <Routes>
@@ -59,14 +61,23 @@ function AppWithRoutes() {
 
         <Route path="/" element={<AboutUs />} />
         <Route path="/employeeManagement" element={<EmployeeManagement />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/AboutUs" element={<AboutUs />} />
 
         <Route path="/contactUs" element={<ContactUs />} />
       </Routes>
-
+      {/*
       {location.pathname !== "/AdminEvents" &&
         location.pathname !== "/AdminAddEvent" &&
-        location.pathname !== "/employeeManagement" && <Footer />}
+        location.pathname !== "/employeeManagement" && <Footer />*/}
+    
+
+      {location.pathname !== "/AdminEvents" &&
+        location.pathname !== "/AdminAddEvent" && 
+        location.pathname !== "/dashboard" && <Footer />}
     </>
+
+
   );
 }
 

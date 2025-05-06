@@ -6,11 +6,14 @@ import Sidebar from "../component/AdminEvent/Sidebar";
 import AddEmployeeModel from '../component/Employee/AddEmployeeModel';
 import axios from "axios";
 
+
 const EmployeeManagement = () => {
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
   const [employees, setEmployees] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [employeeToDelete, setEmployeeToDelete] = useState(null);
 
   const fetchEmployees = async () => {
     try {
@@ -71,7 +74,6 @@ const EmployeeManagement = () => {
           }
         );
       } else {
-        
         response = await axios.post(
           `${apiUrl}/employee/`,
           formData,
@@ -91,13 +93,26 @@ const EmployeeManagement = () => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDeleteClick = (id) => {
+    setEmployeeToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
     try {
-      await axios.delete(`${apiUrl}/employee/${id}`);
+      await axios.delete(`${apiUrl}/employee/${employeeToDelete}`);
       fetchEmployees();
     } catch (error) {
       console.error("Delete error:", error);
+    } finally {
+      setIsDeleteModalOpen(false);
+      setEmployeeToDelete(null);
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setIsDeleteModalOpen(false);
+    setEmployeeToDelete(null);
   };
 
   return (
@@ -121,7 +136,7 @@ const EmployeeManagement = () => {
         <EmployeeList 
           employees={employees} 
           onEdit={handleEdit} 
-          onDelete={handleDelete} 
+          onDelete={handleDeleteClick} 
         />
         
         <AddEmployeeModel
@@ -130,9 +145,17 @@ const EmployeeManagement = () => {
           onSave={handleSave}
           employeeData={editingEmployee}
         />
+
+        <ConfirmationModal
+          isOpen={isDeleteModalOpen}
+          onCancel={handleDeleteCancel}
+          onConfirm={handleDeleteConfirm}
+        />
       </main>
     </div>
   );
 };
+
+
 
 export default EmployeeManagement;
