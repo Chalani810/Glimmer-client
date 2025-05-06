@@ -21,8 +21,8 @@ import Cart from "./pages/Cart"; // Import Cart
 import Invoice from "./pages/Invoice"; // Import Invoice
 import AdminBills from "./pages/AdminBills"; // Import AdminBills
 import OrderSummary  from "./pages/OrderSummary";
-//import Footer from "./component/Footer";
-
+import EmployeeManagement from "./pages/EmployeeManagement";
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
@@ -40,7 +40,8 @@ function AppWithRoutes() {
   return (
     <>
       {location.pathname !== "/AdminEvents" &&
-        location.pathname !== "/AdminAddEvent" && <Header />}
+        location.pathname !== "/AdminAddEvent" && 
+        location.pathname !=="/EmployeeManagement" && <Header />}
 
       {/* Routing between pages */}
       <Routes>
@@ -63,6 +64,8 @@ function AppWithRoutes() {
         <Route path="/signup" element={<SignUpPage />} />
 
         <Route path="/employeeManagement" element={<EmployeeManagement />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/AboutUs" element={<AboutUs />} />
 
         <Route path="/contactUs" element={<ContactUs />} />
 
@@ -75,11 +78,18 @@ function AppWithRoutes() {
         <Route path="/admin-bills" element={<AdminBills />} />
           
       </Routes>
-
+      {/*
       {location.pathname !== "/AdminEvents" &&
         location.pathname !== "/AdminAddEvent" &&
-        location.pathname !== "/employeeManagement" && <Footer />}
+        location.pathname !== "/employeeManagement" && <Footer />*/}
+    
+
+      {location.pathname !== "/AdminEvents" &&
+        location.pathname !== "/AdminAddEvent" && 
+        location.pathname !== "/dashboard" && <Footer />}
     </>
+
+
   );
 }
 

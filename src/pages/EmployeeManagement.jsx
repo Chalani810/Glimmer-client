@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import EmployeeList from '../component/Employee/EmployeeList';
 import EmployeeFilter from '../component/Employee/EmployeeFilter';
+import ConfirmationModal from '../component/ConfirmationModal';
 import Sidebar from "../component/AdminEvent/Sidebar";
 import AddEmployeeModel from '../component/Employee/AddEmployeeModel';
 import axios from "axios";

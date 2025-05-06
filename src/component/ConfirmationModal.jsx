@@ -30,7 +30,4 @@ const ConfirmationModal = ({ isOpen, onCancel, onConfirm }) => {
         </div>
       </div>
     </div>
-  );
-};
-
 export default ConfirmationModal;

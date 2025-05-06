@@ -1,4 +1,3 @@
-// src/components/ContactForm.jsx
 import React, { useState } from 'react';
 
 const ContactForm = () => {
@@ -34,10 +33,34 @@ const ContactForm = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(form);
-    // Add your form submission logic here
+    try {
+      const response = await fetch("http://localhost:5000/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
+
+      if (response.ok) {
+        alert("Your message has been sent!");
+        setForm({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          message: '',
+          services: [],
+        });
+      } else {
+        alert("Failed to send message. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("An error occurred. Please try again later.");
+    }
   };
 
   return (
