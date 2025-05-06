@@ -6,7 +6,7 @@ import Popup from "../component/AdminEvent/Popup";
 import axios from "axios";
 
 const EventsPage = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [formData, setFormData] = useState({
     eventName: "",
@@ -14,8 +14,10 @@ const EventsPage = () => {
     eventImage: null,
   });
   const [events, setEvents] = useState([]);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editEventId, setEditEventId] = useState(null);
 
-  const fetchEvents = async (setEvents) => {
+  const fetchEvents = async () => {
     try {
       const response = await axios.get(`${apiUrl}/event/`);
       setEvents(response.data);
@@ -26,13 +28,15 @@ const EventsPage = () => {
   };
 
   useEffect(() => {
-    fetchEvents(setEvents);
+    fetchEvents();
   }, []);
 
   const openPopup = () => setIsPopupOpen(true);
   const closePopup = () => {
     setIsPopupOpen(false);
     setFormData({ eventName: "", description: "", eventImage: null });
+    setIsEditMode(false);
+    setEditEventId(null);
   };
 
   const handleChange = (e) => {
@@ -44,35 +48,73 @@ const EventsPage = () => {
     }
   };
 
+  const handleEdit = (event) => {
+
+    setFormData({
+      eventName: event.title,
+      description: event.description,
+      eventImage: null,
+    });
+    setEditEventId(event._id);
+    setIsEditMode(true);
+    setIsPopupOpen(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const formDataToSend = new FormData();
     formDataToSend.append("title", formData.eventName);
     formDataToSend.append("description", formData.description);
-    formDataToSend.append("eventImage", formData.eventImage);
-    formDataToSend.append("visibility", false);
-
+    
+    // Important: Append the file with the correct field name ('eventImage')
+    if (formData.eventImage) {
+      formDataToSend.append("eventImage", formData.eventImage);
+    }
+    
+    // Convert boolean to string as FormData sends everything as strings
+    formDataToSend.append("visibility", "false");
+  
+    // Debug: Show actual FormData contents
+    for (let [key, value] of formDataToSend.entries()) {
+      console.log(key, value);
+    }
+  
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/event/add`,
-        formDataToSend,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log("Upload success:", response.data);
-      fetchEvents(setEvents);
+      if (isEditMode) {
+        const response = await axios.put(
+          `${apiUrl}/event/${editEventId}`,
+          formDataToSend,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        console.log("Update response:", response.data);
+      } else {
+        const response = await axios.post(
+          `${apiUrl}/event/add`,
+          formDataToSend,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        console.log("Create response:", response.data);
+      }
+      
+      await fetchEvents();
       closePopup();
     } catch (error) {
-      console.error("Upload error:", error);
+      console.error("Error details:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
+      // You might want to add user feedback here
     }
-  };
-
-  const fetchEventsForDelete = () => {
-    fetchEvents(setEvents);
   };
 
   return (
@@ -111,7 +153,12 @@ const EventsPage = () => {
           </div>
 
           {/* Table */}
-          <EventTable events={events} fetchEventsForDelete={fetchEventsForDelete}/>
+          <EventTable 
+            events={events} 
+            fetchEventsForDelete={fetchEvents} 
+            handleEdit={handleEdit}
+          />
+
         </main>
       </div>
 
@@ -154,19 +201,18 @@ const EventsPage = () => {
             {/* Event Image Upload */}
             <div className="mb-4">
               <label className="block text-gray-700 font-bold mb-2">
-                Upload Image <span className="text-red-500">*</span>
+                Upload Image {!isEditMode && <span className="text-red-500">*</span>}
               </label>
               <input
                 type="file"
                 name="eventImage"
                 onChange={handleChange}
-                required
+                required={!isEditMode}
                 accept="image/*"
                 className="border p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
-            {/* Buttons */}
             <div className="flex justify-end gap-4">
               <button
                 type="button"

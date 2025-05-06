@@ -8,6 +8,7 @@ import AdminAddEvent from './pages/AdminAddEvent';
 import Footer from "./component/Footer";
 import AdminProduct from "./pages/AdminProduct";
 import CustomerViewEvent from "./pages/CustomerViewEvent";
+import CustomerProduct from "./pages/CustomerProduct";
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function AppWithRoutes() {
 
   return (
     <>
-      {location.pathname !== '/adminevents' && location.pathname !== '/adminaddevent' && <Header />}
+      {location.pathname !== '/AdminEvents' && location.pathname !== '/AdminAddEvent' && location.pathname !== '/AdminProduct' && location.pathname !== '/AdminProduct'&& <Header />}
       
 
       <Routes>
@@ -35,10 +36,11 @@ function AppWithRoutes() {
         <Route path="/Checkout" element={<Checkout />} />
         <Route path="/adminproduct" element={<AdminProduct />} />
         <Route path="/customerviewevent" element={<CustomerViewEvent />} />
+        <Route path="/customerproduct" element={<CustomerProduct />} />
 
       </Routes>
 
-      {location.pathname !== '/adminevents' && location.pathname !== '/adminaddevent' && <Footer />}
+      {location.pathname !== '/AdminEvents' && location.pathname !== '/AdminAddEvent' &&  location.pathname !== '/AdminProduct' && <Footer />}
       
     </>
   );
