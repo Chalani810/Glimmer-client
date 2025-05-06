@@ -4,14 +4,15 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
+import { Toaster } from 'react-hot-toast';
 import "./App.css";
 import Header from "./component/Header";
 import "./index.css";
 import SignUpPage from "./pages/SignUp";
 import HomePage from "./pages/HomePage";
 import EmployeeManagement from "./pages/EmployeeManagement";
-import React from 'react';
-import ContactUs from './pages/ContactUs';
+import React from "react";
+import ContactUs from "./pages/ContactUs";
 import Checkout from "./pages/Checkout";
 import AdminEvents from "./pages/AdminEvents";
 import AdminAddEvent from "./pages/AdminAddEvent";
@@ -22,14 +23,14 @@ import Invoice from "./pages/Invoice";
 import AdminBills from "./pages/AdminBills"; // Import AdminBills
 import OrderSummary from "./pages/OrderSummary";
 import { CartProvider } from "./CartContext";
-import OrderSummary  from "./pages/OrderSummary";
-import Dashboard from './pages/Dashboard';
+import Dashboard from "./pages/Dashboard";
+import SalaryView from "./pages/EmployeePayroll";
 
 function App() {
   return (
     <Router>
       <CartProvider>
-      <AppWithRoutes />
+        <AppWithRoutes />
       </CartProvider>
     </Router>
   );
@@ -40,10 +41,38 @@ function AppWithRoutes() {
 
   return (
     <>
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: "#fff",
+            color: "#363636",
+          },
+          success: {
+            duration: 3000,
+            iconTheme: {
+              primary: "#4BB543",
+              secondary: "#fff",
+            },
+          },
+          error: {
+            duration: 4000,
+            iconTheme: {
+              primary: "#FF3333",
+              secondary: "#fff",
+            },
+          },
+          loading: {
+            duration: 5000,
+          },
+        }}
+      />
       {location.pathname !== "/admin-bills" &&
         location.pathname !== "/AdminAddEvent" &&
-      location.pathname !== "/AdminEvents" &&
-        location.pathname !=="/EmployeeManagement" && <Header />}
+        location.pathname !== "/employee-payroll" &&
+        location.pathname !== "/AdminEvents" &&
+        location.pathname !== "/EmployeeManagement" && <Header />}
       <Routes>
         <Route path="/AdminEvents" element={<AdminEvents />} />
         <Route path="/adminaddevent" element={<AdminAddEvent />} />
@@ -59,16 +88,16 @@ function AppWithRoutes() {
         <Route path="/contactUs" element={<ContactUs />} />
         <Route path="/ordersummary" element={<OrderSummary />} />
         <Route path="/admin-bills" element={<AdminBills />} />
+        <Route path="/employee-payroll" element={<SalaryView />} />
       </Routes>
 
-{location.pathname !== "/admin-bills" &&
-      location.pathname !== "/AdminEvents" &&
+      {location.pathname !== "/admin-bills" &&
+        location.pathname !== "/AdminEvents" &&
         location.pathname !== "/AdminAddEvent" &&
-        location.pathname !== "/employeeManagement" && 
+        location.pathname !== "/employeeManagement" &&
+        location.pathname !== "/employee-payroll" &&
         location.pathname !== "/dashboard" && <Footer />}
     </>
-
-
   );
 }
 

@@ -13,7 +13,7 @@ const Sidebar = () => {
     { name: "Events", path: "/AdminEvents" },
     { name: "Customers", path: "/customers" },
     { name: "Employees", path: "/EmployeeManagement" },
-    { name: "Employee Payroll", path: "/payroll" },
+    { name: "Employee Payroll", path: "/employee-payroll" },
     { name: "Settings", path: "/settings" },
   ];
 

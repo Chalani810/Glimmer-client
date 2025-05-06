@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
-
-const AddEmployeeModel = ({ isOpen, onClose, onSave, employeeData }) => {
+const AddEmployeeModel = ({ isOpen, onClose, onSave, employeeData, occupationOptions }) => {
   const [employee, setEmployee] = useState({
     name: '',
     email: '',
     phone: '',
+    occupation: '',
     profileImg: '',
   });
   const [previewImage, setPreviewImage] = useState('');
@@ -13,13 +13,20 @@ const AddEmployeeModel = ({ isOpen, onClose, onSave, employeeData }) => {
 
   useEffect(() => {
     if (employeeData) {
-      setEmployee(employeeData);
+      setEmployee({
+        name: employeeData.name || '',
+        email: employeeData.email || '',
+        phone: employeeData.phone || '',
+        occupation: employeeData.occupation || '',
+        profileImg: employeeData.profileImg || '',
+      });
       setPreviewImage(employeeData.profileImg || '');
     } else {
       setEmployee({
         name: '',
         email: '',
         phone: '',
+        occupation: '',
         profileImg: '',
       });
       setPreviewImage('');
@@ -47,17 +54,16 @@ const AddEmployeeModel = ({ isOpen, onClose, onSave, employeeData }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const { name, email,phone  } = employee;
+    const { name, email, phone, occupation } = employee;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^\d{10}$/;
 
     console.log("Submitting:", employee);
 
-    if (!name || !email || !phone) {
+    if (!name || !email || !phone || !occupation) {
       setError('Please fill in all required fields.');
       return;
     }
-
 
     if (!emailRegex.test(email)) {
       setError('Please enter a valid email address.');
@@ -69,7 +75,6 @@ const AddEmployeeModel = ({ isOpen, onClose, onSave, employeeData }) => {
       return;
     }
   
-
     setError('');
     onSave(employee);
   };
@@ -119,7 +124,23 @@ const AddEmployeeModel = ({ isOpen, onClose, onSave, employeeData }) => {
               onChange={handleChange}
               placeholder="Phone number"
               className="border p-2 w-full rounded"
+              required
             />
+
+            <select
+              name="occupation"
+              value={employee.occupation}
+              onChange={handleChange}
+              className="border p-2 w-full rounded"
+              required
+            >
+              <option value="">Select Occupation</option>
+              {occupationOptions?.map((option) => (
+                <option key={option._id} value={option._id}>
+                  {option.title}
+                </option>
+              ))}
+            </select>
 
             {error && <p className="text-red-500 text-sm">{error}</p>}
           </div>
