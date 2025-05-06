@@ -22,6 +22,8 @@ import Invoice from "./pages/Invoice";
 import AdminBills from "./pages/AdminBills"; // Import AdminBills
 import OrderSummary from "./pages/OrderSummary";
 import { CartProvider } from "./CartContext";
+import OrderSummary  from "./pages/OrderSummary";
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
@@ -38,12 +40,10 @@ function AppWithRoutes() {
 
   return (
     <>
-      {/* Hide Header for AdminBills page */}
       {location.pathname !== "/admin-bills" &&
-        location.pathname !== "/AdminEvents" &&
-        location.pathname !== "/AdminAddEvent" && <Header />}
-
-      {/* Routing between pages */}
+        location.pathname !== "/AdminAddEvent" &&
+      location.pathname !== "/AdminEvents" &&
+        location.pathname !=="/EmployeeManagement" && <Header />}
       <Routes>
         <Route path="/AdminEvents" element={<AdminEvents />} />
         <Route path="/adminaddevent" element={<AdminAddEvent />} />
@@ -54,21 +54,21 @@ function AppWithRoutes() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/employeeManagement" element={<EmployeeManagement />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/AboutUs" element={<AboutUs />} />
         <Route path="/contactUs" element={<ContactUs />} />
-        <Route path="/AdminEvents" element={<AdminEvents />} />
-        <Route path="/AdminAddEvent" element={<AdminAddEvent />} />
-        <Route path="/checkout" element={<AboutUs />} />
         <Route path="/ordersummary" element={<OrderSummary />} />
-        <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/admin-bills" element={<AdminBills />} />
       </Routes>
 
-      {/* Hide Footer for AdminBills page */}
-      {location.pathname !== "/admin-bills" &&
-        location.pathname !== "/AdminEvents" &&
+{location.pathname !== "/admin-bills" &&
+      location.pathname !== "/AdminEvents" &&
         location.pathname !== "/AdminAddEvent" &&
-        location.pathname !== "/employeeManagement" && <Footer />}
+        location.pathname !== "/employeeManagement" && 
+        location.pathname !== "/dashboard" && <Footer />}
     </>
+
+
   );
 }
 
