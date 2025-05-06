@@ -13,6 +13,7 @@ const OrderTable = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [orderToDelete, setOrderToDelete] = useState(null);
   const [editingOrder, setEditingOrder] = useState(null);
+  const [deleting, setdeleting] = useState(null);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
 
   const fetchOrders = async (setOrders) => {
@@ -43,6 +44,10 @@ const OrderTable = () => {
   const handleView = (order) => {
     setSelectedOrder(order);
   };
+  const oderToDelete = (order) => {
+    setOrderToDelete(order);
+    setdeleting(true);
+  };
 
 
   const handleEdit = (e, id) => {
@@ -64,6 +69,9 @@ const OrderTable = () => {
       console.error("Error deleting order:", error);
     }
   };
+
+
+
 
   return (
     <div className="p-6 relative">
@@ -94,7 +102,7 @@ const OrderTable = () => {
                 order={order}
                 onView={() => handleView(order)}
                 onEdit={(e) => handleEdit(e, order._id)}
-                onDelete={() => handleDelete(order._id)}
+                onDelete={() => oderToDelete(order)}
                 onStatusChange={handleStatusChange}
               />
             ))}
@@ -109,6 +117,8 @@ const OrderTable = () => {
         />
       )}
 
+      {deleting && (
+
       <ConfirmationModal
         isOpen={!!orderToDelete}
         onCancel={() => setOrderToDelete(null)}
@@ -117,7 +127,7 @@ const OrderTable = () => {
           setOrderToDelete(null);
         }}
       />
-
+      )}
       {editingOrder && (
         <EditOrderModal
           order={editingOrder}

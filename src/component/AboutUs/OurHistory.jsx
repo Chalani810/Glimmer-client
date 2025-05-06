@@ -26,7 +26,7 @@ const OurHistory = () => {
             Since our founding, Glimmer has been dedicated to delivering
             unforgettable moments. Our journey reflects growth, innovation, and
             a commitment to excellence across every event and project we
-            undertake.
+            undertake. Over the years, we have expanded our capabilities, grown our talented team, and embraced cutting-edge trends and technologies, all while staying true to the values that define us: creativity, collaboration, and excellence. Our journey is far from over, and as we continue to evolve, we remain focused on delivering experiences that captivate, inspire, and leave a lasting impact.
           </p>
         </div>
       </div>

@@ -4,10 +4,12 @@ import FormInput from "../component/Checkout/FormInput";
 import ContactDropdown from "../component/Checkout/ContactDropdown";
 import GuestCountDropdown from "../component/Checkout/GuestCountDropdown";
 import FileUpload from "../component/Checkout/FileUpload";
+import { useCart } from "../CartContext";
 
 const CheckoutForm = () => {
+  
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
-
+  const { totalAmount, advancePayment } = useCart();
   const [formData, setFormData] = useState({
     
     orderNumber: "",
@@ -20,8 +22,8 @@ const CheckoutForm = () => {
     contactMethod: "call",
     guestcount: "less than 50",
     comment: "",
-    totalAmount: "",
-    advancePayment: "",
+    totalAmount: totalAmount.toFixed(2),
+    advancePayment: advancePayment.toFixed(2),
     slip: null, 
   });
 

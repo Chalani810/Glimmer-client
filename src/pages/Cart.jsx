@@ -8,6 +8,8 @@ import CartEmpty from "../component/Cart/CartEmpty";
 
 const CartPage = () => {
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
+  
+
   const [cartItems, setCartItems] = useState({
     items: [],
     subtotal: 0,
@@ -17,32 +19,36 @@ const CartPage = () => {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchAndAutoAddAllProducts = async () => {
       try {
         const response = await axios.get(`${apiUrl}/api/product`);
         const allProducts = response.data;
 
         if (allProducts.length > 0) {
-          const selectedProduct = allProducts[0];
-          const itemToAdd = {
-            id: selectedProduct._id,
-            name: selectedProduct.pname,
-            price: selectedProduct.pprice,
-            quantity: 1,
-            photoUrl: selectedProduct.photoUrl,
-          };
+          const items = allProducts.map((product) => ({
+            id: product._id,
+            name: product.pname,
+            price: product.pprice,
+            quantity:product.quantity || 2,
+            photoUrl: product.photoUrl,
+          }));
 
-          setCartItems({
-            items: [itemToAdd],
-            subtotal: itemToAdd.price,
-          });
+          const subtotal = items.reduce(
+            (acc, item) => acc + item.price * item.quantity,
+            0
+          );
+
+          const newCart = { items, subtotal };
+
+          setCartItems(newCart);
+          localStorage.setItem("cart", JSON.stringify(newCart));
         }
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Failed to load products:", error);
       }
     };
 
-    fetchProducts();
+    fetchAndAutoAddAllProducts(); // Always fetch and replace the cart
   }, []);
 
   const handleSubmit = async (e) => {
@@ -66,18 +72,15 @@ const CartPage = () => {
         },
       });
 
-      console.log("Server Response:", response.data);
       setIsSuccess(true);
       setMessage("Order placed successfully!");
 
-      setCartItems({
-        items: [],
-        subtotal: 0,
-      });
+      setCartItems({ items: [], subtotal: 0 });
+      localStorage.removeItem("cart");
     } catch (error) {
-      console.error("Error placing order:", error.response?.data || error.message);
+      console.error("Order failed:", error);
       setIsSuccess(false);
-      setMessage("Failed to place order. Please try again.");
+      setMessage("Failed to place order. Try again.");
     }
   };
 

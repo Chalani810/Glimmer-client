@@ -31,7 +31,11 @@ const OrderRow = ({ order, onStatusChange, onDelete, onView, onEdit }) => {
       </td>
       <td className="px-4 py-3">{order.contactMethod}</td>
       <td className="px-4 py-3">{order.guestcount}</td>
-      <td className="px-4 py-3">{order.assignedEmployee}</td>
+
+      <td className="px-6 py-2">
+  {order.assignedEmployees?.map(emp => emp.name).join(", ") || "Not assigned"}
+</td>
+
       <td className="px-4 py-3">
         <span
           className={`text-sm px-2 py-1 rounded ${getStatusClasses(

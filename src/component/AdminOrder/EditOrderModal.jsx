@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 
-const EditOrderModal = ({ order, onClose, onStatusChange }) => {
+const EditOrderModal = ({ order, onClose, onStatusChange, employees }) => {
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
   const [newStatus, setNewStatus] = useState(order.status || "");
+  const [SelectedEmployee, setSelectedEmployees] = useState(order.assignedEmployee || []);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -20,10 +21,11 @@ const EditOrderModal = ({ order, onClose, onStatusChange }) => {
       // Update order status in DB
       const response = await axios.put(`${apiUrl}/checkout/${order._id}/status`, {
         status: newStatus,
+        assignedEmployee: SelectedEmployee,
       });
   
       // Notify parent component (optional)
-      onStatusChange(order._id, newStatus);
+      onStatusChange(order._id, newStatus,setSelectedEmployees);
       onClose();
     } catch (error) {
       console.error("Failed to update order status:", error);
@@ -88,6 +90,27 @@ const EditOrderModal = ({ order, onClose, onStatusChange }) => {
           </select>
           {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
         </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Assign Employees
+          </label>
+          <select
+            multiple
+            value={SelectedEmployee}
+            onChange={(e) =>
+              setSelectedEmployees(Array.from(e.target.selectedOptions, option => option.value))
+            }
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm h-32"
+          >
+            {employees?.map((emp) => (
+              <option key={emp._id} value={emp._id}>
+                {emp.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
 
         {/* Actions */}
         <div className="flex justify-end gap-3">
