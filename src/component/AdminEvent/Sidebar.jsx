@@ -9,10 +9,10 @@ const Sidebar = () => {
     { name: "Home", path: "/" },
     { name: "Calendar", path: "/calendar" },
     { name: "All Products", path: "/products" },
-    { name: "Bills", path: "/bills" },
+    { name: "Bills", path: "/admin-bills" },
     { name: "Events", path: "/AdminEvents" },
     { name: "Customers", path: "/customers" },
-    { name: "Employees", path: "/employees" },
+    { name: "Employees", path: "/EmployeeManagement" },
     { name: "Employee Payroll", path: "/payroll" },
     { name: "Settings", path: "/settings" },
   ];
