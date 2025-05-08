@@ -81,6 +81,19 @@ const EventsPage = () => {
     }
   
     try {
+
+      const response = await axios.post(
+        `${apiUrl}/event/add`,
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("Upload success:", response.data);
+      fetchEvents(setEvents);
+
       if (isEditMode) {
         const response = await axios.put(
           `${apiUrl}/event/${editEventId}`,
@@ -106,6 +119,7 @@ const EventsPage = () => {
       }
       
       await fetchEvents();
+
       closePopup();
     } catch (error) {
       console.error("Error details:", {

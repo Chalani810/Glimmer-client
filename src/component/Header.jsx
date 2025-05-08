@@ -22,10 +22,17 @@ const Header = () => {
 
       {/* Center: Navigation */}
       <nav className="space-x-8 font-semibold hidden md:flex">
+
+      <Link to="/home" className="text-black hover:text-red-600">Home</Link> {/*Home Page naviagtion */}
+      <Link to="/AboutUs" className="text-black hover:text-red-600">About Us</Link>
+
+
         <Link to="/home" className="text-red-600">Home</Link> {/*Home Page naviagtion */}
         <a href="#" className="text-black hover:text-red-600">About Us</a>
+
         <a href="#" className="text-black hover:text-red-600">Events</a>
-        <a href="#" className="text-black hover:text-red-600">Contact Us</a>
+        <Link to="/contactUs" className="text-black hover:text-red-600">Contact Us</Link>
+        
       </nav>
 
       {/* Right: Icons & Buttons */}
@@ -57,7 +64,9 @@ const Header = () => {
           </Link>
         </div>
 
+
         {/* Login Button */}
+
         <Link to="/signup">
           <button className="bg-white px-4 py-1 rounded-full shadow text-sm font-medium hover:shadow-md">
             Sign Up

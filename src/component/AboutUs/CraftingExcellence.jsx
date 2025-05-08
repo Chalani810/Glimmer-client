@@ -15,7 +15,7 @@ const CraftingExcellence = () => {
             At Glimmer, we believe in pushing the boundaries of excellence. Our
             team collaborates to craft memorable experiences and leave lasting
             impressions. Every project is a blend of passion, creativity, and
-            precision.
+            precision. At the heart of Glimmer is a dedication to leaving a lasting impression—one that reflects not just the quality of our work, but also the integrity and enthusiasm of the people behind it. Together, we create more than results; we create impact.
           </p>
         </div>
 
