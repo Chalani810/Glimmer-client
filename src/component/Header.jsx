@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FiSearch, FiShoppingCart } from "react-icons/fi";
+import { Link } from "react-router-dom"; // ✅ Import Link
 
 const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
@@ -21,8 +22,13 @@ const Header = () => {
 
       {/* Center: Navigation */}
       <nav className="space-x-8 font-semibold hidden md:flex">
+
       <Link to="/home" className="text-black hover:text-red-600">Home</Link> {/*Home Page naviagtion */}
       <Link to="/AboutUs" className="text-black hover:text-red-600">About Us</Link>
+
+
+        <Link to="/home" className="text-red-600">Home</Link> {/*Home Page naviagtion */}
+        <a href="#" className="text-black hover:text-red-600">About Us</a>
 
         <a href="#" className="text-black hover:text-red-600">Events</a>
         <Link to="/contactUs" className="text-black hover:text-red-600">Contact Us</Link>
@@ -57,6 +63,9 @@ const Header = () => {
             <span className="absolute top-0 right-0 h-2 w-2 bg-red-600 rounded-full"></span>
           </Link>
         </div>
+
+
+        {/* Login Button */}
 
         <Link to="/signup">
           <button className="bg-white px-4 py-1 rounded-full shadow text-sm font-medium hover:shadow-md">

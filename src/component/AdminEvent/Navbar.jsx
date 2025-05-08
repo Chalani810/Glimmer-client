@@ -7,7 +7,7 @@ const Navbar = () => {
       <div></div> {/* Placeholder if needed */}
       <div className="flex items-center gap-4">
         <button>🔔</button>
-        <button>🔍</button>
+        
         <div className="w-8 h-8 bg-gray-300 rounded-full"></div> {/* User avatar */}
       </div>
     </header>

@@ -7,6 +7,7 @@ import {
 import { Toaster } from 'react-hot-toast';
 import "./App.css";
 import Header from "./component/Header";
+
 import "./index.css";
 import SignUpPage from "./pages/SignUp";
 import HomePage from "./pages/HomePage";
@@ -26,6 +27,23 @@ import { CartProvider } from "./CartContext";
 import Dashboard from "./pages/Dashboard";
 import SalaryView from "./pages/EmployeePayroll";
 
+import './index.css';
+import AdminEvents from "./pages/AdminEvents";
+import AdminAddEvent from './pages/AdminAddEvent';
+import AboutUs  from './pages/AboutUs';
+import SignUpPage from "./pages/SignUp"; // Import SignUpPage
+import Checkout from "./pages/Checkout"; // Import Checkout
+import HomePage from "./pages/HomePage"; // Import Home Page
+import Footer from "./component/Footer";
+import AdminProduct from "./pages/AdminProduct";
+import CustomerViewEvent from "./pages/CustomerViewEvent";
+
+import CustomerProduct from "./pages/CustomerProduct";
+
+import Cart from "./pages/Cart"; // Import Cart	
+import Invoice from "./pages/Invoice"; // Import Invoice
+
+
 function App() {
   return (
     <Router>
@@ -41,6 +59,7 @@ function AppWithRoutes() {
 
   return (
     <>
+
       <Toaster
         position="top-center"
         toastOptions={{
@@ -73,10 +92,17 @@ function AppWithRoutes() {
         location.pathname !== "/employee-payroll" &&
         location.pathname !== "/AdminEvents" &&
         location.pathname !== "/EmployeeManagement" && <Header />}
+
+      {location.pathname !== '/AdminEvents' && location.pathname !== '/AdminAddEvent' && location.pathname !== '/AdminProduct' && location.pathname !== '/AdminProduct'&& <Header />}
+      
+
+      {/* Routing between pages */}
+
       <Routes>
         <Route path="/AdminEvents" element={<AdminEvents />} />
         <Route path="/adminaddevent" element={<AdminAddEvent />} />
         <Route path="/Checkout" element={<Checkout />} />
+
         <Route path="/cart" element={<Cart />} />
         <Route path="/invoice" element={<Invoice />} />
         <Route path="/" element={<AboutUs />} />
@@ -100,5 +126,35 @@ function AppWithRoutes() {
     </>
   );
 }
+
+
+        <Route path="/adminproduct" element={<AdminProduct />} />
+        <Route path="/customerviewevent" element={<CustomerViewEvent />} />
+        <Route path="/customerproduct" element={<CustomerProduct />} />
+
+        {/* Cart route */}
+        <Route path="/cart" element={<Cart />} />
+
+        <Route path="/invoice" element={<Invoice />} />
+          <Route path="/" element={<AboutUs />} />
+            <Route path="/checkout" element={<AboutUs />} />
+               {/* Home Page route */}
+        <Route path="/home" element={<HomePage />} />
+
+        {/* Sign Up page route */}
+        <Route path="/signup" element={<SignUpPage />} />
+      </Routes>
+
+
+      {location.pathname !== '/AdminEvents' && location.pathname !== '/AdminAddEvent' &&  location.pathname !== '/AdminProduct' && <Footer />}
+
+      {location.pathname !== '/AdminEvents' && location.pathname !== '/AdminAddEvent' && <Footer />}
+
+      
+    </>
+  );
+}
+
+
 
 export default App;
