@@ -26,9 +26,6 @@ const Header = () => {
       setUser(userData);
     };
 
-    console.log("User data from local storage:", userData);
-    
-
     authEvents.on('login', handleLogin);
 
     // Clean up the event listener when component unmounts
@@ -70,27 +67,16 @@ const Header = () => {
 
       {/* Center: Navigation */}
       <nav className="space-x-8 font-semibold hidden md:flex">
-
         <Link to="/home" className="text-red-600">Home</Link>
         <a href="#" className="text-black hover:text-red-600">About Us</a>
         <a href="#" className="text-black hover:text-red-600">Events</a>
         <a href="#" className="text-black hover:text-red-600">Contact Us</a>
-      {isLoggedIn && (
-        <Link to="/order-history" className="text-black hover:text-red-600">
-          Order History
-        </Link>
-  )}
-</nav>
-
-
-      <Link to="/home" className="text-black hover:text-red-600">Home</Link> {/*Home Page naviagtion */}
-      <Link to="/AboutUs" className="text-black hover:text-red-600">About Us</Link>
-
-        <a href="#" className="text-black hover:text-red-600">Events</a>
-        <Link to="/contactUs" className="text-black hover:text-red-600">Contact Us</Link>
-        
+        {isLoggedIn && (
+          <Link to="/order-history" className="text-black hover:text-red-600">
+            Order History
+          </Link>
+        )}
       </nav>
-
 
       {/* Right: Icons & Buttons */}
       <div className="flex items-center space-x-4">
@@ -118,7 +104,6 @@ const Header = () => {
             <span className="absolute top-0 right-0 h-2 w-2 bg-red-600 rounded-full"></span>
           </Link>
         </div>
-
 
         {/* Conditional rendering based on login status */}
         {!isLoggedIn ? (
@@ -172,17 +157,6 @@ const Header = () => {
             )}
           </div>
         )}
-
-        <Link to="/signup">
-          <button className="bg-white px-4 py-1 rounded-full shadow text-sm font-medium hover:shadow-md">
-            Sign Up
-          </button>
-        </Link>
-        
-        <button className="bg-red-600 text-white px-4 py-1 rounded-full text-sm font-medium hover:bg-red-700">
-          Login
-        </button>
-
       </div>
     </header>
   );

@@ -21,13 +21,13 @@ const OrderRow = ({ order, onStatusChange, onDelete, onView, onEdit }) => {
       <td className="px-4 py-3">test</td>
       <td className="px-4 py-3">test</td>
       <td className="px-4 py-3 text-right">
-        {Number(order.totalAmount).toFixed(2)}
+        {Number(order.cartTotal).toFixed(2)}
       </td>
       <td className="px-4 py-3 text-right">
         {Number(order.advancePayment).toFixed(2)}
       </td>
       <td className="px-4 py-3 text-right">
-        {Number(order.totalAmount - order.advancePayment).toFixed(2)}
+        {Number(order.cartTotal - order.advancePayment).toFixed(2)}
       </td>
       <td className="px-4 py-3">{order.contactMethod}</td>
       <td className="px-4 py-3">{order.guestcount}</td>

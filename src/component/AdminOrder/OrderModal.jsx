@@ -31,7 +31,7 @@ const OrderModal = ({ order, onClose }) => {
   const headingClasses = getHeadingClasses(order.status); // Get the heading classes
 
   const duePayment =
-    order.totalAmount && order.advancePayment
+    order.cartTotal && order.advancePayment
       ? order.totalAmount - order.advancePayment
       : 0;
 
@@ -206,13 +206,13 @@ const OrderModal = ({ order, onClose }) => {
               <div className="bg-white p-3 rounded-md border border-gray-200">
                 <p className="text-sm text-gray-500">Total Amount</p>
                 <p className="text-lg font-semibold text-gray-800">
-                  Rs. {Number(order.totalAmount).toFixed(2)}
+                  Rs. {Number(order.cartTotal).toFixed(2)}
                 </p>
               </div>
               <div className="bg-white p-3 rounded-md border border-gray-200">
                 <p className="text-sm text-gray-500">Due Payment</p>
                 <p className="text-lg font-semibold text-gray-800">
-                  Rs. {Number(order.totalAmount - order.advancePayment).toFixed(2)}
+                  Rs. {Number(order.cartTotal - order.advancePayment).toFixed(2)}
                 </p>
               </div>
             </div>
