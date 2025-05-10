@@ -1,9 +1,4 @@
 
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { FiSearch, FiShoppingCart } from "react-icons/fi";
-import { Link } from "react-router-dom"; // ✅ Import Link
-
 import React, { useState, useEffect } from "react";
 import { FiSearch, FiShoppingCart, FiUser, FiLogOut } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";

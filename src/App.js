@@ -131,7 +131,10 @@ function AppWithRoutes() {
         <Route path="/admin-bills" element={<AdminBills />} />
         <Route path="/employee-payroll" element={<SalaryView />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/AboutUs" element={<AboutUs />} />
           
+
+      </Routes>
       {location.pathname !== "/admin-bills" &&
         location.pathname !== "/AdminEvents" &&
         location.pathname !== "/AdminAddEvent" &&
@@ -140,8 +143,6 @@ function AppWithRoutes() {
         location.pathname !== "/employee-payroll" &&
         location.pathname !== "/dashboard" && 
        !isEventAdminPage && !isCustomerAdminPage &&<Footer />}
-
-      </Routes>
     </>
 
   );
