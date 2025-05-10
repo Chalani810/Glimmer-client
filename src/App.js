@@ -6,9 +6,13 @@ import AdminEvents from "./pages/AdminEvents";
 import AdminAddEvent from './pages/AdminAddEvent';
 import AboutUs  from './pages/AboutUs';
 import SignUpPage from "./pages/SignUp"; // Import SignUpPage
-import Checkout from "./pages/Checkout"; // Import Checkout
 import HomePage from "./pages/HomePage"; // Import Home Page
 import Footer from "./component/Footer";
+import AdminProduct from "./pages/AdminProduct";
+import CustomerViewEvent from "./pages/CustomerViewEvent";
+import CustomerProduct from "./pages/CustomerProduct";
+import EmployeeManagement from "./pages/EmployeeManagement";
+import ContactUs from "./pages/ContactUs";
 
 // Admin Event Components
 import AdminNavbar from './component/AdminEvent/Navbar';
@@ -23,7 +27,6 @@ import ProfilePage from "./pages/CustomerProfilePage";
 import Cart from "./pages/Cart";
 import Invoice from "./pages/Invoice";
 import FeedbackListPage from "./pages/FeedbackListPage";
-
 
 function App() {
   return (
@@ -42,8 +45,13 @@ function AppWithRoutes() {
 
   return (
     <>
-      {/* Show global Header only for public pages */}
-      {!isEventAdminPage && !isCustomerAdminPage && <Header />}
+      {location.pathname !== '/AdminEvents' && 
+      location.pathname !== '/AdminAddEvent' && 
+      location.pathname !== '/AdminProduct' && 
+      location.pathname !== '/AdminProduct'&& 
+      location.pathname !== '/EmployeeManagement'&&
+    !isEventAdminPage && !isCustomerAdminPage &&
+      <Header />}
 
       {/* Admin-specific Navbars */}
       {isEventAdminPage && <AdminNavbar />}
@@ -52,7 +60,11 @@ function AppWithRoutes() {
         {/* Admin Event Routes */}
         <Route path="/adminevents" element={<AdminEvents />} />
         <Route path="/adminaddevent" element={<AdminAddEvent />} />
-
+        <Route path="/adminproduct" element={<AdminProduct />} />
+        <Route path="/customerviewevent" element={<CustomerViewEvent />} />
+        <Route path="/customerproduct" element={<CustomerProduct />} />
+        <Route path="/employeeManagement" element={<EmployeeManagement />} />
+        <Route path="/contactUs" element={<ContactUs />} />
         {/* Admin Customer Management Route */}
         <Route path="/customers" element={<CustomerMgtPage />} />
 
@@ -72,8 +84,12 @@ function AppWithRoutes() {
         <Route path="/signup" element={<SignUpPage />} />
       </Routes>
 
-      {/* Show global Footer only for public pages */}
-      {!isEventAdminPage && !isCustomerAdminPage && <Footer />}
+      {location.pathname !== '/AdminEvents' && 
+      location.pathname !== '/AdminAddEvent' &&  
+      location.pathname !== '/AdminProduct' &&
+      location.pathname !== '/EmployeeManagement' && 
+        !isEventAdminPage && !isCustomerAdminPage &&
+      <Footer />}
     </>
   );
 }

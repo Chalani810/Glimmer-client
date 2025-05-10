@@ -1,7 +1,22 @@
 // Side Panel
 import React from "react";
+import { Link, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
+  const location = useLocation();
+
+  const menuItems = [
+    { name: "Home", path: "/" },
+    { name: "Calendar", path: "/calendar" },
+    { name: "Bills", path: "/admin-bills" },
+    { name: "Events", path: "/AdminEvents" },
+    { name: "All Products", path: "/AdminProduct" },
+    { name: "Customers", path: "/customers" },
+    { name: "Employees", path: "/EmployeeManagement" },
+    { name: "Employee Payroll", path: "/employee-payroll" },
+    { name: "Settings", path: "/settings" },
+  ];
+
   return (
     <aside className="w-64 bg-white p-4 border-r hidden md:block">
       {/* Logo */}
@@ -10,16 +25,24 @@ const Sidebar = () => {
       </div>
       
       {/* Navigation Links */}
-      <nav className="flex flex-col gap-4">
-        {["Home", "Calendar", "All Products", "Bills", "Events", "Customers", "Employees", "Employee Payroll", "Settings"].map((item) => (
-          <a
-            key={item}
-            href="#"
-            className={`hover:text-red-400 ${item === "Events" ? "bg-red-400 text-white rounded px-2 py-1" : ""}`}
-          >
-            {item}
-          </a>
-        ))}
+      <nav className="flex flex-col gap-2">
+        {menuItems.map((item) => {
+          const isActive = location.pathname === item.path;
+
+          return (
+            <Link
+              key={item.name}
+              to={item.path}
+              className={`px-3 py-2 rounded hover:bg-red-100 transition ${
+                isActive
+                  ? "bg-red-400 text-white font-semibold"
+                  : "text-gray-700"
+              }`}
+            >
+              {item.name}
+            </Link>
+          );
+        })}
       </nav>
     </aside>
   );

@@ -1,10 +1,32 @@
-import React from "react";
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
 
 // src/component/Cart/CartSummary.jsx
 
-
 const CartSummary = ({ items, subtotal }) => {
+  const totalAmount = subtotal;
+  const advancePayment = (subtotal * 0.3).toFixed(2);
+  const [invoiceUrl, setInvoiceUrl] = useState(null);
+
+  const handleGetInvoice = async () => {
+    try {
+      // Sending request to generate the invoice
+      const response = await axios.get("/api/invoice/generate");
+
+      if (response.data && response.data.invoiceUrl) {
+        const generatedInvoiceUrl = response.data.invoiceUrl;
+
+        // Set the invoice URL to the state
+        setInvoiceUrl(generatedInvoiceUrl);
+      } else {
+        console.error("Invoice URL not found in response");
+      }
+    } catch (error) {
+      console.error("Error generating invoice:", error);
+    }
+  };
+
   return (
     <div className="p-6 border rounded-md shadow-md">
       <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
@@ -41,12 +63,23 @@ const CartSummary = ({ items, subtotal }) => {
         <span>Rs.{subtotal}</span>
       </div>
 
-      <Link
-        to="/checkout"
-         className="inline-block mt-6 px-6 py-3 bg-black text-white font-semibold rounded-lg shadow-md hover:bg-gray-800 transition duration-300 "
-      >
-         Proceed to Checkout
-      </Link>
+      <div className="flex justify-between mt-6">
+        <Link
+          to="/checkout"
+          className="inline-block  padding-2 px-6 py-3  bg-black text-white font-semibold rounded-lg shadow-md hover:bg-gray-800 transition duration-300 p-2"
+        >
+          Go to Checkout
+        </Link>
+
+        {/* Get Invoice Button */}
+
+        <Link
+          to="/invoice"
+          className=" gap-x-8 padding-2 inline-block  gap-x-8 px-6 py-3  bg-black text-white font-semibold rounded-lg shadow-md hover:bg-gray-800 transition duration-300"
+        >
+          Get Invoice
+        </Link>
+      </div>
     </div>
   );
 };

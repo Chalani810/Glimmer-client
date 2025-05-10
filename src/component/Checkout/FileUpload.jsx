@@ -1,4 +1,3 @@
-// src/components/checkout/FileUpload.jsx
 import React, { useState } from "react";
 
 const FileUpload = ({ onFileSelect }) => {
@@ -6,8 +5,25 @@ const FileUpload = ({ onFileSelect }) => {
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-    setFile(selectedFile);
-    onFileSelect(selectedFile);  // Pass the selected file to the parent component
+
+    if (selectedFile) {
+      // Optional: Validate file type and size
+      const validTypes = ["image/jpeg", "image/png", "application/pdf"];
+      const maxSize = 5 * 1024 * 1024; // 5MB max file size
+
+      if (!validTypes.includes(selectedFile.type)) {
+        alert("Invalid file type. Only images and PDFs are allowed.");
+        return;
+      }
+
+      if (selectedFile.size > maxSize) {
+        alert("File size exceeds the limit of 5MB.");
+        return;
+      }
+
+      setFile(selectedFile);
+      onFileSelect(selectedFile); // Pass the selected file to the parent component
+    }
   };
 
   return (
