@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import { FaEye, FaEdit, FaTrash, FaUsers } from "react-icons/fa";
 
 const OrderRow = ({
   order,
@@ -12,7 +12,7 @@ const OrderRow = ({
   const [status, setStatus] = useState(order?.status || "Pending");
   const [isChangingStatus, setIsChangingStatus] = useState(false);
 
-  // Ensure status stays in sync with order prop
+  // Sync status with order prop
   useEffect(() => {
     if (order?.status && order.status !== status) {
       setStatus(order.status);
@@ -23,85 +23,77 @@ const OrderRow = ({
     switch (currentStatus) {
       case "Completed":
         return "bg-green-100 text-green-700 border border-green-300";
+      case "Confirmed":
+        return "bg-blue-100 text-blue-700 border border-blue-300";
       case "Pending":
         return "bg-yellow-100 text-yellow-700 border border-yellow-300";
-      case "Rejected":
+      case "Cancelled":
         return "bg-red-100 text-red-700 border border-red-300";
       default:
         return "bg-gray-100 text-gray-700 border border-gray-300";
     }
   };
 
-  const handleStatusChange = async (e) => {
-    const newStatus = e.target.value;
-    
-    // Optimistic UI update
-    setStatus(newStatus);
-    setIsChangingStatus(true);
-
-    try {
-      if (!order?._id) {
-        throw new Error("Order ID is missing");
-      }
-      
-      if (typeof onStatusChange !== "function") {
-        throw new Error("onStatusChange is not a function");
-      }
-
-      await onStatusChange(order._id, newStatus);
-    } catch (error) {
-      console.error("Failed to update order status:", error);
-      // Revert if failed
-      setStatus(order?.status || "Pending");
-    } finally {
-      setIsChangingStatus(false);
-    }
-  };
-
   if (!order) {
-    return null; // or return a loading/empty state
+    return null;
   }
 
   return (
-    <tr className="border-b hover:bg-gray-50 transition">
-      <td className="px-4 py-3">{order.orderId || "N/A"}</td>
-      <td className="px-4 py-3">{`${order.firstName || ""} ${order.lastName || ""}`.trim() || "N/A"}</td>
-      <td className="px-4 py-3">{order.email || "N/A"}</td>
-      <td className="px-4 py-3 text-right">
-        {Number(order.cartTotal || 0).toFixed(2)}
+    <tr className="border-b hover:bg-gray-50 transition flex flex-col md:table-row">
+      {/* Order ID - Always visible */}
+      <td className="px-4 py-3 font-medium md:font-normal">
+        <span className="md:hidden">Order #</span>
+        {order.orderId || "N/A"}
       </td>
-      <td className="px-4 py-3 text-right">
-        {Number(order.advancePayment || 0).toFixed(2)}
+
+      {/* Customer Name - Hidden on small screens */}
+      <td className="px-4 py-3 hidden md:table-cell">
+        {`${order.firstName || ""} ${order.lastName || ""}`.trim() || "N/A"}
       </td>
-      <td className="px-4 py-3 text-right">
-        {Number((order.cartTotal || 0) - (order.advancePayment || 0)).toFixed(2)}
+
+      {/* Email - Hidden on small screens */}
+      <td className="px-4 py-3 hidden md:table-cell">
+        {order.email || "N/A"}
       </td>
-      <td className="px-4 py-3">{order.contactMethod || "N/A"}</td>
-      <td className="px-4 py-3">{order.guestcount || "N/A"}</td>
+
+      {/* Amounts - Stacked on mobile */}
       <td className="px-4 py-3">
-        {order.assignedEmployees
-          ?.map((emp) => `${emp.firstName || ""} ${emp.lastName || ""}`.trim())
-          .filter(Boolean)
-          .join(", ") || "Not assigned"}
+        <div className="flex flex-col md:block">
+          <span className="md:hidden font-medium">Total: </span>
+          <span className="text-right">{Number(order.cartTotal || 0).toFixed(2)}</span>
+        </div>
       </td>
       <td className="px-4 py-3">
-        <select
-          value={status}
-          onChange={handleStatusChange}
-          disabled={isChangingStatus}
-          className={`text-sm px-2 py-1 rounded ${getStatusClasses(
+        <div className="flex flex-col md:block">
+          <span className="md:hidden font-medium">Advance: </span>
+          <span className="text-right">{Number(order.advancePayment || 0).toFixed(2)}</span>
+        </div>
+      </td>
+      <td className="px-4 py-3">
+        <div className="flex flex-col md:block">
+          <span className="md:hidden font-medium">Balance: </span>
+          <span className="text-right">
+            {Number((order.cartTotal || 0) - (order.advancePayment || 0)).toFixed(2)}
+          </span>
+        </div>
+      </td>
+
+      {/* Status - Always visible */}
+      <td className="px-4 py-3">
+        <div
+          className={`text-sm px-2 py-1 rounded inline-block ${getStatusClasses(
             status
-          )} focus:outline-none ${isChangingStatus ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+          )}`}
         >
-          <option value="Pending">Pending</option>
-          <option value="Completed">Completed</option>
-          <option value="Rejected">Rejected</option>
-        </select>
+          {status}
+        </div>
         {isChangingStatus && (
           <span className="ml-2 text-xs text-gray-500">Saving...</span>
         )}
       </td>
-      <td className="px-4 py-3 text-right flex justify-end gap-3">
+
+      {/* Action Buttons - Always visible */}
+      <td className="px-4 py-3 flex justify-end md:justify-start gap-3">
         <button
           onClick={() => onView?.(order)}
           className="text-blue-600 hover:text-blue-800"
@@ -121,19 +113,7 @@ const OrderRow = ({
           className="text-purple-600 hover:text-purple-800"
           title="Assign Employees"
         >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-            />
-          </svg>
+          <FaUsers className="w-4 h-4" />
         </button>
         <button
           onClick={() => onDelete?.(order._id)}

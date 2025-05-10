@@ -62,6 +62,7 @@ function AppWithRoutes() {
       location.pathname !== '/AdminProduct' && 
       location.pathname !== '/AdminProduct'&& 
       location.pathname !== '/EmployeeManagement'&&
+      location.pathname !== '/admin-bills'&&
     !isEventAdminPage && !isCustomerAdminPage &&
       <Header />}
 
@@ -90,7 +91,7 @@ function AppWithRoutes() {
         <Route path="/invoice" element={<Invoice />} />
         <Route path="/customerprofile" element={<ProfilePage />} />
         <Route path="/feedback" element={<FeedbackListPage />} />
-          <Route path="/" element={<AboutUs />} />
+        <Route path="/" element={<AboutUs />} />
         <Route path="/home" element={<HomePage />} />
 
         <Route path="/signup" element={<SignUpPage />} />
@@ -116,6 +117,7 @@ function AppWithRoutes() {
       {location.pathname !== '/AdminEvents' && 
       location.pathname !== '/AdminAddEvent' &&  
       location.pathname !== '/AdminProduct' &&
+      location.pathname !== '/admin-bills'&&
       location.pathname !== '/EmployeeManagement' && 
         !isEventAdminPage && !isCustomerAdminPage &&
       <Footer />}
