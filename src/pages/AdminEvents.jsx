@@ -8,7 +8,6 @@ import axios from "axios";
 
 const EventsPage = () => {
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
-
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [formData, setFormData] = useState({
     eventName: "",
