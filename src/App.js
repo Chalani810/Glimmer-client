@@ -21,10 +21,11 @@ import SignUpPage from "./pages/SignUp";
 import LoginPage from "./pages/SignInPage";
 import Checkout from "./pages/Checkout";
 import HomePage from "./pages/HomePage";
-import FeedbackPage from "./pages/FeedbackPage";
 import ProfilePage from "./pages/CustomerProfilePage";
 import Cart from "./pages/Cart";
 import Invoice from "./pages/Invoice";
+import FeedbackListPage from "./pages/FeedbackListPage";
+
 
 function App() {
   return (
@@ -65,8 +66,9 @@ function AppWithRoutes() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/invoice" element={<Invoice />} />
-        <Route path="/feedback" element={<FeedbackPage />} />
         <Route path="/customerprofile" element={<ProfilePage />} />
+        <Route path="/feedback" element={<FeedbackListPage />} />
+
       </Routes>
 
       {/* Show global Footer only for public pages */}
