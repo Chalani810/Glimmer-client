@@ -15,7 +15,6 @@ const Header = () => {
     // Check if user is logged in when component mounts
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
-
     if (token && userData) {
       setIsLoggedIn(true);
       setUser(JSON.parse(userData));
@@ -26,13 +25,12 @@ const Header = () => {
       setUser(userData);
     };
 
-    console.log("User data from local storage:", userData);
-
-    authEvents.on("login", handleLogin);
+    authEvents.on('login', handleLogin);
 
     // Clean up the event listener when component unmounts
     return () => {
-      authEvents.off("login", handleLogin);
+      authEvents.off('login', handleLogin);
+
     };
   }, []);
 
@@ -48,12 +46,10 @@ const Header = () => {
     // Clear user data from storage
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-
     // Update state
     setIsLoggedIn(false);
     setUser(null);
     setShowProfileMenu(false);
-
     // Redirect to home page
     navigate("/home");
   };

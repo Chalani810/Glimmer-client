@@ -23,7 +23,6 @@ const Sidebar = () => {
       <div className="text-2xl font-extrabold text-black">
         <span className="text-red-500">Glim</span>mer
       </div>
-      
       {/* Navigation Links */}
       <nav className="flex flex-col gap-2">
         {menuItems.map((item) => {
