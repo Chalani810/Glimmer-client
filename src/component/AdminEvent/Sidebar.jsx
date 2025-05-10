@@ -8,9 +8,9 @@ const Sidebar = () => {
   const menuItems = [
     { name: "Home", path: "/" },
     { name: "Calendar", path: "/calendar" },
-    { name: "All Products", path: "/products" },
     { name: "Bills", path: "/admin-bills" },
     { name: "Events", path: "/AdminEvents" },
+    { name: "All Products", path: "/AdminProduct" },
     { name: "Customers", path: "/customers" },
     { name: "Employees", path: "/EmployeeManagement" },
     { name: "Employee Payroll", path: "/employee-payroll" },

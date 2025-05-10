@@ -1,22 +1,7 @@
 import React from "react";
 import { FaCamera, FaEdit, FaTrash } from "react-icons/fa";
-import axios from "axios";
 
-
-const ProductTable = ({ products, isLoading, onEdit, fetchEventsForDelete }) => {
-  const handleDelete = async (e, productId) => {
-    e.preventDefault();
-    try {
-      const response = await axios.delete(
-        `${process.env.REACT_APP_API_URL}/product/${productId}`
-      );
-      console.log("Product deleted successfully:", response.data);
-      fetchEventsForDelete(); // Refresh the list
-    } catch (error) {
-      console.error("Delete error:", error);
-    }
-  };
-
+const ProductTable = ({ products, isLoading, onEdit, onDelete }) => {
   return (
     <div className="bg-white rounded shadow overflow-x-auto">
       <table className="min-w-full">
@@ -32,9 +17,8 @@ const ProductTable = ({ products, isLoading, onEdit, fetchEventsForDelete }) => 
           </tr>
         </thead>
         <tbody>
-          {products.map((product, idx) => (
-            <tr key={product._id || idx} className="border-t">
-              {/* Photo */}
+          {products.map((product) => (
+            <tr key={product._id} className="border-t">
               <td className="p-2">
                 <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
                   {product.photoUrl ? (
@@ -48,11 +32,7 @@ const ProductTable = ({ products, isLoading, onEdit, fetchEventsForDelete }) => 
                   )}
                 </div>
               </td>
-
-              {/* Product Name */}
               <td className="p-2">{product.pname}</td>
-
-              {/* Associated Events */}
               <td className="p-2">
                 {Array.isArray(product.ename) && product.ename.length > 0
                   ? product.ename
@@ -64,16 +44,10 @@ const ProductTable = ({ products, isLoading, onEdit, fetchEventsForDelete }) => 
                       .join(", ")
                   : "None"}
               </td>
-
-              {/* Stock */}
               <td className="p-2">{product.stockqut}</td>
-
-              {/* Price */}
               <td className="p-2 text-right pr-10">
                 {product.pprice ? Number(product.pprice).toFixed(2) : "0.00"}
               </td>
-
-              {/* Visibility */}
               <td className="p-2">
                 <input
                   type="checkbox"
@@ -82,18 +56,16 @@ const ProductTable = ({ products, isLoading, onEdit, fetchEventsForDelete }) => 
                   readOnly
                 />
               </td>
-
-              {/* Actions */}
               <td className="p-2 flex gap-2">
                 <button
-                  onClick={() => onEdit(product)}
+                  onClick={() => onEdit(product._id)}
                   className="text-blue-500 hover:text-blue-700"
                   aria-label="Edit Product"
                 >
                   <FaEdit />
                 </button>
                 <button
-                  onClick={(e) => handleDelete(e, product._id)}
+                  onClick={() => onDelete(product._id)}
                   className="text-red-500 hover:text-red-700"
                   aria-label="Delete Product"
                 >
@@ -109,3 +81,4 @@ const ProductTable = ({ products, isLoading, onEdit, fetchEventsForDelete }) => 
 };
 
 export default ProductTable;
+
