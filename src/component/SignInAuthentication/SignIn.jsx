@@ -56,7 +56,7 @@ const SignIn = () => {
           </div>
         )}
 
-        <form onSubmit={handleSignIn} autoComplete="off">
+        <form onSubmit={handleSignIn}>
           <label className="block text-sm font-semibold mb-1" htmlFor="email">
             Email
           </label>

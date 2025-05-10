@@ -3,6 +3,7 @@ import Sidebar from "../component/AdminEvent/Sidebar";
 import Navbar from "../component/AdminEvent/Navbar";
 import EventTable from "../component/AdminEvent/EventTable";
 import Popup from "../component/AdminEvent/Popup";
+import ConfirmationModal from "../component/ConfirmationModal";
 import axios from "axios";
 
 const EventsPage = () => {
@@ -14,16 +15,24 @@ const EventsPage = () => {
     eventImage: null,
   });
   const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
   const [isEditMode, setIsEditMode] = useState(false);
   const [editEventId, setEditEventId] = useState(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState(null);
 
   const fetchEvents = async () => {
     try {
       const response = await axios.get(`${apiUrl}/event/`);
       setEvents(response.data);
+      setFilteredEvents(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
       setEvents([]);
+      setFilteredEvents([]);
     }
   };
 
@@ -49,7 +58,6 @@ const EventsPage = () => {
   };
 
   const handleEdit = (event) => {
-
     setFormData({
       eventName: event.title,
       description: event.description,
@@ -62,88 +70,68 @@ const EventsPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
     const formDataToSend = new FormData();
     formDataToSend.append("title", formData.eventName);
     formDataToSend.append("description", formData.description);
-    
-    // Important: Append the file with the correct field name ('eventImage')
+
     if (formData.eventImage) {
       formDataToSend.append("eventImage", formData.eventImage);
     }
-    
-    // Convert boolean to string as FormData sends everything as strings
+
     formDataToSend.append("visibility", "false");
-  
-    // Debug: Show actual FormData contents
-    for (let [key, value] of formDataToSend.entries()) {
-      console.log(key, value);
-    }
-  
+
     try {
-
-      const response = await axios.post(
-        `${apiUrl}/event/add`,
-        formDataToSend,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log("Upload success:", response.data);
-      fetchEvents(setEvents);
-
       if (isEditMode) {
-        const response = await axios.put(
-          `${apiUrl}/event/${editEventId}`,
-          formDataToSend,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        console.log("Update response:", response.data);
+        await axios.put(`${apiUrl}/event/${editEventId}`, formDataToSend, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
       } else {
-        const response = await axios.post(
-          `${apiUrl}/event/add`,
-          formDataToSend,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        console.log("Create response:", response.data);
+        await axios.post(`${apiUrl}/event/add`, formDataToSend, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
       }
-      
-      await fetchEvents();
 
+      await fetchEvents();
       closePopup();
     } catch (error) {
-      console.error("Error details:", {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status
-      });
-      // You might want to add user feedback here
+      console.error("Error details:", error);
+    }
+  };
+
+  const requestDelete = (eventId) => {
+    setEventToDelete(eventId);
+    setIsModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(`${apiUrl}/event/${eventToDelete}`);
+      setIsModalOpen(false);
+      setEventToDelete(null);
+      fetchEvents();
+    } catch (error) {
+      console.error("Delete error:", error);
+    }
+  };
+
+  const handleSearch = () => {
+    if (searchTerm.trim() === "") {
+      setFilteredEvents(events);
+    } else {
+      const filtered = events.filter((event) =>
+        event.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredEvents(filtered);
     }
   };
 
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
       <Sidebar />
-
-      {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        {/* Navbar */}
         <Navbar />
 
-        {/* Page Content */}
         <main className="p-4 overflow-y-auto">
-          {/* Header Section */}
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-xl font-semibold">All Event List</h1>
             <button
@@ -154,33 +142,40 @@ const EventsPage = () => {
             </button>
           </div>
 
-          {/* Search and Sort */}
           <div className="flex flex-col md:flex-row gap-4 mb-4">
             <input
               type="text"
-              placeholder="Search Product"
+              placeholder="Search Event"
+              value={searchTerm}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSearchTerm(value);
+                if (value.trim() === "") {
+                  fetchEvents();
+                }
+              }}
               className="border p-2 rounded w-full md:w-1/3"
             />
-            <button className="border p-2 rounded w-full md:w-auto">
-              Sort By
+            <button
+              className="border p-2 rounded w-full md:w-auto"
+              onClick={handleSearch}
+            >
+              Search
             </button>
           </div>
 
-          {/* Table */}
-          <EventTable 
-            events={events} 
-            fetchEventsForDelete={fetchEvents} 
+          <EventTable
+            events={filteredEvents}
+            fetchEventsForDelete={fetchEvents}
             handleEdit={handleEdit}
+            handleDeleteRequest={requestDelete}
           />
-
         </main>
       </div>
 
-      {/* Render Popup */}
       {isPopupOpen && (
         <Popup closePopup={closePopup}>
           <form onSubmit={handleSubmit}>
-            {/* Event Name */}
             <div className="mb-4">
               <label className="block text-gray-700 font-bold mb-2">
                 Event Name <span className="text-red-500">*</span>
@@ -192,11 +187,10 @@ const EventsPage = () => {
                 onChange={handleChange}
                 required
                 placeholder="Enter event name"
-                className="border p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="border p-2 rounded w-full"
               />
             </div>
 
-            {/* Event Description */}
             <div className="mb-4">
               <label className="block text-gray-700 font-bold mb-2">
                 Description <span className="text-red-500">*</span>
@@ -207,12 +201,11 @@ const EventsPage = () => {
                 onChange={handleChange}
                 required
                 placeholder="Enter event description"
-                className="border p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="border p-2 rounded w-full"
                 rows="4"
               ></textarea>
             </div>
 
-            {/* Event Image Upload */}
             <div className="mb-4">
               <label className="block text-gray-700 font-bold mb-2">
                 Upload Image {!isEditMode && <span className="text-red-500">*</span>}
@@ -223,7 +216,7 @@ const EventsPage = () => {
                 onChange={handleChange}
                 required={!isEditMode}
                 accept="image/*"
-                className="border p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="border p-2 rounded w-full"
               />
             </div>
 
@@ -235,7 +228,6 @@ const EventsPage = () => {
               >
                 Cancel
               </button>
-
               <button
                 type="submit"
                 className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
@@ -246,6 +238,12 @@ const EventsPage = () => {
           </form>
         </Popup>
       )}
+
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 };

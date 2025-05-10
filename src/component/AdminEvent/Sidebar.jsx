@@ -8,9 +8,9 @@ const Sidebar = () => {
   const menuItems = [
     { name: "Home", path: "/" },
     { name: "Calendar", path: "/calendar" },
-    { name: "All Products", path: "/products" },
     { name: "Bills", path: "/admin-bills" },
     { name: "Events", path: "/AdminEvents" },
+    { name: "All Products", path: "/AdminProduct" },
     { name: "Customers", path: "/customers" },
     { name: "Employees", path: "/EmployeeManagement" },
     { name: "Employee Payroll", path: "/employee-payroll" },
@@ -20,15 +20,9 @@ const Sidebar = () => {
   return (
     <aside className="w-64 bg-white p-4 border-r hidden md:block">
       {/* Logo */}
-
       <div className="text-2xl font-extrabold text-black">
         <span className="text-red-500">Glim</span>mer
       </div>
-      
-
-      <div className="text-2xl font-bold mb-8 text-red-500">Glimmer</div>
-
-
       {/* Navigation Links */}
       <nav className="flex flex-col gap-2">
         {menuItems.map((item) => {

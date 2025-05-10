@@ -7,7 +7,7 @@ import { Link } from "react-router-dom"; // ✅ Import Link
 import React, { useState, useEffect } from "react";
 import { FiSearch, FiShoppingCart, FiUser, FiLogOut } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
-import authEvents from "../utils/authEvents"; 
+import authEvents from "../utils/authEvents";
 
 
 const Header = () => {
@@ -22,7 +22,6 @@ const Header = () => {
     // Check if user is logged in when component mounts
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
-    
     if (token && userData) {
       setIsLoggedIn(true);
       setUser(JSON.parse(userData));
@@ -33,14 +32,12 @@ const Header = () => {
       setUser(userData);
     };
 
-    console.log("User data from local storage:", userData);
-    
-
     authEvents.on('login', handleLogin);
 
     // Clean up the event listener when component unmounts
     return () => {
       authEvents.off('login', handleLogin);
+
     };
   }, []);
 
@@ -56,12 +53,10 @@ const Header = () => {
     // Clear user data from storage
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    
     // Update state
     setIsLoggedIn(false);
     setUser(null);
     setShowProfileMenu(false);
-    
     // Redirect to home page
     navigate("/home");
   };
@@ -77,33 +72,18 @@ const Header = () => {
 
       {/* Center: Navigation */}
       <nav className="space-x-8 font-semibold hidden md:flex">
-
-
-        <Link to="/home" className="text-red-600">Home</Link>
-        <a href="#" className="text-black hover:text-red-600">About Us</a>
-        <a href="#" className="text-black hover:text-red-600">Events</a>
-        <a href="#" className="text-black hover:text-red-600">Contact Us</a>
-      {isLoggedIn && (
-        <Link to="/order-history" className="text-black hover:text-red-600">
-          Order History
-        </Link>
-  )}
-</nav>
-
-
-
       <Link to="/home" className="text-black hover:text-red-600">Home</Link> {/*Home Page naviagtion */}
       <Link to="/AboutUs" className="text-black hover:text-red-600">About Us</Link>
-
-
-        <Link to="/home" className="text-red-600">Home</Link> {/*Home Page naviagtion */}
-        <a href="#" className="text-black hover:text-red-600">About Us</a>
 
         <a href="#" className="text-black hover:text-red-600">Events</a>
         <Link to="/contactUs" className="text-black hover:text-red-600">Contact Us</Link>
         
+        {isLoggedIn && (
+          <Link to="/order-history" className="text-black hover:text-red-600">
+            Order History
+          </Link>
+        )}
       </nav>
-
 
       {/* Right: Icons & Buttons */}
       <div className="flex items-center space-x-4">
@@ -131,11 +111,6 @@ const Header = () => {
             <span className="absolute top-0 right-0 h-2 w-2 bg-red-600 rounded-full"></span>
           </Link>
         </div>
-
-
-
-        {/* Login Button */}
-
         {/* Conditional rendering based on login status */}
         {!isLoggedIn ? (
           <>
@@ -157,9 +132,9 @@ const Header = () => {
               className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition-colors"
             >
               {user?.profilePicture ? (
-                <img 
-                  src={`${process.env.REACT_APP_API_URL}/uploads/${user.profilePicture}`} 
-                  alt="Profile" 
+                <img
+                  src={`${process.env.REACT_APP_API_URL}/uploads/${user.profilePicture}`}
+                  alt="Profile"
                   className="w-full h-full rounded-full object-cover"
                 />
               ) : (
@@ -188,18 +163,6 @@ const Header = () => {
             )}
           </div>
         )}
-
-
-        <Link to="/signup">
-          <button className="bg-white px-4 py-1 rounded-full shadow text-sm font-medium hover:shadow-md">
-            Sign Up
-          </button>
-        </Link>
-        
-        <button className="bg-red-600 text-white px-4 py-1 rounded-full text-sm font-medium hover:bg-red-700">
-          Login
-        </button>
-
       </div>
     </header>
   );

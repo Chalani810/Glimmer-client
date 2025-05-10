@@ -1,5 +1,5 @@
 import React from "react";
-import Sidebar from "../component/CustomerMgt/Sidebar";
+import Sidebar from "../component/Admin/Sidebar";
 import Topbar from "../component/CustomerMgt/Topbar";
 import CustomerTable from "../component/CustomerMgt/CustomerTable";
 

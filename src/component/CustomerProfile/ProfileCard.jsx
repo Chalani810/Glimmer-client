@@ -28,119 +28,6 @@ const ProfileCard = () => {
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
-  const validateField = (name, value) => {
-    const errors = { ...fieldErrors };
-    
-    switch (name) {
-      case "firstName":
-      case "lastName":
-      case "address.country":
-        if (!value.trim()) {
-          errors[name] = "This field is required";
-        } else if (!/^[a-zA-Z\s-]+$/.test(value)) {
-          errors[name] = "Only alphabetic characters and hyphens allowed";
-        } else {
-          delete errors[name];
-        }
-        break;
-        
-      case "address.city":
-        if (!value.trim()) {
-          errors[name] = "This field is required";
-        } else if (!/^[a-zA-Z0-9\s-]+$/.test(value)) {
-          errors[name] = "Only alphanumeric characters, spaces and hyphens allowed";
-        } else {
-          delete errors[name];
-        }
-        break;
-        
-      case "email":
-        if (!value.trim()) {
-            errors.email = "Email is required";
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-            errors.email = "Please enter a valid email address (e.g., example@gmail.com)";
-        } else {
-            delete errors.email;
-        }
-        break;
-        
-      case "phone":
-        if (!value.trim()) {
-          errors.phone = "Phone number is required";
-        } else if (!/^\+94\d{9}$/.test(value.replace(/\s/g, ''))) {
-          errors.phone = "Must be in +94 format with 9 digits (e.g., +94771462980)";
-        } else {
-          if (value.startsWith('+94')) {
-            setEditData(prev => ({
-              ...prev,
-              address: {
-                ...prev.address,
-                country: "Sri Lanka"
-              }
-            }));
-            delete errors["address.country"];
-          }
-          delete errors.phone;
-        }
-        break;
-        
-      case "address.postalCode":
-        if (!value.trim()) {
-          errors["address.postalCode"] = "Postal code is required";
-        } else if (!/^\d{5}$/.test(value)) {
-          errors["address.postalCode"] = "Must be exactly 5 digits";
-        } else {
-          delete errors["address.postalCode"];
-        }
-        break;
-        
-      case "address.street":
-        if (!value.trim()) {
-          errors["address.street"] = "Street address is required";
-        } else {
-          delete errors["address.street"];
-        }
-        break;
-        
-      default:
-        break;
-    }
-    
-    setFieldErrors(errors);
-  };
-
-  const handleBlur = (e) => {
-    const { name, value } = e.target;
-    validateField(name, value);
-  };
-
-  const validateForm = () => {
-    const errors = {};
-    let isValid = true;
-
-    const requiredFields = [
-      'firstName', 'lastName', 'email', 'phone',
-      'address.street', 'address.city', 'address.postalCode', 'address.country'
-    ];
-    
-    requiredFields.forEach(field => {
-      if (field.startsWith('address.')) {
-        const addressField = field.split('.')[1];
-        if (!editData.address[addressField]?.toString().trim()) {
-          errors[field] = "This field is required";
-          isValid = false;
-        }
-      } else if (!editData[field]?.toString().trim()) {
-        errors[field] = "This field is required";
-        isValid = false;
-      }
-    });
-
-    setFieldErrors({ ...errors, ...fieldErrors });
-    
-    return isValid && Object.keys(fieldErrors).length === 0;
-  };
-
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -185,6 +72,96 @@ const ProfileCard = () => {
     fetchUserData();
   }, [navigate, apiUrl]);
 
+  // Auto-populate country when phone starts with +94
+  useEffect(() => {
+    if (editData.phone.startsWith("+94")) {
+      setEditData(prev => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          country: "Sri Lanka"
+        }
+      }));
+    }
+  }, [editData.phone]);
+
+  const validateField = (fieldName, value) => {
+    const errors = { ...fieldErrors };
+    
+    switch (fieldName) {
+      case "firstName":
+      case "lastName":
+        if (!/^[A-Za-z]+$/.test(value)) {
+          errors[fieldName] = "Only alphabetical characters are allowed";
+        } else {
+          delete errors[fieldName];
+        }
+        break;
+        
+      case "email":
+        if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(value)) {
+          errors.email = "Please enter a valid email address";
+        } else {
+          delete errors.email;
+        }
+        break;
+        
+      case "phone":
+        if (!/^\+94\d{9}$/.test(value)) {
+          errors.phone = "Please enter a valid phone number (eg:+94771234567)";
+        } else {
+          delete errors.phone;
+        }
+        break;
+        
+      case "address.postalCode":
+        if (!/^\d{5}$/.test(value)) {
+          errors.postalCode = "Postal code must be exactly 5 digits";
+        } else {
+          delete errors.postalCode;
+        }
+        break;
+        
+      default:
+        // Required field validation
+        if (typeof value === "string" && !value.trim() && fieldName !== "profilePicture") {
+          errors[fieldName] = "This field is required";
+        } else if (fieldName !== "profilePicture") {
+          delete errors[fieldName];
+        }
+    }
+    
+    setFieldErrors(errors);
+  };
+
+  const isFormValid = () => {
+    // Check if there are any field errors
+    if (Object.keys(fieldErrors).length > 0) return false;
+
+    // Check required fields (excluding profilePicture which is optional)
+    const requiredFields = [
+      'firstName',
+      'lastName',
+      'email',
+      'phone',
+      'address.street',
+      'address.city',
+      'address.postalCode',
+      'address.country'
+    ];
+
+    return requiredFields.every(field => {
+      if (field.startsWith('address.')) {
+        const fieldName = field.split('.')[1];
+        const value = editData.address[fieldName];
+        return value && value.toString().trim();
+      } else {
+        const value = editData[field];
+        return value && value.toString().trim();
+      }
+    });
+  };
+
   const handleDelete = async () => {
     try {
       setIsDeleting(true);
@@ -192,19 +169,17 @@ const ProfileCard = () => {
       const { id } = JSON.parse(userData);
       const token = localStorage.getItem('token');
   
-      await axios.delete(`${apiUrl}/auth/users/${id}`, {
+      const response = await axios.delete(`${apiUrl}/auth/users/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
   
+      // Clear local storage and redirect
       localStorage.removeItem('user');
       localStorage.removeItem('token');
-      navigate('/signin', { 
-        state: { 
-          message: 'Your account has been deleted successfully' 
-        } 
-      });
+      navigate('/signin');
+      
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to delete account');
       console.error('Error deleting user:', err);
@@ -226,14 +201,14 @@ const ProfileCard = () => {
           [field]: value
         }
       }));
+      validateField(name, value);
     } else {
       setEditData(prev => ({
         ...prev,
         [name]: value
       }));
+      validateField(name, value);
     }
-
-    validateField(name, value);
   };
 
   const handleImageChange = (e) => {
@@ -248,8 +223,19 @@ const ProfileCard = () => {
   };
 
   const handleSave = async () => {
-    if (!validateForm()) {
-      setError("Please correct the errors in the form");
+    // Validate all fields before saving
+    Object.keys(editData).forEach(field => {
+      if (field === 'address') {
+        Object.keys(editData.address).forEach(addrField => {
+          validateField(`address.${addrField}`, editData.address[addrField]);
+        });
+      } else {
+        validateField(field, editData[field]);
+      }
+    });
+
+    if (!isFormValid()) {
+      setError("Please fix the errors in the form");
       return;
     }
 
@@ -257,28 +243,27 @@ const ProfileCard = () => {
       const userData = localStorage.getItem('user');
       const { id } = JSON.parse(userData);
       const token = localStorage.getItem('token');
-  
+
       const formData = new FormData();
       formData.append('firstName', editData.firstName);
       formData.append('lastName', editData.lastName);
       formData.append('email', editData.email);
       formData.append('phone', editData.phone);
-      formData.append('address[street]', editData.address.street);
-      formData.append('address[city]', editData.address.city);
-      formData.append('address[postalCode]', editData.address.postalCode);
-      formData.append('address[country]', editData.address.country);
-      
+      formData.append('street', editData.address.street);
+      formData.append('city', editData.address.city);
+      formData.append('postalCode', editData.address.postalCode);
+      formData.append('country', editData.address.country);
       if (editData.profilePicture) {
         formData.append('profilePicture', editData.profilePicture);
       }
-  
+
       const response = await axios.put(`${apiUrl}/auth/users/${id}`, formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         }
       });
-  
+
       setUser(response.data);
       setIsEditing(false);
       if (response.data.profilePicture) {
@@ -292,7 +277,6 @@ const ProfileCard = () => {
 
   const handleCancel = () => {
     setIsEditing(false);
-    setFieldErrors({});
     setEditData({
       firstName: user.firstName,
       lastName: user.lastName,
@@ -307,6 +291,8 @@ const ProfileCard = () => {
       profilePicture: null
     });
     setPreviewImage(user.profilePicture ? `${apiUrl}/uploads/${user.profilePicture}` : '/default-profile.jpg');
+    setFieldErrors({});
+    setError(null);
   };
 
   const DeleteConfirmationModal = () => {
@@ -387,10 +373,8 @@ const ProfileCard = () => {
                   name="firstName"
                   value={editData.firstName}
                   onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  className={`font-bold text-lg border rounded p-1 w-full ${
-                    fieldErrors.firstName ? 'border-red-500' : ''
-                  }`}
+                  onBlur={(e) => validateField("firstName", e.target.value)}
+                  className={`font-bold text-lg border rounded p-1 w-full ${fieldErrors.firstName ? 'border-red-500' : ''}`}
                 />
                 {fieldErrors.firstName && (
                   <p className="text-red-500 text-sm">{fieldErrors.firstName}</p>
@@ -400,10 +384,8 @@ const ProfileCard = () => {
                   name="lastName"
                   value={editData.lastName}
                   onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  className={`font-bold text-lg border rounded p-1 w-full ${
-                    fieldErrors.lastName ? 'border-red-500' : ''
-                  }`}
+                  onBlur={(e) => validateField("lastName", e.target.value)}
+                  className={`font-bold text-lg border rounded p-1 w-full ${fieldErrors.lastName ? 'border-red-500' : ''}`}
                 />
                 {fieldErrors.lastName && (
                   <p className="text-red-500 text-sm">{fieldErrors.lastName}</p>
@@ -420,14 +402,12 @@ const ProfileCard = () => {
                     name="address.city"
                     value={editData.address.city}
                     onChange={handleInputChange}
-                    onBlur={handleBlur}
-                    className={`border rounded p-1 w-full ${
-                      fieldErrors["address.city"] ? 'border-red-500' : ''
-                    }`}
+                    onBlur={(e) => validateField("address.city", e.target.value)}
+                    className={`border rounded p-1 w-full ${fieldErrors['address.city'] ? 'border-red-500' : ''}`}
                     placeholder="City"
                   />
-                  {fieldErrors["address.city"] && (
-                    <p className="text-red-500 text-sm">{fieldErrors["address.city"]}</p>
+                  {fieldErrors['address.city'] && (
+                    <p className="text-red-500 text-sm">{fieldErrors['address.city']}</p>
                   )}
                 </div>
                 <div className="w-1/2">
@@ -436,14 +416,12 @@ const ProfileCard = () => {
                     name="address.country"
                     value={editData.address.country}
                     onChange={handleInputChange}
-                    onBlur={handleBlur}
-                    className={`border rounded p-1 w-full ${
-                      fieldErrors["address.country"] ? 'border-red-500' : ''
-                    }`}
+                    onBlur={(e) => validateField("address.country", e.target.value)}
+                    className={`border rounded p-1 w-full ${fieldErrors['address.country'] ? 'border-red-500' : ''}`}
                     placeholder="Country"
                   />
-                  {fieldErrors["address.country"] && (
-                    <p className="text-red-500 text-sm">{fieldErrors["address.country"]}</p>
+                  {fieldErrors['address.country'] && (
+                    <p className="text-red-500 text-sm">{fieldErrors['address.country']}</p>
                   )}
                 </div>
               </div>
@@ -480,10 +458,8 @@ const ProfileCard = () => {
                   name="firstName"
                   value={editData.firstName}
                   onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  className={`border rounded p-1 ml-2 w-3/4 ${
-                    fieldErrors.firstName ? 'border-red-500' : ''
-                  }`}
+                  onBlur={(e) => validateField("firstName", e.target.value)}
+                  className={`border rounded p-1 ml-2 w-3/4 ${fieldErrors.firstName ? 'border-red-500' : ''}`}
                 />
                 {fieldErrors.firstName && (
                   <p className="text-red-500 text-sm ml-2">{fieldErrors.firstName}</p>
@@ -502,10 +478,8 @@ const ProfileCard = () => {
                   name="lastName"
                   value={editData.lastName}
                   onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  className={`border rounded p-1 ml-2 w-3/4 ${
-                    fieldErrors.lastName ? 'border-red-500' : ''
-                  }`}
+                  onBlur={(e) => validateField("lastName", e.target.value)}
+                  className={`border rounded p-1 ml-2 w-3/4 ${fieldErrors.lastName ? 'border-red-500' : ''}`}
                 />
                 {fieldErrors.lastName && (
                   <p className="text-red-500 text-sm ml-2">{fieldErrors.lastName}</p>
@@ -524,10 +498,8 @@ const ProfileCard = () => {
                   name="email"
                   value={editData.email}
                   onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  className={`border rounded p-1 ml-2 w-3/4 ${
-                    fieldErrors.email ? 'border-red-500' : ''
-                  }`}
+                  onBlur={(e) => validateField("email", e.target.value)}
+                  className={`border rounded p-1 ml-2 w-3/4 ${fieldErrors.email ? 'border-red-500' : ''}`}
                 />
                 {fieldErrors.email && (
                   <p className="text-red-500 text-sm ml-2">{fieldErrors.email}</p>
@@ -546,11 +518,9 @@ const ProfileCard = () => {
                   name="phone"
                   value={editData.phone}
                   onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  className={`border rounded p-1 ml-2 w-3/4 ${
-                    fieldErrors.phone ? 'border-red-500' : ''
-                  }`}
-                  placeholder="+94771462980"
+                  onBlur={(e) => validateField("phone", e.target.value)}
+                  className={`border rounded p-1 ml-2 w-3/4 ${fieldErrors.phone ? 'border-red-500' : ''}`}
+                  placeholder="+94771234567"
                 />
                 {fieldErrors.phone && (
                   <p className="text-red-500 text-sm ml-2">{fieldErrors.phone}</p>
@@ -576,13 +546,11 @@ const ProfileCard = () => {
                   name="address.street"
                   value={editData.address.street}
                   onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  className={`border rounded p-1 ml-2 w-3/4 ${
-                    fieldErrors["address.street"] ? 'border-red-500' : ''
-                  }`}
+                  onBlur={(e) => validateField("address.street", e.target.value)}
+                  className={`border rounded p-1 ml-2 w-3/4 ${fieldErrors['address.street'] ? 'border-red-500' : ''}`}
                 />
-                {fieldErrors["address.street"] && (
-                  <p className="text-red-500 text-sm ml-2">{fieldErrors["address.street"]}</p>
+                {fieldErrors['address.street'] && (
+                  <p className="text-red-500 text-sm ml-2">{fieldErrors['address.street']}</p>
                 )}
               </div>
             ) : (
@@ -598,13 +566,11 @@ const ProfileCard = () => {
                   name="address.city"
                   value={editData.address.city}
                   onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  className={`border rounded p-1 ml-2 w-3/4 ${
-                    fieldErrors["address.city"] ? 'border-red-500' : ''
-                  }`}
+                  onBlur={(e) => validateField("address.city", e.target.value)}
+                  className={`border rounded p-1 ml-2 w-3/4 ${fieldErrors['address.city'] ? 'border-red-500' : ''}`}
                 />
-                {fieldErrors["address.city"] && (
-                  <p className="text-red-500 text-sm ml-2">{fieldErrors["address.city"]}</p>
+                {fieldErrors['address.city'] && (
+                  <p className="text-red-500 text-sm ml-2">{fieldErrors['address.city']}</p>
                 )}
               </div>
             ) : (
@@ -620,14 +586,12 @@ const ProfileCard = () => {
                   name="address.postalCode"
                   value={editData.address.postalCode}
                   onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  className={`border rounded p-1 ml-2 w-3/4 ${
-                    fieldErrors["address.postalCode"] ? 'border-red-500' : ''
-                  }`}
-                  maxLength="5"
+                  onBlur={(e) => validateField("address.postalCode", e.target.value)}
+                  className={`border rounded p-1 ml-2 w-3/4 ${fieldErrors.postalCode ? 'border-red-500' : ''}`}
+                  placeholder="10230"
                 />
-                {fieldErrors["address.postalCode"] && (
-                  <p className="text-red-500 text-sm ml-2">{fieldErrors["address.postalCode"]}</p>
+                {fieldErrors.postalCode && (
+                  <p className="text-red-500 text-sm ml-2">{fieldErrors.postalCode}</p>
                 )}
               </div>
             ) : (
@@ -643,13 +607,11 @@ const ProfileCard = () => {
                   name="address.country"
                   value={editData.address.country}
                   onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  className={`border rounded p-1 ml-2 w-3/4 ${
-                    fieldErrors["address.country"] ? 'border-red-500' : ''
-                  }`}
+                  onBlur={(e) => validateField("address.country", e.target.value)}
+                  className={`border rounded p-1 ml-2 w-3/4 ${fieldErrors['address.country'] ? 'border-red-500' : ''}`}
                 />
-                {fieldErrors["address.country"] && (
-                  <p className="text-red-500 text-sm ml-2">{fieldErrors["address.country"]}</p>
+                {fieldErrors['address.country'] && (
+                  <p className="text-red-500 text-sm ml-2">{fieldErrors['address.country']}</p>
                 )}
               </div>
             ) : (
@@ -662,9 +624,9 @@ const ProfileCard = () => {
       {/* Action Buttons */}
       {isEditing ? (
         <div className="bg-white rounded-2xl shadow p-6 space-y-4">
-          {error && (
+          {(error || Object.keys(fieldErrors).length > 0) && (
             <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
-              {error}
+              {error || "Please fix the errors in the form"}
             </div>
           )}
           <div className="flex justify-end gap-4">
@@ -676,12 +638,8 @@ const ProfileCard = () => {
             </button>
             <button
               onClick={handleSave}
-              disabled={Object.keys(fieldErrors).length > 0}
-              className={`px-4 py-2 text-white rounded ${
-                Object.keys(fieldErrors).length > 0 
-                  ? 'bg-blue-400 cursor-not-allowed' 
-                  : 'bg-blue-600 hover:bg-blue-700'
-              }`}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+              disabled={!isFormValid()}
             >
               Save Changes
             </button>

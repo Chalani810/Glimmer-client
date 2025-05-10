@@ -1,23 +1,8 @@
 import React from "react";
 import { FaCamera, FaEdit, FaTrash } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import axios from "axios";
 
-
-const EventTable = ({ events, fetchEventsForDelete, handleEdit }) => {
-  const handleDelete = async (e, eventId) => {
-    e.preventDefault();
-    try {
-      const response = await axios.delete(
-        `${process.env.REACT_APP_API_URL}/event/${eventId}`
-      );
-      fetchEventsForDelete();
-      console.log("Event deleted successfully:", response.data);
-    } catch (error) {
-      console.error("Delete error:", error);
-    }
-  };
-
+const EventTable = ({ events, handleEdit, handleDeleteRequest }) => {
   return (
     <div className="bg-white rounded shadow overflow-x-auto">
       <table className="min-w-full">
@@ -49,22 +34,22 @@ const EventTable = ({ events, fetchEventsForDelete, handleEdit }) => {
               <td className="p-2">{event.title}</td>
               <td className="p-2">{event.description}</td>
               <td className="p-2">
-                <input 
-                  type="checkbox" 
-                  className="toggle toggle-sm" 
+                <input
+                  type="checkbox"
+                  className="toggle toggle-sm"
                   checked={event.visibility}
                   readOnly
                 />
               </td>
               <td className="p-2 flex gap-2">
-                <button 
+                <button
                   onClick={() => handleEdit(event)}
                   className="text-blue-500 hover:text-blue-700"
                 >
                   <FaEdit />
                 </button>
-                <button 
-                  onClick={(e) => handleDelete(e, event._id)}
+                <button
+                  onClick={() => handleDeleteRequest(event._id)}
                   className="text-red-500 hover:text-red-700"
                 >
                   <FaTrash />
