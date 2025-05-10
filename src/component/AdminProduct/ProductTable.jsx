@@ -81,4 +81,3 @@ const ProductTable = ({ products, isLoading, onEdit, onDelete }) => {
 };
 
 export default ProductTable;
-

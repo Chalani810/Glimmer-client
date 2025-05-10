@@ -1,7 +1,14 @@
+
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { FiSearch, FiShoppingCart } from "react-icons/fi";
+import { Link } from "react-router-dom"; // ✅ Import Link
+
 import React, { useState, useEffect } from "react";
 import { FiSearch, FiShoppingCart, FiUser, FiLogOut } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import authEvents from "../utils/authEvents";
+
 
 const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
@@ -65,18 +72,12 @@ const Header = () => {
 
       {/* Center: Navigation */}
       <nav className="space-x-8 font-semibold hidden md:flex">
-        <Link to="/home" className="text-red-600">
-          Home
-        </Link>
-        <a href="#" className="text-black hover:text-red-600">
-          About Us
-        </a>
-        <a href="#" className="text-black hover:text-red-600">
-          Events
-        </a>
-        <a href="#" className="text-black hover:text-red-600">
-          Contact Us
-        </a>
+      <Link to="/home" className="text-black hover:text-red-600">Home</Link> {/*Home Page naviagtion */}
+      <Link to="/AboutUs" className="text-black hover:text-red-600">About Us</Link>
+
+        <a href="#" className="text-black hover:text-red-600">Events</a>
+        <Link to="/contactUs" className="text-black hover:text-red-600">Contact Us</Link>
+        
         {isLoggedIn && (
           <Link to="/order-history" className="text-black hover:text-red-600">
             Order History
@@ -110,7 +111,6 @@ const Header = () => {
             <span className="absolute top-0 right-0 h-2 w-2 bg-red-600 rounded-full"></span>
           </Link>
         </div>
-
         {/* Conditional rendering based on login status */}
         {!isLoggedIn ? (
           <>
