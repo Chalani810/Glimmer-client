@@ -52,11 +52,11 @@ const OrderTable = () => {
 
   const handleEdit = (e, id) => {
     const order = orders.find((o) => o._id === id);
-    const rect = e.currentTarget.getBoundingClientRect();
-    setModalPosition({
-      top: rect.top + window.scrollY + 30, // Below the button
-      left: rect.left + window.scrollX,   // Near the button
-    });
+    // const rect = e.currentTarget.getBoundingClientRect();
+    // setModalPosition({
+    //   top: rect.top + window.scrollY + 30, // Below the button
+    //   left: rect.left + window.scrollX,   // Near the button
+    // });
     setEditingOrder(order);
   };
 

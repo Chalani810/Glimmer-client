@@ -44,6 +44,7 @@ function App() {
     <Router>
        <CartProvider>
         <AppWithRoutes />
+        </CartProvider>
     </Router>
     
   );
@@ -51,10 +52,6 @@ function App() {
 
 function AppWithRoutes() {
   const location = useLocation();
-  const isEventAdminPage = location.pathname.startsWith('/admin');
-  const isCustomerAdminPage = location.pathname === '/customers';
-
-  // Detect admin context for clean layout control
   const isEventAdminPage = location.pathname === '/adminevents' || location.pathname === '/adminaddevent';
   const isCustomerAdminPage = location.pathname === '/customers';
 
