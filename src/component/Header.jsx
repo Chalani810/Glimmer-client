@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FiSearch, FiShoppingCart, FiUser, FiLogOut } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import authEvents from "../utils/authEvents"; 
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
@@ -161,6 +162,15 @@ const Header = () => {
             )}
           </div>
         )}
+        <Link to="/signup">
+          <button className="bg-white px-4 py-1 rounded-full shadow text-sm font-medium hover:shadow-md">
+            Sign Up
+          </button>
+        </Link>
+        
+        <button className="bg-red-600 text-white px-4 py-1 rounded-full text-sm font-medium hover:bg-red-700">
+          Login
+        </button>
       </div>
     </header>
   );

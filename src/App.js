@@ -1,14 +1,16 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import './App.css';
 import './index.css';
-
-// Global components
 import Header from "./component/Header";
+import AdminEvents from "./pages/AdminEvents";
+import AdminAddEvent from './pages/AdminAddEvent';
+import AboutUs  from './pages/AboutUs';
+import SignUpPage from "./pages/SignUp"; // Import SignUpPage
+import Checkout from "./pages/Checkout"; // Import Checkout
+import HomePage from "./pages/HomePage"; // Import Home Page
 import Footer from "./component/Footer";
 
 // Admin Event Components
-import AdminEvents from "./pages/AdminEvents";
-import AdminAddEvent from './pages/AdminAddEvent';
 import AdminNavbar from './component/AdminEvent/Navbar';
 
 // Customer Management Components
@@ -16,11 +18,7 @@ import CustomerMgtPage from "./pages/CustomerMgtPage";
 import CustomerTable from './component/CustomerMgt/CustomerTable';
 
 // General Pages
-import AboutUs from './pages/AboutUs';
-import SignUpPage from "./pages/SignUp";
 import LoginPage from "./pages/SignInPage";
-import Checkout from "./pages/Checkout";
-import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/CustomerProfilePage";
 import Cart from "./pages/Cart";
 import Invoice from "./pages/Invoice";
@@ -68,7 +66,10 @@ function AppWithRoutes() {
         <Route path="/invoice" element={<Invoice />} />
         <Route path="/customerprofile" element={<ProfilePage />} />
         <Route path="/feedback" element={<FeedbackListPage />} />
+          <Route path="/" element={<AboutUs />} />
+        <Route path="/home" element={<HomePage />} />
 
+        <Route path="/signup" element={<SignUpPage />} />
       </Routes>
 
       {/* Show global Footer only for public pages */}
@@ -76,5 +77,4 @@ function AppWithRoutes() {
     </>
   );
 }
-
 export default App;

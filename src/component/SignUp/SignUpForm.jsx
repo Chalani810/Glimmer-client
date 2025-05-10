@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const SignUpForm = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -248,25 +248,76 @@ const isFormValid = () => {
 const handleSignInRedirect = () => {
   navigate("/signin");
 };
+  const handleChange = (e) => {
+    const { name, value, type, checked, files } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : type === "file" ? files[0] : value,
+    });
+  };
 
-return (
-  <div className="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-md">
-    <h2 className="text-2xl font-bold mb-2 text-center">Get started now</h2>
-    <p className="text-gray-500 text-center mb-6">
-      Enter your credentials to create your account
-    </p>
+  const validateForm = () => {
+    // Email address format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      alert("Please enter a valid email address.");
+      return false;
+    }
 
-    {(error || Object.keys(fieldErrors).length > 0) && (
-      <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
-        {error || "Please fix the errors in the form"}
-      </div>
-    )}
+    // Phone number format
+    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      alert("Please enter a valid phone number with country code.");
+      return false;
+    }
 
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    // Password policy
+    if (formData.password.length < 8) {
+      alert("Password must be at least 8 characters long.");
+      return false;
+    }
+
+    // Confirm password by re-entering
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match.");
+      return false;
+    }
+
+    // Terms & Conditions agreement
+    if (!formData.agreeToTerms) {
+      alert("You must agree to the terms and privacy policy.");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    // Normally you would send formData to the backend here
+    console.log(formData);
+
+    // Clear form or redirect after successful signup
+  };
+
+  const handleSignInRedirect = () => {
+    navigate("/login"); // Navigate to the login page
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-md">
+      <h2 className="text-2xl font-bold mb-2 text-center">Get Started Now</h2>
+      <p className="text-gray-500 text-center mb-6">
+        Enter your credentials to create your account
+      </p>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+
         {/* First Name */}
         <div>
-          <label className="block mb-1 font-semibold">First Name *</label>
+          <label className="block mb-1 font-semibold">First Name</label>
           <input
             type="text"
             name="firstName"
@@ -282,6 +333,9 @@ return (
           {fieldErrors.firstName && (
             <p className="text-red-500 text-sm mt-1">{fieldErrors.firstName}</p>
           )}
+            className="w-full border rounded-md p-2 outline-none focus:ring-2 focus:ring-red-400"
+            required
+          />
         </div>
 
         {/* Last Name */}
@@ -359,6 +413,7 @@ return (
           {fieldErrors.password && (
             <p className="text-red-500 text-sm mt-1">{fieldErrors.password}</p>
           )}
+
         </div>
 
         {/* Confirm Password */}
@@ -401,6 +456,7 @@ return (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label className="block mb-1 font-semibold">City *</label>
+
           <input
             type="text"
             name="city"
@@ -540,3 +596,4 @@ return (
 };
 
 export default SignUpForm;
+
