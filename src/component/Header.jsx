@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FiSearch, FiShoppingCart, FiUser, FiLogOut } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
-import authEvents from "../utils/authEvents"; 
+import authEvents from "../utils/authEvents";
 
 const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
@@ -15,7 +15,6 @@ const Header = () => {
     // Check if user is logged in when component mounts
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
-    
     if (token && userData) {
       setIsLoggedIn(true);
       setUser(JSON.parse(userData));
@@ -31,6 +30,7 @@ const Header = () => {
     // Clean up the event listener when component unmounts
     return () => {
       authEvents.off('login', handleLogin);
+
     };
   }, []);
 
@@ -46,12 +46,10 @@ const Header = () => {
     // Clear user data from storage
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    
     // Update state
     setIsLoggedIn(false);
     setUser(null);
     setShowProfileMenu(false);
-    
     // Redirect to home page
     navigate("/home");
   };
@@ -67,10 +65,18 @@ const Header = () => {
 
       {/* Center: Navigation */}
       <nav className="space-x-8 font-semibold hidden md:flex">
-        <Link to="/home" className="text-red-600">Home</Link>
-        <a href="#" className="text-black hover:text-red-600">About Us</a>
-        <a href="#" className="text-black hover:text-red-600">Events</a>
-        <a href="#" className="text-black hover:text-red-600">Contact Us</a>
+        <Link to="/home" className="text-red-600">
+          Home
+        </Link>
+        <a href="#" className="text-black hover:text-red-600">
+          About Us
+        </a>
+        <a href="#" className="text-black hover:text-red-600">
+          Events
+        </a>
+        <a href="#" className="text-black hover:text-red-600">
+          Contact Us
+        </a>
         {isLoggedIn && (
           <Link to="/order-history" className="text-black hover:text-red-600">
             Order History
@@ -126,9 +132,9 @@ const Header = () => {
               className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition-colors"
             >
               {user?.profilePicture ? (
-                <img 
-                  src={`${process.env.REACT_APP_API_URL}/uploads/${user.profilePicture}`} 
-                  alt="Profile" 
+                <img
+                  src={`${process.env.REACT_APP_API_URL}/uploads/${user.profilePicture}`}
+                  alt="Profile"
                   className="w-full h-full rounded-full object-cover"
                 />
               ) : (
