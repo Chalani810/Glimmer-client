@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect } from "react";
 import { FiSearch, FiShoppingCart, FiUser, FiLogOut } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import authEvents from "../utils/authEvents";
+
 
 const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
@@ -15,7 +17,6 @@ const Header = () => {
     // Check if user is logged in when component mounts
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
-
     if (token && userData) {
       setIsLoggedIn(true);
       setUser(JSON.parse(userData));
@@ -26,13 +27,12 @@ const Header = () => {
       setUser(userData);
     };
 
-    console.log("User data from local storage:", userData);
-
-    authEvents.on("login", handleLogin);
+    authEvents.on('login', handleLogin);
 
     // Clean up the event listener when component unmounts
     return () => {
-      authEvents.off("login", handleLogin);
+      authEvents.off('login', handleLogin);
+
     };
   }, []);
 
@@ -48,14 +48,12 @@ const Header = () => {
     // Clear user data from storage
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-
     // Update state
     setIsLoggedIn(false);
     setUser(null);
     setShowProfileMenu(false);
-
     // Redirect to home page
-    navigate("/home");
+    navigate("/");
   };
 
   return (
@@ -69,18 +67,12 @@ const Header = () => {
 
       {/* Center: Navigation */}
       <nav className="space-x-8 font-semibold hidden md:flex">
-        <Link to="/home" className="text-red-600">
-          Home
-        </Link>
-        <a href="#" className="text-black hover:text-red-600">
-          About Us
-        </a>
-        <a href="#" className="text-black hover:text-red-600">
-          Events
-        </a>
-        <a href="#" className="text-black hover:text-red-600">
-          Contact Us
-        </a>
+      <Link to="/" className="text-black hover:text-red-600">Home</Link> {/*Home Page naviagtion */}
+      <Link to="/AboutUs" className="text-black hover:text-red-600">About Us</Link>
+
+        <a href="/customerviewevent" className="text-black hover:text-red-600">Events</a>
+        <Link to="/contactUs" className="text-black hover:text-red-600">Contact Us</Link>
+        
         {isLoggedIn && (
           <Link to="/order-history" className="text-black hover:text-red-600">
             Order History
@@ -114,7 +106,6 @@ const Header = () => {
             <span className="absolute top-0 right-0 h-2 w-2 bg-red-600 rounded-full"></span>
           </Link>
         </div>
-
         {/* Conditional rendering based on login status */}
         {!isLoggedIn ? (
           <>

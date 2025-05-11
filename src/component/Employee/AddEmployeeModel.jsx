@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import profilePlaceholder from '../../assets/profile_placeholder.jpg';
 const AddEmployeeModel = ({ isOpen, onClose, onSave, employeeData, occupationOptions }) => {
   const [employee, setEmployee] = useState({
     name: '',
@@ -31,6 +31,7 @@ const AddEmployeeModel = ({ isOpen, onClose, onSave, employeeData, occupationOpt
       });
       setPreviewImage('');
     }
+
   }, [employeeData]);
 
   const handleChange = (e) => {
@@ -88,7 +89,7 @@ const AddEmployeeModel = ({ isOpen, onClose, onSave, employeeData, occupationOpt
           <div className="flex flex-col items-center space-y-4">
             <label className="relative">
               <img
-                src={previewImage || 'https://via.placeholder.com/100'}
+                src={previewImage || profilePlaceholder}
                 alt="Profile"
                 className="w-24 h-24 rounded-full object-cover"
               />
@@ -129,7 +130,7 @@ const AddEmployeeModel = ({ isOpen, onClose, onSave, employeeData, occupationOpt
 
             <select
               name="occupation"
-              value={employee.occupation}
+              value={employee.occupation?._id}
               onChange={handleChange}
               className="border p-2 w-full rounded"
               required

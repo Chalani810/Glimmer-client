@@ -1,95 +1,282 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import './App.css';
-import './index.css';
-import Header from "./component/Header";
-import AdminEvents from "./pages/AdminEvents";
-import AdminAddEvent from './pages/AdminAddEvent';
-import AboutUs  from './pages/AboutUs';
-import SignUpPage from "./pages/SignUp"; // Import SignUpPage
-import HomePage from "./pages/HomePage"; // Import Home Page
-import Footer from "./component/Footer";
-import AdminProduct from "./pages/AdminProduct";
-import CustomerViewEvent from "./pages/CustomerViewEvent";
-import CustomerProduct from "./pages/CustomerProduct";
-import EmployeeManagement from "./pages/EmployeeManagement";
-import ContactUs from "./pages/ContactUs";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import "./App.css";
+import "./index.css";
 
-// Admin Event Components
-import AdminNavbar from './component/AdminEvent/Navbar';
+// Global components
+import Header from "./component/Header";
+import Footer from "./component/Footer";
+import AdminNavbar from "./component/AdminEvent/Navbar";
+import AdminRoute from "./component/AdminRoute";
+import UserRoute from "./component/UserRoute";
+
+// Admin components
+import AdminEvents from "./pages/AdminEvents";
+import AdminAddEvent from "./pages/AdminAddEvent";
+import AdminProduct from "./pages/AdminProduct";
+import AdminBills from "./pages/AdminBills";
 
 // Customer Management Components
 import CustomerMgtPage from "./pages/CustomerMgtPage";
-import CustomerTable from './component/CustomerMgt/CustomerTable';
+import CustomerTable from "./component/CustomerMgt/CustomerTable";
 
-// General Pages
+// Employee Management
+import EmployeeManagement from "./pages/EmployeeManagement";
+import Dashboard from "./pages/Dashboard";
+import SalaryView from "./pages/EmployeePayroll";
+
+// Public pages
+import AboutUs from "./pages/AboutUs";
+import SignUpPage from "./pages/SignUp";
 import LoginPage from "./pages/SignInPage";
+import HomePage from "./pages/HomePage";
+import ContactUs from "./pages/ContactUs";
+import Checkout from "./pages/Checkout";
+import FeedbackPage from "./pages/FeedbackPage";
+import FeedbackListPage from "./pages/FeedbackListPage";
 import ProfilePage from "./pages/CustomerProfilePage";
 import Cart from "./pages/Cart";
 import Invoice from "./pages/Invoice";
-import FeedbackListPage from "./pages/FeedbackListPage";
+import OrderSummary from "./pages/OrderSummary";
+import OrderHistory from "./pages/OrderHistory";
+import CustomerViewEvent from "./pages/CustomerViewEvent";
+import CustomerProduct from "./pages/CustomerProduct";
+
+import { CartProvider } from "./CartContext";
 
 function App() {
   return (
     <Router>
-      <AppWithRoutes />
+      <CartProvider>
+        <AppWithRoutes />
+      </CartProvider>
     </Router>
   );
 }
 
 function AppWithRoutes() {
   const location = useLocation();
+  const isEventAdminPage =
+    location.pathname === "/adminevents" ||
+    location.pathname === "/adminaddevent";
+  const isCustomerAdminPage = location.pathname === "/customers";
 
-  // Detect admin context for clean layout control
-  const isEventAdminPage = location.pathname === '/adminevents' || location.pathname === '/adminaddevent';
-  const isCustomerAdminPage = location.pathname === '/customers';
+  const userData = JSON.parse(localStorage.getItem("user"));
+
+  console.log("User Data:", userData);
 
   return (
     <>
-      {location.pathname !== '/AdminEvents' && 
-      location.pathname !== '/AdminAddEvent' && 
-      location.pathname !== '/AdminProduct' && 
-      location.pathname !== '/AdminProduct'&& 
-      location.pathname !== '/EmployeeManagement'&&
-    !isEventAdminPage && !isCustomerAdminPage &&
-      <Header />}
-
-      {/* Admin-specific Navbars */}
-      {isEventAdminPage && <AdminNavbar />}
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: "#fff",
+            color: "#363636",
+          },
+          success: {
+            duration: 3000,
+            iconTheme: {
+              primary: "#4BB543",
+              secondary: "#fff",
+            },
+          },
+          error: {
+            duration: 4000,
+            iconTheme: {
+              primary: "#FF3333",
+              secondary: "#fff",
+            },
+          },
+          loading: {
+            duration: 5000,
+          },
+        }}
+      />
+      {location.pathname !== "/adminEvents" &&
+        location.pathname !== "/AdminAddEvent" &&
+        location.pathname !== "/AdminProduct" &&
+        location.pathname !== "/AdminProduct" &&
+        location.pathname !== "/EmployeeManagement" &&
+        location.pathname !== "/admin-bills" &&
+        location.pathname !== "/employee-payroll" &&
+        location.pathname !== "/EmployeeManagement" &&
+        location.pathname !== "/dashboard" &&
+        !isEventAdminPage &&
+        !isCustomerAdminPage && <Header />}
 
       <Routes>
-        {/* Admin Event Routes */}
-        <Route path="/adminevents" element={<AdminEvents />} />
-        <Route path="/adminaddevent" element={<AdminAddEvent />} />
-        <Route path="/adminproduct" element={<AdminProduct />} />
-        <Route path="/customerviewevent" element={<CustomerViewEvent />} />
-        <Route path="/customerproduct" element={<CustomerProduct />} />
-        <Route path="/employeeManagement" element={<EmployeeManagement />} />
-        <Route path="/contactUs" element={<ContactUs />} />
-        {/* Admin Customer Management Route */}
-        <Route path="/customers" element={<CustomerMgtPage />} />
+        <Route
+          path="/adminEvents"
+          element={
+            <AdminRoute>
+              <AdminEvents />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/adminproduct"
+          element={
+            <AdminRoute>
+              <AdminProduct />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin-bills"
+          element={
+            <AdminRoute>
+              <AdminBills />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/employeeManagement"
+          element={
+            <AdminRoute>
+              <EmployeeManagement />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/employee-payroll"
+          element={
+            <AdminRoute>
+              <SalaryView />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <AdminRoute>
+              <Dashboard />
+            </AdminRoute>
+          }
+        />
 
-        {/* Public Routes */}
-        <Route path="/" element={<AboutUs />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/signin" element={<LoginPage />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/invoice" element={<Invoice />} />
-        <Route path="/customerprofile" element={<ProfilePage />} />
-        <Route path="/feedback" element={<FeedbackListPage />} />
-          <Route path="/" element={<AboutUs />} />
-        <Route path="/home" element={<HomePage />} />
+        {/* user routes */}
 
-        <Route path="/signup" element={<SignUpPage />} />
+        
+        <Route
+          path="/customerviewevent"
+          element={
+            <UserRoute>
+              <CustomerViewEvent />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/customerproduct"
+          element={
+            <UserRoute>
+              <CustomerProduct />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/customers"
+          element={
+            <UserRoute>
+              <CustomerMgtPage />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/customerprofile"
+          element={
+            <UserRoute>
+              <ProfilePage />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/cart"
+          element={
+            <UserRoute>
+              <Cart />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <UserRoute>
+              <Checkout />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/invoice"
+          element={
+            <UserRoute>
+              <Invoice />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/orderhistory"
+          element={
+            <UserRoute>
+              <OrderHistory />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/feedback"
+          element={
+            <UserRoute>
+              <FeedbackListPage />
+            </UserRoute>
+          }
+        />
+
+        <Route
+          path="/signup"
+          element={
+            !userData ? (
+              <SignUpPage />
+            ) : userData?.role == "user" ? (
+              <Navigate to="/" />
+            ) : (
+              <Navigate to="/dashboard" />
+            )
+          }
+        />
+        <Route
+          path="/signin"
+          element={
+            !userData ? (
+              <LoginPage />
+            ) : userData?.role == "user" ? (
+              <Navigate to="/" />
+            ) : (
+              <Navigate to="/dashboard" />
+            )
+          }
+        />
+
+        {/* <Route path="/" element={<AboutUs />} /> */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/aboutus" element={<AboutUs />} />
+        <Route path="/contactus" element={<ContactUs />} />
       </Routes>
-
-      {location.pathname !== '/AdminEvents' && 
-      location.pathname !== '/AdminAddEvent' &&  
-      location.pathname !== '/AdminProduct' &&
-      location.pathname !== '/EmployeeManagement' && 
-        !isEventAdminPage && !isCustomerAdminPage &&
-      <Footer />}
+      {location.pathname !== "/admin-bills" &&
+        location.pathname !== "/adminEvents" &&
+        location.pathname !== "/AdminAddEvent" &&
+        location.pathname !== "/AdminProduct" &&
+        location.pathname !== "/EmployeeManagement" &&
+        location.pathname !== "/employee-payroll" &&
+        location.pathname !== "/dashboard" &&
+        !isEventAdminPage &&
+        !isCustomerAdminPage && <Footer />}
     </>
   );
 }

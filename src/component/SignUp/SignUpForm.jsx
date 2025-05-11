@@ -24,7 +24,6 @@ const SignUpForm = () => {
   const [touchedFields, setTouchedFields] = useState({});
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
-  // Reset form when component mounts
   useEffect(() => {
     setFormData({
       firstName: "",
@@ -42,7 +41,6 @@ const SignUpForm = () => {
     });
   }, []);
 
-  // Auto-populate country when phone starts with +94
   useEffect(() => {
     if (formData.phone.startsWith("+94")) {
       setFormData(prev => ({ ...prev, country: "Sri Lanka" }));
