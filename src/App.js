@@ -162,9 +162,17 @@ function AppWithRoutes() {
           }
         />
 
+        <Route
+          path="/customers"
+          element={
+            <AdminRoute>
+              <CustomerMgtPage />
+            </AdminRoute>
+          }
+        />
+
         {/* user routes */}
 
-        
         <Route
           path="/customerviewevent"
           element={
@@ -181,14 +189,7 @@ function AppWithRoutes() {
             </UserRoute>
           }
         />
-        <Route
-          path="/customers"
-          element={
-            <UserRoute>
-              <CustomerMgtPage />
-            </UserRoute>
-          }
-        />
+
         <Route
           path="/customerprofile"
           element={

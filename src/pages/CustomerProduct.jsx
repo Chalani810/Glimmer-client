@@ -39,14 +39,6 @@ const ProductPage = () => {
         {products
           .filter((product) => product.visibility !== false) // Only show visible products
           .map((product) => {
-            const imageSrc = product.photoUrl
-              ? `${apiUrl}/uploads/${product.photoUrl}`
-              : "https://via.placeholder.com/400x300?text=Product+Image";
-            const title = product.title || "Product Title";
-            const price = product.price || "Price not available";
-            const description =
-              product.description ||
-              "A brief description of the product goes here.";
 
             return (
               <div
