@@ -1,35 +1,69 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
 
-const ProductForm = ({ onAddProduct, onCancel, isLoading,isEditMode,productId }) => {
+const ProductForm = ({ onAddProduct, onCancel, isLoading, isEditMode, productId }) => {
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
   const [productName, setProductName] = useState("");
   const [selectedEvents, setSelectedEvents] = useState([]);
-  const [stock, setStock] = useState();
+  const [stock, setStock] = useState(50);
   const [price, setPrice] = useState("");
   const [imageFile, setImageFile] = useState(null);
+  const [events, setEvents] = useState([]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  
+  const dropdownRef = useRef(null);
 
-  const handleEventChange = (eventName) => {
-    if (selectedEvents.includes(eventName)) {
-      setSelectedEvents(selectedEvents.filter((e) => e !== eventName));
-    } else {
-      setSelectedEvents([...selectedEvents, eventName]);
-    }
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+
+  const handleEventChange = (eventId) => {
+    setSelectedEvents(prev => 
+      prev.includes(eventId) 
+        ? prev.filter(id => id !== eventId) 
+        : [...prev, eventId]
+    );
   };
 
   useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/event`);
+        setEvents(response.data);
+      } catch (err) {
+        console.error("Error fetching events:", err);
+      }
+    };
+
+    fetchEvents();
+    
     if (productId && isEditMode) {
       setProductName(productId.pname || "");
       setStock(productId.stockqut || "");
       setSelectedEvents(productId.ename || []);
       setPrice(productId.pprice || "");
     }
-  }, [productId, isEditMode]); // include dependencies
-  
+  }, [productId, isEditMode, apiUrl]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const newProduct = {
       pname: productName,
-      ename: selectedEvents,
+      events: selectedEvents, 
       stock,
       pprice: price,
       productImage: imageFile,
@@ -45,9 +79,18 @@ const ProductForm = ({ onAddProduct, onCancel, isLoading,isEditMode,productId })
     setImageFile(null);
   };
 
+  const getSelectedEventTitles = () => {
+    return events
+      .filter(event => selectedEvents.includes(event._id))
+      .map(event => event.title)
+      .join(", ");
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <h2 className="text-xl font-semibold text-gray-800">Add New Product</h2>
+      <h2 className="text-xl font-semibold text-gray-800">
+        {isEditMode ? "Edit Product" : "Add New Product"}
+      </h2>
 
       <div>
         <label className="block text-sm font-medium text-gray-700">Product Name</label>
@@ -66,7 +109,7 @@ const ProductForm = ({ onAddProduct, onCancel, isLoading,isEditMode,productId })
           type="file"
           accept="image/*"
           onChange={(e) => setImageFile(e.target.files[0])}
-          required
+          required={!isEditMode}
           className="w-full px-3 py-2 border border-gray-300 rounded"
         />
         {imageFile && (
@@ -76,22 +119,39 @@ const ProductForm = ({ onAddProduct, onCancel, isLoading,isEditMode,productId })
         )}
       </div>
 
-      <div>
+      <div className="relative" ref={dropdownRef}>
         <label className="block text-sm font-medium text-gray-700 mb-1">Events</label>
-        <div className="flex flex-col gap-1 border border-gray-300 rounded px-3 py-2">
-          {["Wedding", "Birthday", "Corporate"].map((eventOption) => (
-            <label key={eventOption} className="inline-flex items-center">
-              <input
-                type="checkbox"
-                value={eventOption}
-                checked={selectedEvents.includes(eventOption)}
-                onChange={() => handleEventChange(eventOption)}
-                className="mr-2"
-              />
-              {eventOption}
-            </label>
-          ))}
+        <div 
+          className="w-full px-3 py-2 border border-gray-300 rounded cursor-pointer"
+          onClick={toggleDropdown}
+        >
+          {selectedEvents.length > 0 ? getSelectedEventTitles() : "Select events..."}
         </div>
+        
+        {isDropdownOpen && (
+          <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-auto">
+            {events.map((event) => (
+              <div 
+                key={event._id} 
+                className={`px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center ${
+                  selectedEvents.includes(event._id) ? 'bg-blue-50' : ''
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEventChange(event._id);
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedEvents.includes(event._id)}
+                  readOnly
+                  className="mr-2 pointer-events-none"
+                />
+                <span>{event.title}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div>
@@ -132,7 +192,7 @@ const ProductForm = ({ onAddProduct, onCancel, isLoading,isEditMode,productId })
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           disabled={isLoading}
         >
-          {isLoading ? "Saving..." : "Save Product"}
+          {isLoading ? "Saving..." : isEditMode ? "Update Product" : "Save Product"}
         </button>
       </div>
     </form>

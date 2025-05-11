@@ -23,7 +23,7 @@ const EventsPage = () => {
   }, []);
 
   const handleReadMore = (eventId) => {
-    navigate(`/events/${eventId}`);
+    navigate(`/customerproduct/${eventId}`);
   };
 
   return (

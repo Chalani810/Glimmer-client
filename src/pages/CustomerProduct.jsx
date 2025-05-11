@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const apiUrl = "http://localhost:5000"; // Set your backend API base URL
 
@@ -8,10 +8,14 @@ const ProductPage = () => {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
+  const { eventId } = useParams();
+
+  console.log(eventId);
+  
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/product/`);
+        const response = await axios.get(`${apiUrl}/product/by-event/${eventId}`);
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);

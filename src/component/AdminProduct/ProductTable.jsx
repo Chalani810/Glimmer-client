@@ -37,13 +37,9 @@ const ProductTable = ({ products, isLoading, onEdit, onDelete }) => {
               </td>
               <td className="p-4 font-medium text-gray-800">{product.pname}</td>
               <td className="p-4 text-gray-700">
-                {Array.isArray(product.ename) && product.ename.length > 0
-                  ? product.ename
-                      .map(
-                        (event) =>
-                          event.charAt(0).toUpperCase() +
-                          event.slice(1).toLowerCase()
-                      )
+                {Array.isArray(product.events) && product.events.length > 0
+                  ? product.events
+                      .map(event => event.title)
                       .join(", ")
                   : "None"}
               </td>

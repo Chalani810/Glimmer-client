@@ -182,7 +182,7 @@ function AppWithRoutes() {
           }
         />
         <Route
-          path="/customerproduct"
+          path="/customerproduct/:eventId?"
           element={
             <UserRoute>
               <CustomerProduct />

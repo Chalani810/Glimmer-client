@@ -48,8 +48,8 @@ const AddProductPage = () => {
       formData.append("pname", newProduct.pname);
       formData.append("stock", newProduct.stock);
       formData.append("pprice", newProduct.pprice);
-      newProduct.ename.forEach((event) => {
-        formData.append("ename", event);
+      newProduct.events.forEach((event) => {
+        formData.append("events", event);
       });
       if (newProduct.productImage) {
         formData.append("productImage", newProduct.productImage);
