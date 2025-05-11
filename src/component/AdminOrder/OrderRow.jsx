@@ -39,7 +39,7 @@ const OrderRow = ({
   }
 
   return (
-    <tr className="border-b hover:bg-gray-50 transition flex flex-col md:table-row">
+    <tr className="border-b hover:bg-gray-50 transition flex flex-col md:table-row bg-white">
       {/* Order ID - Always visible */}
       <td className="px-4 py-3 font-medium md:font-normal">
         <span className="md:hidden">Order #</span>

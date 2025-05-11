@@ -6,18 +6,21 @@ import Sidebar from "../component/AdminEvent/Sidebar";
 
 const AdminBills = () => {
   return (
-    <div style={{ display: "flex", minHeight: "5vh" }}>
-      
-      {/* Sidebar on the left */}
-      <div style={{ width: "250px", backgroundColor: "#f0f0f0" }}>
-        <Sidebar />
-      </div>
+    <div className="flex min-h-screen bg-gray-50">
+      {/* Sidebar */}
+      <Sidebar />
 
-      {/* Main content on the right */}
-      <div style={{ flex: 1, padding: "20px" }}>
-        <OrderTable />
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto ml-0 md:ml-64">
+        <div className="p-4 md:p-6 lg:p-8">
+          <div className="max-w-full mx-auto">
+            {/* Table Container */}
+            <div className="w-full overflow-x-auto rounded-xl shadow-sm bg-white">
+              <OrderTable />
+            </div>
+          </div>
+        </div>
       </div>
-      
     </div>
   );
 };

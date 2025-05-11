@@ -173,7 +173,7 @@ function AppWithRoutes() {
         location.pathname !== "/adminEvents" &&
         location.pathname !== "/AdminAddEvent" &&
         location.pathname !== "/AdminProduct" &&
-        location.pathname !== "/employeeManagement" &&
+        location.pathname !== "/EmployeeManagement" &&
         location.pathname !== "/employee-payroll" &&
         location.pathname !== "/dashboard" &&
         !isEventAdminPage &&

@@ -165,29 +165,28 @@ const EmployeeManagement = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-white">
-      {/* Fixed Sidebar */}
+    <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
-      
-      {/* Main Content */}
       <div className="flex-1 overflow-auto ml-0 md:ml-64">
         <div className="p-4 md:p-6 lg:p-8">
           <div className="max-w-full mx-auto">
-            {/* Header and Search */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
-              <h1 className="text-xl sm:text-2xl font-bold">Employee Management</h1>
-              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                <div className="relative w-full sm:w-64">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+              <h1 className="text-2xl font-semibold text-gray-800">
+                Employee Management
+              </h1>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <div className="relative flex-grow sm:flex-grow-0 sm:w-64">
                   <input
                     type="text"
-                    placeholder="Search employees"
+                    placeholder="Search by name or email"
                     value={searchQuery}
                     onChange={handleSearch}
-                    className="pl-4 pr-4 py-2 border rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="pl-4 pr-4 py-2 border border-gray-300 rounded-lg w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   />
                 </div>
                 <button
-                  className="bg-red-400 hover:bg-red-500 text-white px-4 py-2 rounded-md whitespace-nowrap"
+                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow-sm whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
                   onClick={handleAddClick}
                 >
                   + Add Employee
@@ -195,47 +194,52 @@ const EmployeeManagement = () => {
               </div>
             </div>
 
-            {/* Employee Table */}
-            <div className="w-full overflow-x-auto">
-              <table className="w-full border-collapse">
+            {/* Table Container */}
+            <div className="w-full overflow-x-auto rounded-xl shadow-sm bg-white">
+              <table className="w-full border-collapse text-sm">
                 <thead>
-                  <tr className="bg-gray-100 text-left">
-                    <th className="p-3 font-medium text-sm text-gray-600">Name</th>
-                    <th className="p-3 font-medium text-sm text-gray-600 hidden sm:table-cell">Occupation</th>
-                    <th className="p-3 font-medium text-sm text-gray-600">Status</th>
-                    <th className="p-3 font-medium text-sm text-gray-600 w-10">Actions</th>
+                  <tr className="bg-red-100 text-left border-b border-red-200">
+                    <th className="p-4 text-left font-medium">Employee</th>
+                    <th className="p-4 text-left font-medium hidden sm:table-cell">Occupation</th>
+                    <th className="p-4 text-center font-medium">Status</th>
+                    <th className="p-4 font-medium text-center">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {employees.map((employee) => (
-                    <tr key={employee._id} className="border-b hover:bg-gray-50">
-                      <td className="p-3">
+                    <tr
+                      key={employee._id}
+                      className="border-b last:border-b-0 hover:bg-gray-50 transition-all"
+                    >
+                      <td className="p-4">
                         <div className="flex items-center gap-3">
                           {employee.profileImg ? (
                             <img
                               src={employee.profileImg}
                               alt={employee.name}
-                              className="h-10 w-10 rounded-full object-cover"
+                              className="h-10 w-10 rounded-full object-cover shadow-sm"
                             />
                           ) : (
-                            <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 font-medium">
+                            <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 font-semibold">
                               {getInitials(employee.name)}
                             </div>
                           )}
                           <div>
-                            <p className="font-medium">{employee.name}</p>
-                            <p className="text-sm text-gray-500 sm:hidden">
+                            <p className="font-medium text-gray-800">
+                              {employee.name}
+                            </p>
+                            <p className="text-xs text-gray-500 sm:hidden">
                               {employee.occupation?.title || "Not specified"}
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td className="p-3 hidden sm:table-cell">
+                      <td className="p-4 text-gray-700 hidden sm:table-cell">
                         {employee.occupation?.title || "Not specified"}
                       </td>
-                      <td className="p-3">
+                      <td className="p-4 text-center">
                         <span
-                          className={`px-2 py-1 rounded-full text-xs ${
+                          className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
                             employee.availability == 0
                               ? "bg-yellow-100 text-yellow-800"
                               : "bg-green-100 text-green-800"
@@ -244,17 +248,17 @@ const EmployeeManagement = () => {
                           {employee.availability == 0 ? "Assigned" : "Available"}
                         </span>
                       </td>
-                      <td className="p-3 text-center relative">
+                      <td className="p-4 text-center relative">
                         <div className="flex justify-center">
                           <button
-                            className="text-gray-500 font-bold hover:bg-gray-100 p-1 rounded"
+                            className="text-gray-500 hover:text-gray-700 font-bold hover:bg-gray-100 p-1 rounded"
                             onClick={(e) => toggleMenu(employee._id, e)}
                           >
                             ⋮
                           </button>
 
                           {activeMenu === employee._id && (
-                            <div className="absolute right-0 mt-6 w-32 bg-white rounded-md shadow-lg z-10 border">
+                            <div className="absolute right-0 mt-6 w-32 bg-white rounded-lg shadow-lg z-10 border border-gray-200">
                               <button
                                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                 onClick={(e) => {
@@ -281,13 +285,13 @@ const EmployeeManagement = () => {
                   ))}
                 </tbody>
               </table>
-            </div>
 
-            {employees.length === 0 && (
-              <div className="w-full text-center p-8">
-                <p className="text-gray-500">No employees found</p>
-              </div>
-            )}
+              {employees.length === 0 && (
+                <div className="w-full text-center p-8">
+                  <p className="text-gray-500">No employees found</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
