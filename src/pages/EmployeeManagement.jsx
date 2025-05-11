@@ -16,7 +16,6 @@ const EmployeeManagement = () => {
   const [employeeToDelete, setEmployeeToDelete] = useState(null);
   const [occupationOptions, setOccupationOptions] = useState([]);
 
-
   var toastId;
   const fetchEmployees = async () => {
     try {
@@ -28,13 +27,11 @@ const EmployeeManagement = () => {
       toast.error("Failed to load employees. Please try again.");
     }
   };
+
   const fetchOccupations = async () => {
     try {
       const response = await axios.get(`${apiUrl}/role`);
       const options = response.data; 
-
-      console.log(options);
-      
       setOccupationOptions(options);
     } catch (error) {
       console.error("Error fetching occupations:", error);
@@ -65,7 +62,7 @@ const EmployeeManagement = () => {
   };
 
   const handleAddClick = () => {
-    setEditingEmployee(null); // This will reset the form data
+    setEditingEmployee(null);
     setIsModalOpen(true);
     setActiveMenu(null);
   };
@@ -117,18 +114,12 @@ const EmployeeManagement = () => {
     } catch (error) {
       console.error("Error:", error.response?.data || error.message);
       toast.error(error.response?.data?.message || "Action failed", {
-        duration: 3000,
         id: toastId,
-        style: {
-          background: "#FF3333",
-          color: "#fff",
-          minWidth: "250px",
-        },
       });
     }
   };
 
-  const handleDelete = async (id) =>{
+  const handleDelete = async (id) => {
     try {
       toastId = toast.loading("Deleting employee...");
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -149,7 +140,8 @@ const EmployeeManagement = () => {
     setActiveMenu(null);
   };
 
-  const toggleMenu = (id) => {
+  const toggleMenu = (id, e) => {
+    e.stopPropagation();
     setActiveMenu(activeMenu === id ? null : id);
   };
 
@@ -174,15 +166,18 @@ const EmployeeManagement = () => {
 
   return (
     <div className="flex min-h-screen bg-white">
+      {/* Fixed Sidebar */}
       <Sidebar />
-
-      <div className="flex-1 overflow-auto p-4 md:p-8">
-        <div className="max-w-full mx-auto">
-          <div className="w-full">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
-              <h1 className="text-2xl font-bold">Employee Management</h1>
-              <div className="flex gap-2 w-full md:w-auto">
-                <div className="relative flex-grow md:flex-grow-0 md:w-64">
+      
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto ml-0 md:ml-64">
+        <div className="p-4 md:p-6 lg:p-8">
+          <div className="max-w-full mx-auto">
+            {/* Header and Search */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+              <h1 className="text-xl sm:text-2xl font-bold">Employee Management</h1>
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                <div className="relative w-full sm:w-64">
                   <input
                     type="text"
                     placeholder="Search employees"
@@ -200,28 +195,20 @@ const EmployeeManagement = () => {
               </div>
             </div>
 
+            {/* Employee Table */}
             <div className="w-full overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="bg-gray-100 text-left">
-                    <th className="p-3 font-medium text-sm text-gray-600">
-                      Name
-                    </th>
-                    <th className="p-3 font-medium text-sm text-gray-600">
-                      Occupation
-                    </th>
-                    <th className="p-3 font-medium text-sm text-gray-600">
-                      Availability
-                    </th>
-                    <th className="p-3 font-medium text-sm text-gray-600 w-10"></th>
+                    <th className="p-3 font-medium text-sm text-gray-600">Name</th>
+                    <th className="p-3 font-medium text-sm text-gray-600 hidden sm:table-cell">Occupation</th>
+                    <th className="p-3 font-medium text-sm text-gray-600">Status</th>
+                    <th className="p-3 font-medium text-sm text-gray-600 w-10">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {employees.map((employee) => (
-                    <tr
-                      key={employee._id}
-                      className="border-b hover:bg-gray-50"
-                    >
+                    <tr key={employee._id} className="border-b hover:bg-gray-50">
                       <td className="p-3">
                         <div className="flex items-center gap-3">
                           {employee.profileImg ? (
@@ -237,14 +224,14 @@ const EmployeeManagement = () => {
                           )}
                           <div>
                             <p className="font-medium">{employee.name}</p>
-                            <p className="text-sm text-gray-500">
-                              {employee.email}
+                            <p className="text-sm text-gray-500 sm:hidden">
+                              {employee.occupation?.title || "Not specified"}
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td className="p-3">
-                        {employee.occupation.title || "Not specified"}
+                      <td className="p-3 hidden sm:table-cell">
+                        {employee.occupation?.title || "Not specified"}
                       </td>
                       <td className="p-3">
                         <span
@@ -254,19 +241,14 @@ const EmployeeManagement = () => {
                               : "bg-green-100 text-green-800"
                           }`}
                         >
-                          {employee.availability == 0
-                            ? "Assigned"
-                            : "Available"}
+                          {employee.availability == 0 ? "Assigned" : "Available"}
                         </span>
                       </td>
                       <td className="p-3 text-center relative">
                         <div className="flex justify-center">
                           <button
                             className="text-gray-500 font-bold hover:bg-gray-100 p-1 rounded"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleMenu(employee._id);
-                            }}
+                            onClick={(e) => toggleMenu(employee._id, e)}
                           >
                             ⋮
                           </button>
@@ -309,6 +291,7 @@ const EmployeeManagement = () => {
           </div>
         </div>
 
+        {/* Modals */}
         <AddEmployeeModel
           isOpen={isModalOpen}
           onClose={() => {

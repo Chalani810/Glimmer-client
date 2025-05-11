@@ -126,17 +126,18 @@ const EventsPage = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Fixed Sidebar */}
       <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Navbar />
-
-        <main className="p-4 overflow-y-auto">
-          <div className="flex justify-between items-center mb-4">
+      
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto ml-0 md:ml-64"> {/* Responsive margin */}
+        <main className="p-4">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
             <h1 className="text-xl font-semibold">All Event List</h1>
             <button
               onClick={openPopup}
-              className="bg-red-400 text-white px-4 py-2 rounded hover:bg-red-500"
+              className="bg-red-400 text-white px-4 py-2 rounded hover:bg-red-500 w-full md:w-auto"
             >
               + New Event
             </button>
@@ -154,22 +155,24 @@ const EventsPage = () => {
                   fetchEvents();
                 }
               }}
-              className="border p-2 rounded w-full md:w-1/3"
+              className="border p-2 rounded w-full"
             />
             <button
-              className="border p-2 rounded w-full md:w-auto"
+              className="border p-2 rounded bg-gray-200 hover:bg-gray-300 w-full md:w-auto"
               onClick={handleSearch}
             >
               Search
             </button>
           </div>
 
-          <EventTable
-            events={filteredEvents}
-            fetchEventsForDelete={fetchEvents}
-            handleEdit={handleEdit}
-            handleDeleteRequest={requestDelete}
-          />
+          <div className="overflow-x-auto">
+            <EventTable
+              events={filteredEvents}
+              fetchEventsForDelete={fetchEvents}
+              handleEdit={handleEdit}
+              handleDeleteRequest={requestDelete}
+            />
+          </div>
         </main>
       </div>
 

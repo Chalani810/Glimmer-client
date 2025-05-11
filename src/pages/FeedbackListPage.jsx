@@ -47,7 +47,7 @@ const FeedbackListPage = () => {
             onClick={handleAddNew}
             className="bg-red-500 text-white px-4 py-2 rounded"
           >
-            Add New Feedback
+            Add a New Feedback
           </button>
         </div>
         <FeedbackTable

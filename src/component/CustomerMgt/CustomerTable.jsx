@@ -44,7 +44,6 @@ const CustomerTable = () => {
       });
     } catch (error) {
       if (error.response?.status === 401) {
-        // Token is invalid, redirect to login
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         window.location.href = '/signin';
@@ -60,12 +59,13 @@ const CustomerTable = () => {
   useEffect(() => {
     fetchUsers();
   }, []);
+  
   useEffect(() => {
     const refreshInterval = setInterval(() => {
       fetchUsers(pagination.page, searchTerm);
-    }, 5000); // Refresh every 5 seconds
+    }, 5000);
   
-    return () => clearInterval(refreshInterval); // Cleanup on unmount
+    return () => clearInterval(refreshInterval);
   }, [pagination.page, searchTerm]);
 
   const handleSearch = (e) => {
@@ -105,17 +105,15 @@ const CustomerTable = () => {
     try {
       setIsDeleting(true);
       const token = localStorage.getItem('token');
-      const response = await axios.delete(`${apiUrl}/auth/users/${userToDelete}`, {
+      await axios.delete(`${apiUrl}/auth/users/${userToDelete}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
       
-      // Refresh the user list after successful deletion
       await fetchUsers(pagination.page, searchTerm);
     } catch (error) {
       if (error.response?.status === 401) {
-        // Only redirect if the admin's token is invalid
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         window.location.href = '/signin';
@@ -135,7 +133,7 @@ const CustomerTable = () => {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-6 w-96 shadow-lg text-center">
+        <div className="bg-white rounded-lg p-6 w-full max-w-sm mx-4 shadow-lg text-center">
           <div className="text-red-500 text-3xl mb-3">⚠️</div>
           <h2 className="text-lg font-bold mb-2">Confirm Deletion</h2>
           <p className="text-gray-600 mb-6">
@@ -165,7 +163,11 @@ const CustomerTable = () => {
   };
 
   if (loading && users.length === 0) {
-    return <div className="p-6 text-center"><Loader2 className="animate-spin inline" /> Loading users...</div>;
+    return (
+      <div className="p-6 text-center">
+        <Loader2 className="animate-spin inline" /> Loading users...
+      </div>
+    );
   }
 
   if (error) {
@@ -177,21 +179,21 @@ const CustomerTable = () => {
   }
 
   return (
-    <div className="overflow-x-auto p-6">
+    <div className="p-4 md:p-6">
       <DeleteConfirmationModal />
       
-      <div className="mb-4 flex justify-between items-center">
-        <form onSubmit={handleSearch} className="flex gap-2">
+      <div className="mb-4 flex flex-col md:flex-row justify-between items-center gap-4">
+        <form onSubmit={handleSearch} className="flex gap-2 w-full md:w-auto">
           <input
             type="text"
             placeholder="Search users..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 flex-grow"
           />
           <button
             type="submit"
-            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 whitespace-nowrap"
           >
             Search
           </button>
@@ -204,7 +206,9 @@ const CustomerTable = () => {
           >
             <ChevronLeft />
           </button>
-          <span>Page {pagination.page} of {pagination.pages}</span>
+          <span className="text-sm md:text-base">
+            Page {pagination.page} of {pagination.pages}
+          </span>
           <button
             onClick={() => handlePageChange(pagination.page + 1)}
             disabled={pagination.page === pagination.pages}
@@ -215,74 +219,80 @@ const CustomerTable = () => {
         </div>
       </div>
 
-      <table className="min-w-full table-auto bg-white rounded-lg shadow">
-        <thead>
-          <tr className="text-left bg-gray-100">
-            <th className="p-4">User Name</th>
-            <th className="p-4">User ID</th>
-            <th className="p-4">Phone Number</th>
-            <th className="p-4">Address</th>
-            <th className="p-4">Status</th>
-            <th className="p-4">Loyalty Points</th>
-            <th className="p-4">Date Added</th>
-            <th className="p-4 text-right">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user._id} className="border-b hover:bg-gray-50">
-              <td className="p-4 flex items-center space-x-3">
-                <img
-                  src={user.profilePicture ? `${apiUrl}/uploads/${user.profilePicture}` : profileImg}
-                  alt="avatar"
-                  className="w-8 h-8 rounded-full"
-                />
-                <div>
-                  <p className="font-semibold">{`${user.firstName} ${user.lastName}`}</p>
-                  <p className="text-sm text-gray-500">{user.email}</p>
-                </div>
-              </td>
-              <td className="p-4">{user.userId || 'N/A'}</td>
-              <td className="p-4">{user.phone || 'Not provided'}</td>
-              <td className="p-4">
-                {user.address ? 
-                  `${user.address.street || ''}, ${user.address.city || ''}, ${user.address.postalCode || ''}, ${user.address.country || ''}`
-                  : 'Not provided'}
-              </td>
-              <td className="p-4">
-                <button
-                  onClick={() => handleToggleStatus(user._id)}
-                  className="flex items-center gap-1"
-                >
-                  {user.isActive ? (
-                    <>
-                      <ToggleRight className="text-green-500" />
-                      <span className="text-green-700">Active</span>
-                    </>
-                  ) : (
-                    <>
-                      <ToggleLeft className="text-red-500" />
-                      <span className="text-red-700">Inactive</span>
-                    </>
-                  )}
-                </button>
-              </td>
-              <td className="p-4">{user.loyaltyPoints || 0}</td>
-              <td className="p-4">{new Date(user.createdAt).toLocaleDateString()}</td>
-              <td className="p-4 text-right">
-                <button
-                  onClick={() => handleDeleteClick(user._id)}
-                  className="text-red-500 hover:text-red-700"
-                  disabled={isDeleting}
-                >
-                  <Trash size={18} />
-                </button>
-              </td>
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white rounded-lg shadow">
+          <thead>
+            <tr className="text-left bg-gray-100">
+              <th className="p-3 md:p-4">User</th>
+              <th className="p-3 md:p-4 hidden md:table-cell">User ID</th>
+              <th className="p-3 md:p-4 hidden md:table-cell">Phone</th>
+              <th className="p-3 md:p-4 hidden lg:table-cell">Address</th>
+              <th className="p-3 md:p-4">Status</th>
+              <th className="p-3 md:p-4 hidden sm:table-cell">Points</th>
+              <th className="p-3 md:p-4 hidden md:table-cell">Date Added</th>
+              <th className="p-3 md:p-4 text-right">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user._id} className="border-b hover:bg-gray-50">
+                <td className="p-3 md:p-4 flex items-center space-x-3">
+                  <img
+                    src={user.profilePicture ? `${apiUrl}/uploads/${user.profilePicture}` : profileImg}
+                    alt="avatar"
+                    className="w-8 h-8 rounded-full"
+                  />
+                  <div>
+                    <p className="font-semibold">{`${user.firstName} ${user.lastName}`}</p>
+                    <p className="text-sm text-gray-500 md:hidden">{user.userId || 'N/A'}</p>
+                    <p className="text-sm text-gray-500">{user.email}</p>
+                  </div>
+                </td>
+                <td className="p-3 md:p-4 hidden md:table-cell">{user.userId || 'N/A'}</td>
+                <td className="p-3 md:p-4 hidden md:table-cell">{user.phone || 'Not provided'}</td>
+                <td className="p-3 md:p-4 hidden lg:table-cell">
+                  {user.address ? 
+                    `${user.address.street || ''}, ${user.address.city || ''}`
+                    : 'Not provided'}
+                </td>
+                <td className="p-3 md:p-4">
+                  <button
+                    onClick={() => handleToggleStatus(user._id)}
+                    className="flex items-center gap-1"
+                  >
+                    {user.isActive ? (
+                      <>
+                        <ToggleRight className="text-green-500" />
+                        <span className="hidden sm:inline text-green-700">Active</span>
+                      </>
+                    ) : (
+                      <>
+                        <ToggleLeft className="text-red-500" />
+                        <span className="hidden sm:inline text-red-700">Inactive</span>
+                      </>
+                    )}
+                  </button>
+                </td>
+                <td className="p-3 md:p-4 hidden sm:table-cell">{user.loyaltyPoints || 0}</td>
+                <td className="p-3 md:p-4 hidden md:table-cell">
+                  {new Date(user.createdAt).toLocaleDateString()}
+                </td>
+                <td className="p-3 md:p-4 text-right">
+                  <button
+                    onClick={() => handleDeleteClick(user._id)}
+                    className="text-red-500 hover:text-red-700"
+                    disabled={isDeleting}
+                  >
+                    <Trash size={18} />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
+
 export default CustomerTable;

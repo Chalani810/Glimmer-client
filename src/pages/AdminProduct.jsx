@@ -107,89 +107,96 @@ const AddProductPage = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Fixed Sidebar */}
       <Sidebar />
-      <div className="flex-1 overflow-auto p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">All Product List</h2>
-          <button
-            onClick={() => {
-              setShowModal(true);
-              setIsEditMode(false);
-              setEditProductId(null);
-            }}
-            className="bg-rose-500 text-white px-4 py-2 rounded hover:bg-rose-600"
-            disabled={isLoading}
-          >
-            {isLoading ? "Loading..." : "+ New Product"}
-          </button>
-        </div>
-
-        <div className="flex flex-col md:flex-row gap-4 mb-4">
-          <input
-            type="text"
-            placeholder="Search Product"
-            value={searchTerm}
-            onChange={(e) => {
-              const value = e.target.value;
-              setSearchTerm(value);
-              if (value.trim() === "") {
-                setFilteredProducts(products);
-              }
-            }}
-            className="border p-2 rounded w-full md:w-1/3"
-          />
-          <button
-            className="border p-2 rounded w-full md:w-auto"
-            onClick={handleSearch}
-          >
-            Search
-          </button>
-        </div>
-
-        {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>
-        )}
-
-        {isLoading && !showModal && (
-          <div className="mb-4 p-3 bg-blue-100 text-blue-700 rounded">
-            Loading products...
+      
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto ml-0 md:ml-64"> {/* Responsive margin */}
+        <div className="p-4 md:p-6"> {/* Responsive padding */}
+          <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
+            <h2 className="text-xl md:text-2xl font-bold">All Product List</h2>
+            <button
+              onClick={() => {
+                setShowModal(true);
+                setIsEditMode(false);
+                setEditProductId(null);
+              }}
+              className="bg-rose-500 text-white px-4 py-2 rounded hover:bg-rose-600 w-full md:w-auto"
+              disabled={isLoading}
+            >
+              {isLoading ? "Loading..." : "+ New Product"}
+            </button>
           </div>
-        )}
 
-        <ProductTable
-          products={filteredProducts}
-          isLoading={isLoading}
-          onEdit={handleEditProduct}
-          onDelete={handleDeleteRequest}
-        />
+          <div className="flex flex-col md:flex-row gap-4 mb-4">
+            <input
+              type="text"
+              placeholder="Search Product"
+              value={searchTerm}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSearchTerm(value);
+                if (value.trim() === "") {
+                  setFilteredProducts(products);
+                }
+              }}
+              className="border p-2 rounded w-full"
+            />
+            <button
+              className="border p-2 rounded bg-gray-200 hover:bg-gray-300 w-full md:w-auto"
+              onClick={handleSearch}
+            >
+              Search
+            </button>
+          </div>
 
-        {showModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-            <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
-              <button
-                onClick={() => setShowModal(false)}
-                className="absolute top-2 right-3 text-gray-600 text-2xl hover:text-red-600"
-                disabled={isLoading}
-              >
-                ×
-              </button>
-              <ProductForm
-                onAddProduct={handleAddProduct}
-                onCancel={() => setShowModal(false)}
-                isLoading={isLoading}
-                isEditMode={isEditMode}
-                productId={editProductId}
-              />
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>
+          )}
+
+          {isLoading && !showModal && (
+            <div className="mb-4 p-3 bg-blue-100 text-blue-700 rounded">
+              Loading products...
             </div>
-          </div>
-        )}
+          )}
 
-        <ConfirmationModal
-          isOpen={showConfirmModal}
-          onCancel={() => setShowConfirmModal(false)}
-          onConfirm={handleDeleteConfirmed}
-        />
+          <div className="overflow-x-auto">
+            <ProductTable
+              products={filteredProducts}
+              isLoading={isLoading}
+              onEdit={handleEditProduct}
+              onDelete={handleDeleteRequest}
+            />
+          </div>
+
+          {showModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+              <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md mx-4 relative">
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="absolute top-2 right-3 text-gray-600 text-2xl hover:text-red-600"
+                  disabled={isLoading}
+                >
+                  ×
+                </button>
+                <ProductForm
+                  onAddProduct={handleAddProduct}
+                  onCancel={() => setShowModal(false)}
+                  isLoading={isLoading}
+                  isEditMode={isEditMode}
+                  productId={editProductId}
+                />
+              </div>
+            </div>
+          )}
+
+          <ConfirmationModal
+            isOpen={showConfirmModal}
+            onCancel={() => setShowConfirmModal(false)}
+            onConfirm={handleDeleteConfirmed}
+          />
+        </div>
       </div>
     </div>
   );
