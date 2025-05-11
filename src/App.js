@@ -13,6 +13,8 @@ import "./index.css";
 import Header from "./component/Header";
 import Footer from "./component/Footer";
 import AdminNavbar from "./component/AdminEvent/Navbar";
+import AdminRoute from "./component/AdminRoute";
+import UserRoute from "./component/UserRoute";
 
 // Admin components
 import AdminEvents from "./pages/AdminEvents";
@@ -68,7 +70,6 @@ function AppWithRoutes() {
   const userData = JSON.parse(localStorage.getItem("user"));
 
   console.log("User Data:", userData);
-  
 
   return (
     <>
@@ -115,29 +116,127 @@ function AppWithRoutes() {
         <Route
           path="/adminEvents"
           element={
-            userData?.role == "admin" ? (
+            <AdminRoute>
               <AdminEvents />
-            ) : (
-              <LoginPage />
-            )
+            </AdminRoute>
           }
         />
-        <Route path="/adminaddevent" element={<AdminAddEvent />} />
-        <Route path="/adminproduct" element={<AdminProduct />} />
-        <Route path="/admin-bills" element={<AdminBills />} />
-        <Route path="/employeeManagement" element={<EmployeeManagement />} />
-        <Route path="/employee-payroll" element={<SalaryView />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/adminproduct"
+          element={
+            <AdminRoute>
+              <AdminProduct />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin-bills"
+          element={
+            <AdminRoute>
+              <AdminBills />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/employeeManagement"
+          element={
+            <AdminRoute>
+              <EmployeeManagement />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/employee-payroll"
+          element={
+            <AdminRoute>
+              <SalaryView />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <AdminRoute>
+              <Dashboard />
+            </AdminRoute>
+          }
+        />
 
-        <Route path="/customerviewevent" element={<CustomerViewEvent />} />
-        <Route path="/customerproduct" element={<CustomerProduct />} />
-        <Route path="/customers" element={<CustomerMgtPage />} />
-        <Route path="/customerprofile" element={<ProfilePage />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/invoice" element={<Invoice />} />
-        <Route path="/orderhistory" element={<OrderHistory />} />
-        <Route path="/feedback" element={<FeedbackListPage />} />
+        {/* user routes */}
+
+        
+        <Route
+          path="/customerviewevent"
+          element={
+            <UserRoute>
+              <CustomerViewEvent />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/customerproduct"
+          element={
+            <UserRoute>
+              <CustomerProduct />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/customers"
+          element={
+            <UserRoute>
+              <CustomerMgtPage />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/customerprofile"
+          element={
+            <UserRoute>
+              <ProfilePage />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/cart"
+          element={
+            <UserRoute>
+              <Cart />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <UserRoute>
+              <Checkout />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/invoice"
+          element={
+            <UserRoute>
+              <Invoice />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/orderhistory"
+          element={
+            <UserRoute>
+              <OrderHistory />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/feedback"
+          element={
+            <UserRoute>
+              <FeedbackListPage />
+            </UserRoute>
+          }
+        />
 
         <Route
           path="/signup"

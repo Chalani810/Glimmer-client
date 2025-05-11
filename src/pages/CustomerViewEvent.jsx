@@ -33,7 +33,7 @@ const EventsPage = () => {
         <p className="mt-4 text-gray-600">Choose from our beautifully curated event plans.</p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 p-10">
+      <div className="grid grid-cols-1 md:grid-cols-1 gap-10 p-10">
         {events.map((event) => {
           const imageSrc = event.photoUrl || event.image || 'https://via.placeholder.com/400x300?text=Wedding+Event';
           const title = event.title || 'Wedding Ceremony';
@@ -68,9 +68,6 @@ const EventsPage = () => {
         })}
       </div>
 
-      <footer className="bg-red-500 text-white text-center p-4">
-        <p>© 2025 Event Essentials Rental Management</p>
-      </footer>
     </div>
   );
 };

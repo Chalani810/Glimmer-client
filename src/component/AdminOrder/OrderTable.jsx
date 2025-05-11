@@ -219,7 +219,7 @@ const OrderTable = () => {
                 <th className="p-4 text-right font-medium">Full Amount (Rs)</th>
                 <th className="p-4 text-right font-medium">Advance (Rs)</th>
                 <th className="p-4 text-right font-medium">Due (Rs)</th>
-                <th className="p-4 text-left font-medium">Status</th>
+                <th className="p-4 text-center font-medium">Status</th>
                 <th className="p-4 font-medium text-center">Actions</th>
               </tr>
             </thead>

@@ -19,21 +19,6 @@ const OrderRow = ({
     }
   }, [order?.status]);
 
-  const getStatusClasses = (currentStatus) => {
-    switch (currentStatus) {
-      case "Completed":
-        return "bg-green-100 text-green-700 border border-green-300";
-      case "Confirmed":
-        return "bg-blue-100 text-blue-700 border border-blue-300";
-      case "Pending":
-        return "bg-yellow-100 text-yellow-700 border border-yellow-300";
-      case "Cancelled":
-        return "bg-red-100 text-red-700 border border-red-300";
-      default:
-        return "bg-gray-100 text-gray-700 border border-gray-300";
-    }
-  };
-
   if (!order) {
     return null;
   }
@@ -52,44 +37,53 @@ const OrderRow = ({
       </td>
 
       {/* Email - Hidden on small screens */}
-      <td className="px-4 py-3 hidden md:table-cell">
-        {order.email || "N/A"}
-      </td>
+      <td className="px-4 py-3 hidden md:table-cell">{order.email || "N/A"}</td>
 
       {/* Amounts - Stacked on mobile */}
       <td className="px-4 py-3">
         <div className="flex flex-col md:block">
           <span className="md:hidden font-medium">Total: </span>
-          <span className="text-right">{Number(order.cartTotal || 0).toFixed(2)}</span>
+          <span className="text-right">
+            {Number(order.cartTotal || 0).toFixed(2)}
+          </span>
         </div>
       </td>
       <td className="px-4 py-3">
         <div className="flex flex-col md:block">
           <span className="md:hidden font-medium">Advance: </span>
-          <span className="text-right">{Number(order.advancePayment || 0).toFixed(2)}</span>
+          <span className="text-right">
+            {Number(order.advancePayment || 0).toFixed(2)}
+          </span>
         </div>
       </td>
       <td className="px-4 py-3">
         <div className="flex flex-col md:block">
           <span className="md:hidden font-medium">Balance: </span>
           <span className="text-right">
-            {Number((order.cartTotal || 0) - (order.advancePayment || 0)).toFixed(2)}
+            {Number(
+              (order.cartTotal || 0) - (order.advancePayment || 0)
+            ).toFixed(2)}
           </span>
         </div>
       </td>
 
       {/* Status - Always visible */}
       <td className="px-4 py-3">
-        <div
-          className={`text-sm px-2 py-1 rounded inline-block ${getStatusClasses(
-            status
-          )}`}
+        <span
+          className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-medium w-24 ${
+            order.status === "Completed"
+              ? "bg-green-100 text-green-800"
+              : order.status === "Confirmed"
+              ? "bg-blue-100 text-blue-800"
+              : order.status === "Pending"
+              ? "bg-yellow-100 text-yellow-800"
+              : order.status === "Cancelled"
+              ? "bg-red-100 text-red-800"
+              : "bg-gray-100 text-gray-800"
+          }`}
         >
-          {status}
-        </div>
-        {isChangingStatus && (
-          <span className="ml-2 text-xs text-gray-500">Saving...</span>
-        )}
+          {order.status}
+        </span>
       </td>
 
       {/* Action Buttons - Always visible */}
@@ -107,13 +101,6 @@ const OrderRow = ({
           title="Edit Order"
         >
           <FaEdit className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => onAssignEmployees?.(order)}
-          className="text-purple-600 hover:text-purple-800"
-          title="Assign Employees"
-        >
-          <FaUsers className="w-4 h-4" />
         </button>
         <button
           onClick={() => onDelete?.(order._id)}
