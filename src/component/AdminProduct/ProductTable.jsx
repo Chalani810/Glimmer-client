@@ -58,7 +58,7 @@ const ProductTable = ({ products, isLoading, onEdit, onDelete }) => {
               <td className="p-4 text-center">
                 <div className="flex justify-center gap-3">
                   <button
-                    onClick={() => onEdit(product._id)}
+                    onClick={() => onEdit(product)}
                     className="text-blue-500 hover:text-blue-700"
                     aria-label="Edit Product"
                   >

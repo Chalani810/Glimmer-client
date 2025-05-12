@@ -12,6 +12,8 @@ const ProductForm = ({ onAddProduct, onCancel, isLoading, isEditMode, productId 
   const [events, setEvents] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   
+  console.log(productId);
+  
   const dropdownRef = useRef(null);
 
   // Close dropdown when clicking outside

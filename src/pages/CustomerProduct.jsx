@@ -72,10 +72,6 @@ const ProductPage = () => {
             );
           })}
       </div>
-
-      <footer className="bg-red-500 text-white text-center p-4">
-        <p>© 2025 Event Essentials Rental Management</p>
-      </footer>
     </div>
   );
 };
