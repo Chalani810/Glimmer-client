@@ -8,7 +8,7 @@ const Sidebar = () => {
 
   const menuItems = [
     { name: "Dashboard", path: "/dashboard" },
-    { name: "Bills", path: "/admin-bills" },
+    { name: "Orders", path: "/admin-bills" },
     { name: "Events", path: "/adminEvents" },
     { name: "All Products", path: "/AdminProduct" },
     { name: "Customers", path: "/customers" },

@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 const apiUrl = "http://localhost:5000"; // Set your backend API base URL
 
 const ProductPage = () => {
   const [products, setProducts] = useState([]);
+   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const { eventId } = useParams();
+  const { eventId, eventName } = useParams();
+   const user = JSON.parse(localStorage.getItem("user"));
 
-  console.log(eventId);
-  
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/product/by-event/${eventId}`);
+        const response = await axios.get(
+          `${apiUrl}/product/by-event/${eventId}`
+        );
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -26,14 +29,40 @@ const ProductPage = () => {
     fetchProducts();
   }, []);
 
-  const handleReadMore = (productId) => {
-    navigate(`/products/${productId}`);
+  const addToCart = async (productId) => {
+    if (!user) {
+      navigate("/signin");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await axios.put(
+        `${apiUrl}/cart/${user.id}`,
+        {
+          productId,
+          quantity: 1,
+          eventId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      toast.success("Product added to cart successfully!");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error(error.response?.data?.message || "Failed to add to cart");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="bg-white">
       <header className="text-center py-10">
-        <h1 className="text-4xl font-bold">Browse Our Products</h1>
+        <h1 className="text-4xl font-bold">Browse Our {eventName} Products</h1>
         <p className="mt-4 text-gray-600">
           Find the perfect items for your event.
         </p>
@@ -43,7 +72,6 @@ const ProductPage = () => {
         {products
           .filter((product) => product.visibility !== false) // Only show visible products
           .map((product) => {
-
             return (
               <div
                 key={product._id}
@@ -62,7 +90,7 @@ const ProductPage = () => {
                     </p>
                   </div>
                   <button
-                    onClick={() => handleReadMore(product._id)}
+                    onClick={() => addToCart(product._id)}
                     className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 w-fit"
                   >
                     Add to Cart

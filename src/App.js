@@ -41,7 +41,7 @@ import Checkout from "./pages/Checkout";
 import FeedbackPage from "./pages/FeedbackPage";
 import FeedbackListPage from "./pages/FeedbackListPage";
 import ProfilePage from "./pages/CustomerProfilePage";
-import Cart from "./pages/Cart";
+import Cart from "./pages/UserCart";
 import Invoice from "./pages/Invoice";
 import OrderSummary from "./pages/OrderSummary";
 import OrderHistory from "./pages/OrderHistory";
@@ -68,8 +68,6 @@ function AppWithRoutes() {
   const isCustomerAdminPage = location.pathname === "/customers";
 
   const userData = JSON.parse(localStorage.getItem("user"));
-
-  console.log("User Data:", userData);
 
   return (
     <>
@@ -176,17 +174,13 @@ function AppWithRoutes() {
         <Route
           path="/customerviewevent"
           element={
-            <UserRoute>
               <CustomerViewEvent />
-            </UserRoute>
           }
         />
         <Route
-          path="/customerproduct/:eventId?"
+          path="/customerproduct/:eventId/:eventName?"
           element={
-            <UserRoute>
               <CustomerProduct />
-            </UserRoute>
           }
         />
 

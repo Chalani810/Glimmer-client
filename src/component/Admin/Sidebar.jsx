@@ -7,7 +7,7 @@ const Sidebar = ({ activeItem = "Customers" }) => {
     { name: "Home", path: "/admin" },
     { name: "Calendar", path: "/admin/calendar" },
     { name: "All Products", path: "/admin/products" },
-    { name: "Bills", path: "/admin/bills" },
+    { name: "Orders", path: "/admin/bills" },
     { name: "Events", path: "/adminevents" },
     { name: "Customers", path: "/customers" },
     { name: "Employees", path: "/admin/employees" },

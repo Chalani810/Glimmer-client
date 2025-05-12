@@ -128,8 +128,6 @@ const OrderHistory = () => {
   };
 
   const handleEdit = (order) => {
-    // Implement edit functionality if needed (e.g., open a form)
-    console.log("Edit order:", order);
   };
 
   return (

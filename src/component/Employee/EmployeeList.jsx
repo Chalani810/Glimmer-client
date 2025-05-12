@@ -3,8 +3,6 @@ import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 
 const EmployeeList = ({ employees, onEdit, onDelete }) => {
 
-  console.log(employees);
-  
   return (
     <div className="space-y-4">
       {employees.map((employee) => (

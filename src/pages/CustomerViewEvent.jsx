@@ -22,8 +22,8 @@ const EventsPage = () => {
     fetchEvents();
   }, []);
 
-  const handleReadMore = (eventId) => {
-    navigate(`/customerproduct/${eventId}`);
+  const handleReadMore = (eventId,eventName) => {
+    navigate(`/customerproduct/${eventId}/${eventName}`);
   };
 
   return (
@@ -57,7 +57,7 @@ const EventsPage = () => {
                   <p className="text-gray-700 mb-4">{description}</p>
                 </div>
                 <button
-                  onClick={() => handleReadMore(event._id)}
+                  onClick={() => handleReadMore(event._id,event.title)}
                   className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 w-fit"
                 >
                   View Product

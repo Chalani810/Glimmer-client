@@ -59,8 +59,6 @@ const AddEmployeeModel = ({ isOpen, onClose, onSave, employeeData, occupationOpt
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^\d{10}$/;
 
-    console.log("Submitting:", employee);
-
     if (!name || !email || !phone || !occupation) {
       setError('Please fill in all required fields.');
       return;

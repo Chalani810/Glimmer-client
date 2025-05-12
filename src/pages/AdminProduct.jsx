@@ -34,6 +34,45 @@ const AddProductPage = () => {
       setIsLoading(false);
     }
   };
+  const handleUpdateProduct = async (updatedPId,updatedProduct) => {
+    
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("pname", updatedProduct.pname);
+      formData.append("stock", updatedProduct.stock);
+      formData.append("pprice", updatedProduct.pprice);
+      updatedProduct.events.forEach((event) => {
+        formData.append("events", event);
+      });
+      
+      if (updatedProduct.productImage instanceof File) {
+        formData.append("productImage", updatedProduct.productImage);
+      }
+
+      await axios.put(
+        `${apiUrl}/product/${updatedPId}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      await fetchProducts();
+      setShowModal(false);
+      setIsEditMode(false);
+      setEditProductId(null);
+      toast.success("Product updated successfully");
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to update product");
+      console.error("Error updating product:", err);
+      toast.error("Failed to update product");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchProducts();
@@ -246,6 +285,7 @@ const AddProductPage = () => {
                   </button>
                   <ProductForm
                     onAddProduct={handleAddProduct}
+                    onUpdateProduct={handleUpdateProduct}
                     onCancel={() => setShowModal(false)}
                     isLoading={isLoading}
                     isEditMode={isEditMode}

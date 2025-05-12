@@ -1,7 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-const ProductForm = ({ onAddProduct, onCancel, isLoading, isEditMode, productId }) => {
+const ProductForm = ({
+  onAddProduct,
+  onUpdateProduct,
+  onCancel,
+  isLoading,
+  isEditMode,
+  productId,
+}) => {
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
   const [productName, setProductName] = useState("");
@@ -11,9 +18,7 @@ const ProductForm = ({ onAddProduct, onCancel, isLoading, isEditMode, productId 
   const [imageFile, setImageFile] = useState(null);
   const [events, setEvents] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  
-  console.log(productId);
-  
+
   const dropdownRef = useRef(null);
 
   // Close dropdown when clicking outside
@@ -33,9 +38,9 @@ const ProductForm = ({ onAddProduct, onCancel, isLoading, isEditMode, productId 
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
   const handleEventChange = (eventId) => {
-    setSelectedEvents(prev => 
-      prev.includes(eventId) 
-        ? prev.filter(id => id !== eventId) 
+    setSelectedEvents((prev) =>
+      prev.includes(eventId)
+        ? prev.filter((id) => id !== eventId)
         : [...prev, eventId]
     );
   };
@@ -45,46 +50,56 @@ const ProductForm = ({ onAddProduct, onCancel, isLoading, isEditMode, productId 
       try {
         const response = await axios.get(`${apiUrl}/event`);
         setEvents(response.data);
+
+        if (productId && isEditMode) {
+          setProductName(productId.pname || "");
+          setStock(productId.stockqut || "");
+          setPrice(productId.pprice || "");
+
+          // Extract just the event IDs from the array of event objects
+          const eventIds = productId.events.map((event) => event._id);
+          setSelectedEvents(eventIds);
+        }
       } catch (err) {
         console.error("Error fetching events:", err);
       }
     };
 
     fetchEvents();
-    
-    if (productId && isEditMode) {
-      setProductName(productId.pname || "");
-      setStock(productId.stockqut || "");
-      setSelectedEvents(productId.ename || []);
-      setPrice(productId.pprice || "");
-    }
   }, [productId, isEditMode, apiUrl]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = (e) => {
+  e.preventDefault();
 
-    const newProduct = {
-      pname: productName,
-      events: selectedEvents, 
-      stock,
-      pprice: price,
-      productImage: imageFile,
-    };
-
-    onAddProduct(newProduct);
-    
-    // Clear form fields after submit
-    setProductName("");
-    setSelectedEvents([]);
-    setStock("");
-    setPrice("");
-    setImageFile(null);
+  const productData = {
+    pname: productName,
+    events: selectedEvents,
+    stock,
+    pprice: price,
+    ...(imageFile && { productImage: imageFile }),
   };
 
+  if (isEditMode && productId) {
+    onUpdateProduct(productId._id, productData);
+  } else {
+    onAddProduct(productData);
+  }
+
+  if (!isEditMode) {
+    setProductName("");
+    setSelectedEvents([]);
+    setStock(50);
+    setPrice("");
+    setImageFile(null);
+  }
+};
+
   const getSelectedEventTitles = () => {
+    if (selectedEvents.length === 0) return "Select events...";
+
     return events
-      .filter(event => selectedEvents.includes(event._id))
-      .map(event => event.title)
+      .filter((event) => selectedEvents.includes(event._id))
+      .map((event) => event.title)
       .join(", ");
   };
 
@@ -95,7 +110,9 @@ const ProductForm = ({ onAddProduct, onCancel, isLoading, isEditMode, productId 
       </h2>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Product Name</label>
+        <label className="block text-sm font-medium text-gray-700">
+          Product Name
+        </label>
         <input
           type="text"
           value={productName}
@@ -106,7 +123,9 @@ const ProductForm = ({ onAddProduct, onCancel, isLoading, isEditMode, productId 
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Product Image</label>
+        <label className="block text-sm font-medium text-gray-700">
+          Product Image
+        </label>
         <input
           type="file"
           accept="image/*"
@@ -122,21 +141,25 @@ const ProductForm = ({ onAddProduct, onCancel, isLoading, isEditMode, productId 
       </div>
 
       <div className="relative" ref={dropdownRef}>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Events</label>
-        <div 
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Events
+        </label>
+        <div
           className="w-full px-3 py-2 border border-gray-300 rounded cursor-pointer"
           onClick={toggleDropdown}
         >
-          {selectedEvents.length > 0 ? getSelectedEventTitles() : "Select events..."}
+          {selectedEvents.length > 0
+            ? getSelectedEventTitles()
+            : "Select events..."}
         </div>
-        
+
         {isDropdownOpen && (
           <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-auto">
             {events.map((event) => (
-              <div 
-                key={event._id} 
+              <div
+                key={event._id}
                 className={`px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center ${
-                  selectedEvents.includes(event._id) ? 'bg-blue-50' : ''
+                  selectedEvents.includes(event._id) ? "bg-blue-50" : ""
                 }`}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -157,7 +180,9 @@ const ProductForm = ({ onAddProduct, onCancel, isLoading, isEditMode, productId 
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Stock Quantity</label>
+        <label className="block text-sm font-medium text-gray-700">
+          Stock Quantity
+        </label>
         <input
           type="number"
           min="50"
@@ -194,7 +219,11 @@ const ProductForm = ({ onAddProduct, onCancel, isLoading, isEditMode, productId 
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           disabled={isLoading}
         >
-          {isLoading ? "Saving..." : isEditMode ? "Update Product" : "Save Product"}
+          {isLoading
+            ? "Saving..."
+            : isEditMode
+            ? "Update Product"
+            : "Save Product"}
         </button>
       </div>
     </form>
