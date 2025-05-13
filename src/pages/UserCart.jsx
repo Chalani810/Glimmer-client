@@ -10,6 +10,9 @@ const userData = JSON.parse(localStorage.getItem("user"));
 const CartPage = () => {
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [editingQuantity, setEditingQuantity] = useState(null);
+  const [tempQuantity, setTempQuantity] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const fetchCart = async () => {
@@ -26,33 +29,43 @@ const CartPage = () => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchCart();
   }, []);
 
+  const handleQuantityChange = (productId, value) => {
+    const numValue = parseInt(value);
+    if (isNaN(numValue)) return;
+
+    const product = cart.items.find(item => item.productId._id === productId);
+    if (!product) return;
+
+    if (numValue < 1) return;
+    if (numValue > product.productId.stockqut) {
+      setError(`Only ${product.productId.stockqut} items available`);
+      return;
+    }
+
+    handleUpdateQuantity(productId, numValue);
+  };
+
   const handleUpdateQuantity = async (productId, newQuantity) => {
     try {
-      const updatedItems = cart.items.map((item) =>
-        item.productId._id === productId
-          ? { ...item, quantity: newQuantity }
-          : item
-      );
-
+      setError("");
       const response = await axios.patch(
         `${apiUrl}/cart/${userData.id}/items/${productId}`,
-        {
-          quantity: newQuantity
-        },
+        { quantity: newQuantity },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
-
       fetchCart();
     } catch (error) {
       console.error("Error updating quantity:", error);
+      setError("Failed to update quantity. Please try again.");
     }
   };
 
@@ -67,14 +80,36 @@ const CartPage = () => {
           },
         }
       );
-
       fetchCart();
     } catch (error) {
       console.error("Error removing item:", error);
+      setError("Failed to remove item. Please try again.");
     }
   };
 
+  const startEditing = (productId, currentQuantity) => {
+    setEditingQuantity(productId);
+    setTempQuantity(currentQuantity.toString());
+  };
+
+  const finishEditing = (productId) => {
+    if (tempQuantity !== "") {
+      handleQuantityChange(productId, tempQuantity);
+    }
+    setEditingQuantity(null);
+  };
+
   const handleCheckout = () => {
+    // Additional validation before checkout
+    const outOfStockItems = cart.items.filter(
+      item => item.quantity > item.productId.stockqut
+    );
+    
+    if (outOfStockItems.length > 0) {
+      setError("Some items in your cart exceed available stock. Please adjust quantities.");
+      return;
+    }
+    
     navigate("/checkout");
   };
 
@@ -116,6 +151,12 @@ const CartPage = () => {
           <p className="text-gray-500 mt-2">Ready to place your order?</p>
         </div>
 
+        {error && (
+          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
+            <p>{error}</p>
+          </div>
+        )}
+
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left Column: Items */}
           <div className="flex-1 space-y-6">
@@ -150,31 +191,61 @@ const CartPage = () => {
                     {item.productId.pname}
                   </h3>
                   <p className="text-gray-600">Rs.{item.price.toFixed(2)}</p>
-                  <p className="text-sm text-gray-400">
+                  <p className={`text-sm ${
+                    item.productId.stockqut < item.quantity 
+                      ? "text-red-500" 
+                      : "text-gray-400"
+                  }`}>
                     In stock: {item.productId.stockqut}
                   </p>
                   <div className="flex items-center mt-2 gap-3">
                     <div className="flex items-center rounded-full overflow-hidden border border-gray-300">
                       <button
                         onClick={() =>
-                          handleUpdateQuantity(
+                          handleQuantityChange(
                             item.productId._id,
                             Math.max(1, item.quantity - 1)
                           )
                         }
                         className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 focus:outline-none"
+                        disabled={item.quantity <= 1}
                       >
                         <AiOutlineMinus />
                       </button>
-                      <span className="px-3">{item.quantity}</span>
+                      
+                      {editingQuantity === item.productId._id ? (
+                        <input
+                          type="number"
+                          value={tempQuantity}
+                          onChange={(e) => setTempQuantity(e.target.value)}
+                          onBlur={() => finishEditing(item.productId._id)}
+                          onKeyPress={(e) => {
+                            if (e.key === 'Enter') {
+                              finishEditing(item.productId._id);
+                            }
+                          }}
+                          className="w-12 text-center border-none focus:outline-none"
+                          min="1"
+                          max={item.productId.stockqut}
+                        />
+                      ) : (
+                        <span 
+                          className="px-3 cursor-pointer"
+                          onClick={() => startEditing(item.productId._id, item.quantity)}
+                        >
+                          {item.quantity}
+                        </span>
+                      )}
+                      
                       <button
                         onClick={() =>
-                          handleUpdateQuantity(
+                          handleQuantityChange(
                             item.productId._id,
-                            item.quantity + 1
+                            Math.min(item.quantity + 1, item.productId.stockqut)
                           )
                         }
                         className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 focus:outline-none"
+                        disabled={item.quantity >= item.productId.stockqut}
                       >
                         <AiOutlinePlus />
                       </button>
@@ -213,9 +284,16 @@ const CartPage = () => {
               </div>
               <button
                 onClick={handleCheckout}
-                className="w-full bg-red-500 text-white py-3 rounded-full text-lg hover:bg-red-600 transition focus:outline-none"
+                className={`w-full bg-red-500 text-white py-3 rounded-full text-lg hover:bg-red-600 transition focus:outline-none ${
+                  cart.items.some(item => item.quantity > item.productId.stockqut)
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                disabled={cart.items.some(item => item.quantity > item.productId.stockqut)}
               >
-                Proceed to Checkout
+                {cart.items.some(item => item.quantity > item.productId.stockqut)
+                  ? "Adjust quantities to checkout"
+                  : "Proceed to Checkout"}
               </button>
             </div>
           </div>

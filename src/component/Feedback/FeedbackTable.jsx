@@ -25,7 +25,7 @@ const FeedbackCardGrid = ({ feedbacks, onEdit, onDelete }) => {
             <div className="flex justify-between items-start mb-1">
               <div>
                 <h3 className="text-xs font-semibold text-gray-800">
-                  Order #{fb.orderId.orderId.split('-')[1]}
+                  Order #{fb?.orderId?.orderId?.split('-')[1]}
                 </h3>
                 <p className="text-xs text-gray-500">
                   {new Date(fb.date).toLocaleDateString()}
@@ -36,19 +36,19 @@ const FeedbackCardGrid = ({ feedbacks, onEdit, onDelete }) => {
                   <Star
                     key={i}
                     size={14}
-                    className={i < fb.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}
+                    className={i < fb?.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}
                   />
                 ))}
               </div>
             </div>
 
-            <p className="text-xs text-gray-600 mb-2 line-clamp-2">{fb.message}</p>
+            <p className="text-xs text-gray-600 mb-2 line-clamp-2">{fb?.message}</p>
 
             {/* Compact Order Summary */}
             <div className="mb-2 border-t py-2">
               <div className="flex justify-between text-xs">
                 <span className="text-gray-500">Event:</span>
-                <span className="text-gray-700 font-medium">{fb.orderId.cart?.eventId.title}</span>
+                <span className="text-gray-700 font-medium">{fb.orderId?.cart?.eventId?.title}</span>
               </div>
              
             </div>
