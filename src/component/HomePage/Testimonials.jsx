@@ -2,6 +2,7 @@ import React from 'react';
 import image12 from '../../component/HomePage/image12.jpg';
 import image36 from '../../component/HomePage/image36.jpg';
 import image14 from '../../component/HomePage/image14.jpg';
+import { Link } from 'react-router-dom';
 
 const testimonials = [
   {
@@ -23,7 +24,7 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section className="px-8 py-16 bg-gray-50">
+    <section className="px-8 py-10 bg-gray-50">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold">What Our <span className="text-red-500">Clients Say</span></h2>
       </div>
@@ -34,8 +35,17 @@ const Testimonials = () => {
             <img src={testi.image} alt={testi.name} className="w-20 h-20 rounded-full mb-4 object-cover" />
             <p className="text-gray-600 mb-4">{testi.feedback}</p>
             <h4 className="font-semibold">{testi.name}</h4>
-          </div>
+            </div>
         ))}
+      </div>
+
+      <div className="text-right mt-6">
+        <Link 
+          to="/AboutUs#testimonials" 
+          className="text-red-500 hover:text-red-700 font-medium"
+        >
+          See more....
+        </Link>
       </div>
     </section>
   );

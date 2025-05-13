@@ -32,7 +32,7 @@ const FAQ = () => {
   };
 
   return (
-    <section className="px-8 py-16">
+    <section className="px-8 py-10">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold">
           Frequently Asked <span className="text-red-500">Questions</span>

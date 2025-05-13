@@ -9,9 +9,13 @@ const FeedbackListPage = () => {
   const [isEdit, setIsEdit] = useState(false);
 
   const fetchFeedbacks = async () => {
-    const res = await fetch('/api/feedback');
-    const data = await res.json();
-    setFeedbacks(data);
+    try {
+      const res = await fetch('/api/feedback');
+      const data = await res.json();
+      setFeedbacks(data);
+    } catch (error) {
+      console.error('Error fetching feedbacks:', error);
+    }
   };
 
   useEffect(() => {
@@ -32,30 +36,33 @@ const FeedbackListPage = () => {
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this feedback?')) {
-      await fetch(`/api/feedback/${id}`, { method: 'DELETE' });
-      fetchFeedbacks();
+      try {
+        await fetch(`/api/feedback/${id}`, { method: 'DELETE' });
+        fetchFeedbacks();
+      } catch (error) {
+        console.error('Error deleting feedback:', error);
+      }
     }
   };
 
   return (
-    <>
-      
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold">Your Feedback</h2>
-          <button
-            onClick={handleAddNew}
-            className="bg-red-500 text-white px-4 py-2 rounded"
-          >
-            Add a New Feedback
-          </button>
-        </div>
-        <FeedbackTable
-          feedbacks={feedbacks}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+    <div className="container mx-auto p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-800">My Feedbacks</h1>
+        <button
+          onClick={handleAddNew}
+          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md shadow"
+        >
+          Add a New Feedback
+        </button>
       </div>
+      
+      <FeedbackTable
+        feedbacks={feedbacks}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+      
       {modalOpen && (
         <FeedbackModal
           isEdit={isEdit}
@@ -64,8 +71,7 @@ const FeedbackListPage = () => {
           onRefresh={fetchFeedbacks}
         />
       )}
-      
-    </>
+    </div>
   );
 };
 

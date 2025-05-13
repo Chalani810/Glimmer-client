@@ -1,11 +1,10 @@
-// Testimonials.jsx
 import React from 'react';
 import Testimonial1 from '../../assets/testimonial-1.jpg';
 import Testimonial2 from '../../assets/testimonial-2.jpg';
 
 const Testimonials = () => {
   return (
-    <section className="py-12 px-6 bg-gray-100">
+    <section id="testimonials" className="py-12 px-6 bg-gray-100">
       <div className="max-w-6xl mx-auto text-center">
         <h2 className="text-4xl font-bold mb-12">What People Say About Glimmer</h2>
 
@@ -28,7 +27,6 @@ const Testimonials = () => {
             <h3 className="font-bold">Daniel Martinez</h3>
           </div>
         </div>
-
       </div>
     </section>
   );

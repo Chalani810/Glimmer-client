@@ -664,6 +664,17 @@ const ProfileCard = () => {
           </div>
         </div>
       )}
+
+      {!isEditing && (
+        <div className="flex justify-end mt-4">
+          <button
+             onClick={() => navigate('/feedback')}
+             className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          >
+            My Feedbacks
+         </button>
+  </div>
+)}
     </div>
   );
 };
