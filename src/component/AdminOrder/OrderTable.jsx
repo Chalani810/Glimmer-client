@@ -264,6 +264,7 @@ const OrderTable = () => {
           order={editingOrder}
           onClose={() => setEditingOrder(null)}
           onStatusChange={handleStatusChange}
+          refresh={fetchOrders}
         />
       )}
     </div>

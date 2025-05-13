@@ -14,9 +14,7 @@ const OrderModal = ({ order, onClose }) => {
     }
   };
 
-  console.log("Order with employees:", order.assignedEmployees);
-
-  
+  console.log("Order with employees:", order);
 
   const getHeadingClasses = (status) => {
     switch (status) {
@@ -174,7 +172,7 @@ const OrderModal = ({ order, onClose }) => {
                       {order.eventDate}
                     </span>
                   </p>
-                  </div>
+                </div>
 
                 <p className="text-gray-600 md:col-span-2">
                   <span className="font-medium text-gray-700">Address:</span>{" "}
@@ -190,6 +188,76 @@ const OrderModal = ({ order, onClose }) => {
                 </span>
               </p>
             </div>
+          </div>
+
+          <div className="bg-gray-50 rounded-lg p-5">
+            <h4 className="text-lg font-medium text-gray-700 mb-4 flex items-center">
+              <svg
+                className="w-5 h-5 mr-2 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1.5"
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
+              Cart Items
+            </h4>
+            {order.cart?.items && order.cart?.items.length > 0 ? (
+              <div className="space-y-4">
+                {order.cart?.items.map((item, index) => (
+                  <div
+                    key={item._id || index}
+                    className="flex items-center justify-between bg-white p-3 rounded-md border border-gray-200"
+                  >
+                    <div className="flex items-center space-x-4">
+                      {item.productId?.photoUrl && (
+                        <img
+                          src={item.productId.photoUrl}
+                          alt={item.productId.name || item.productId.pname}
+                          className="w-12 h-12 object-cover rounded"
+                          onError={(e) => {
+                            e.target.src = "/path-to-fallback-image.png";
+                          }}
+                        />
+                      )}
+                      <div>
+                        <p className="text-gray-800 font-medium">
+                          {item.productId?.name ||
+                            item.productId?.pname ||
+                            "Unknown Product"}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          Rs.{" "}
+                          {Number(
+                            item.price ||
+                              item.productId?.price ||
+                              item.productId?.pprice ||
+                              0
+                          ).toFixed(2)}{" "}
+                          x {item.quantity}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-gray-800 font-semibold">
+                      Rs.{" "}
+                      {Number(
+                        (item.price ||
+                          item.productId?.price ||
+                          item.productId?.pprice ||
+                          0) * item.quantity
+                      ).toFixed(2)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500 italic">No items in the order</p>
+            )}
           </div>
 
           {/* Payment Information Section */}
@@ -236,27 +304,106 @@ const OrderModal = ({ order, onClose }) => {
           </div>
 
           {/* Assigned Employees Section */}
-<div className="bg-gray-50 rounded-lg p-5">
-  <h4 className="text-lg font-medium text-gray-700 mb-4 flex items-center">
-    <svg className="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-    </svg>
-    Assigned Employees
-  </h4>
-  {order.assignedEmployees && order.assignedEmployees.length > 0 ? (
-    <div className="space-y-2">
-      {order.assignedEmployees.map(employee => (
-        <div key={employee._id} className="flex items-center">
-          <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
-            {employee.name}
-          </span>
-        </div>
-      ))}
-    </div>
-  ) : (
-    <p className="text-gray-500 italic">No employees assigned</p>
-  )}
-</div>
+          <div className="bg-gray-50 rounded-lg p-5">
+            <h4 className="text-lg font-medium text-gray-700 mb-4 flex items-center">
+              <svg
+                className="w-5 h-5 mr-2 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1.5"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
+              Assigned Employees
+            </h4>
+            {order.employees && order.employees.length > 0 ? (
+              <div className="space-y-3">
+                <h4 className="text-sm font-medium text-gray-700 mb-1">
+                  Assigned Staff:
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {order.employees.map((employee) => (
+                    <div
+                      key={employee._id}
+                      className="border rounded-lg p-3 flex items-start space-x-3 bg-white shadow-sm"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-baseline justify-between">
+                          <h5 className="text-sm font-medium text-gray-900 truncate">
+                            {employee.name}
+                          </h5>
+                          <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {employee.occupation?.title || employee.empId}
+                          </span>
+                        </div>
+                        <div className="mt-1 text-xs text-gray-500 space-y-1">
+                          <div className="flex items-center">
+                            <svg
+                              className="h-3 w-3 text-gray-400 mr-1"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                              />
+                            </svg>
+                            <span className="truncate">{employee.email}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <svg
+                              className="h-3 w-3 text-gray-400 mr-1"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                              />
+                            </svg>
+                            <span>{employee.phone}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <svg
+                              className="h-3 w-3 text-gray-400 mr-1"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                            <span>
+                              {employee.availability
+                                ? "Available"
+                                : "Unavailable"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="text-sm text-gray-500">No staff assigned yet</div>
+            )}
+          </div>
 
           {/* Payment Slip Section */}
           {order.slipUrl && (

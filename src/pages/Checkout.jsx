@@ -564,7 +564,7 @@ const CheckoutForm = () => {
             </label>
             <input
               type="text"
-              value={`$${formData.cartTotal}`}
+              value={`Rs.${formData.cartTotal}`}
               readOnly
               className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md shadow-sm py-2 px-3"
             />
@@ -575,7 +575,7 @@ const CheckoutForm = () => {
             </label>
             <input
               type="text"
-              value={`$${formData.advancePayment}`}
+              value={`Rs.${formData.advancePayment}`}
               readOnly
               className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md shadow-sm py-2 px-3"
             />
@@ -586,7 +586,7 @@ const CheckoutForm = () => {
             </label>
             <input
               type="text"
-              value={`$${formData.duepayment}`}
+              value={`Rs.${formData.duepayment}`}
               readOnly
               className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md shadow-sm py-2 px-3"
             />
