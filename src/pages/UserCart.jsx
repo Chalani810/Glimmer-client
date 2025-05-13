@@ -122,7 +122,7 @@ const CartPage = () => {
             {cart.eventId && (
               <div className="bg-white p-4 rounded-xl shadow">
                 <h2 className="text-lg font-medium text-gray-800">
-                  Event: {cart.eventId.name}
+                  Event: {cart.eventId.title}
                 </h2>
                 <p className="text-gray-500 text-sm mt-1">
                   {cart.eventId.description}
@@ -149,7 +149,7 @@ const CartPage = () => {
                   <h3 className="text-xl font-semibold">
                     {item.productId.pname}
                   </h3>
-                  <p className="text-gray-600">₹{item.price.toFixed(2)}</p>
+                  <p className="text-gray-600">Rs.{item.price.toFixed(2)}</p>
                   <p className="text-sm text-gray-400">
                     In stock: {item.productId.stockqut}
                   </p>
@@ -200,15 +200,15 @@ const CartPage = () => {
               <div className="space-y-2 text-gray-700">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>₹{cart.cartTotal.toFixed(2)}</span>
+                  <span>Rs.{cart.cartTotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Advance Payment</span>
-                  <span>-₹{cart.advancePayment.toFixed(2)}</span>
+                  <span>Rs.{cart.advancePayment.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between font-semibold border-t pt-3">
                   <span>Total Due</span>
-                  <span>₹{cart.totalDue.toFixed(2)}</span>
+                  <span>Rs.{cart.totalDue.toFixed(2)}</span>
                 </div>
               </div>
               <button

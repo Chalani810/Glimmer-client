@@ -14,6 +14,10 @@ const OrderModal = ({ order, onClose }) => {
     }
   };
 
+  console.log("Order with employees:", order.assignedEmployees);
+
+  
+
   const getHeadingClasses = (status) => {
     switch (status) {
       case "Completed":
@@ -156,10 +160,22 @@ const OrderModal = ({ order, onClose }) => {
                       Participated Guests Count:
                     </span>{" "}
                     <span className="text-gray-800 capitalize">
-                      {order.guestcount}
+                      {order.guestCount}
                     </span>
                   </p>
                 </div>
+
+                <div className="space-y-3">
+                  <p className="text-gray-600">
+                    <span className="font-medium text-gray-700">
+                      Event Date:
+                    </span>{" "}
+                    <span className="text-gray-800 capitalize">
+                      {order.eventDate}
+                    </span>
+                  </p>
+                  </div>
+
                 <p className="text-gray-600 md:col-span-2">
                   <span className="font-medium text-gray-700">Address:</span>{" "}
                   <span className="text-gray-800">
@@ -220,31 +236,27 @@ const OrderModal = ({ order, onClose }) => {
           </div>
 
           {/* Assigned Employees Section */}
-          <div className="bg-gray-50 rounded-lg p-5">
-            <h4 className="text-lg font-medium text-gray-700 mb-4 flex items-center">
-              <svg
-                className="w-5 h-5 mr-2 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
-              Assigned Employees
-            </h4>
-            <p className="text-gray-600">
-              {order.assignedEmployees?.length > 0
-                ? order.assignedEmployees
-                    .map((emp) => `${emp.firstName} ${emp.lastName}`)
-                    .join(", ")
-                : "No employees assigned"}
-            </p>
-          </div>
+<div className="bg-gray-50 rounded-lg p-5">
+  <h4 className="text-lg font-medium text-gray-700 mb-4 flex items-center">
+    <svg className="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+    </svg>
+    Assigned Employees
+  </h4>
+  {order.assignedEmployees && order.assignedEmployees.length > 0 ? (
+    <div className="space-y-2">
+      {order.assignedEmployees.map(employee => (
+        <div key={employee._id} className="flex items-center">
+          <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+            {employee.name}
+          </span>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <p className="text-gray-500 italic">No employees assigned</p>
+  )}
+</div>
 
           {/* Payment Slip Section */}
           {order.slipUrl && (

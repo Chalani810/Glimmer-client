@@ -11,6 +11,7 @@ const OrderRow = ({
 }) => {
   const [status, setStatus] = useState(order?.status || "Pending");
   const [isChangingStatus, setIsChangingStatus] = useState(false);
+  
 
   // Sync status with order prop
   useEffect(() => {
@@ -23,6 +24,11 @@ const OrderRow = ({
     return null;
   }
 
+  // Get event name from cart
+  const eventName = order.cart?.eventId?.title || 
+                   (order.cart?.eventId ? `Event #${order.cart.eventId.toString().slice(-4)}` : 
+                   "No event specified");
+
   return (
     <tr className="border-b hover:bg-gray-50 transition flex flex-col md:table-row bg-white">
       {/* Order ID - Always visible */}
@@ -31,13 +37,22 @@ const OrderRow = ({
         {order.orderId || "N/A"}
       </td>
 
-      {/* Customer Name - Hidden on small screens */}
-      <td className="px-4 py-3 hidden md:table-cell">
-        {`${order.firstName || ""} ${order.lastName || ""}`.trim() || "N/A"}
+     {/* Event Name - Now properly showing from cart */}
+      <td className="px-4 py-3">
+        <span className="md:hidden font-medium">Event: </span>
+        {eventName}
       </td>
 
-      {/* Email - Hidden on small screens */}
-      <td className="px-4 py-3 hidden md:table-cell">{order.email || "N/A"}</td>
+      <td className="px-4 py-3 hidden md:table-cell">
+  {order?.eventDate
+    ? new Date(order.eventDate).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "N/A"}
+</td>
+
 
       {/* Amounts - Stacked on mobile */}
       <td className="px-4 py-3">

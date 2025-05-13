@@ -23,14 +23,14 @@ const features = [
 
 const Features = () => {
   return (
-    <section className="px-8 py-16 bg-gray-50">
+    <section className="px-8 py-8 bg-gray-25">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold">Welcome To <span className="text-red-500">Glimmer Events!</span></h2>
       </div>
-      <div className="flex flex-col md:flex-row gap-8 justify-center">
+      <div className="flex flex-col md:flex-row gap-5 justify-center">
   {features.map((feature, idx) => (
     <div key={idx} className="max-w-sm p-6 bg-white rounded-lg shadow-md text-center">
-      <img src={feature.image} alt={feature.title} className="w-full h-40 object-cover rounded-md mb-4" />
+      <img src={feature.image} alt={feature.title} className="w-full h-25 object-cover rounded-md mb-4" />
       <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
       <p className="text-gray-600">{feature.description}</p>
     </div>

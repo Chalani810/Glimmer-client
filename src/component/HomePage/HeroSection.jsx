@@ -7,13 +7,13 @@ import image6 from '../../component/HomePage/image6.jpg';
 
 const HeroSection = () => {
   return (
-    <section className="flex flex-col md:flex-row items-center px-8 py-16">
+    <section className="flex flex-col md:flex-row items-center px-8 py-15">
       <div className="flex-1 space-y-6">
         <p className="text-sm text-red-500">Everything You Need to Host Unforgettable Events,All in One Place.</p>
         <h1 className="text-4xl md:text-5xl font-bold leading-tight">
           Plan & Host Spectacular <span className="text-red-500 italic">Moments</span>, With Us
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-400">
           Don't wait!<br /> It's time to bring your dream event to life! <br />From corporate gatherings to grand celebrations, we make every occasion special.
         </p>
         <div className="flex space-x-4">

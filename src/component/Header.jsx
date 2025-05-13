@@ -74,7 +74,7 @@ const Header = () => {
         <Link to="/contactUs" className="text-black hover:text-red-600">Contact Us</Link>
         
         {isLoggedIn && (
-          <Link to="/order-history" className="text-black hover:text-red-600">
+          <Link to={`/orders/${user._id}`} className="text-black hover:text-red-600">
             Order History
           </Link>
         )}

@@ -87,10 +87,10 @@ const OrderTable = () => {
   };
 
   const filteredOrders = orders.filter(order => 
-    (order.orderId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (order.title?.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (order.status?.toLowerCase().includes(searchTerm.toLowerCase()))
-  ));
+  (order.orderId?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+  (order.title?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+  (order.status?.toLowerCase() || "").includes(searchTerm.toLowerCase())
+);
 
   return (
     <div className="max-w-full mx-auto bg-gray-50">

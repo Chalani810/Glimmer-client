@@ -5,9 +5,19 @@ import axios from "axios";
 const EditOrderModal = ({ order, onClose, onStatusChange, employees }) => {
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
   const [newStatus, setNewStatus] = useState(order.status || "");
-  const [SelectedEmployee, setSelectedEmployees] = useState(order.assignedEmployee || []);
+ const [selectedEmployees, setSelectedEmployees] = useState(order.assignedEmployees || []);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const handleCheckboxChange = (empId) => {
+    if (selectedEmployees.includes(empId)) {
+      // Remove if already selected
+      setSelectedEmployees(selectedEmployees.filter((id) => id !== empId));
+    } else {
+      // Add new selection
+      setSelectedEmployees([...selectedEmployees, empId]);
+    }
+  };
 
   const handleSave = async () => {
     if (!newStatus) {
@@ -21,11 +31,11 @@ const EditOrderModal = ({ order, onClose, onStatusChange, employees }) => {
       // Update order status in DB
       const response = await axios.put(`${apiUrl}/checkout/${order._id}/status`, {
         status: newStatus,
-        assignedEmployee: SelectedEmployee,
+        assignedEmployees: selectedEmployees,
       });
   
       // Notify parent component (optional)
-      onStatusChange(order._id, newStatus,setSelectedEmployees);
+      onStatusChange(order._id, newStatus, selectedEmployees);
       onClose();
     } catch (error) {
       console.error("Failed to update order status:", error);
@@ -64,7 +74,7 @@ const EditOrderModal = ({ order, onClose, onStatusChange, employees }) => {
 
         {/* Modal Header */}
         <div className="mb-4">
-          <h2 className="text-lg font-semibold text-gray-800">Edit Order Status</h2>
+          <h2 className="text-lg font-semibold text-gray-800">Edit Order</h2>
           <p className="text-xs text-gray-500 mt-1">Order ID: {order.orderNumber}</p>
         </div>
 
@@ -91,26 +101,30 @@ const EditOrderModal = ({ order, onClose, onStatusChange, employees }) => {
           {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
         </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Assign Employees
-          </label>
-          <select
-            multiple
-            value={SelectedEmployee}
-            onChange={(e) =>
-              setSelectedEmployees(Array.from(e.target.selectedOptions, option => option.value))
-            }
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm h-32"
-          >
-            {employees?.map((emp) => (
-              <option key={emp._id} value={emp._id}>
-                {emp.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
+       <div className="mb-4">
+  <label className="block text-sm font-medium text-gray-700 mb-2">
+    Assign Employees
+  </label>
+  <div className="max-h-40 overflow-y-auto border rounded px-2 py-1">
+    {employees?.map(emp => (
+      <label key={emp._id} className="flex items-center space-x-2 p-1 hover:bg-gray-50 rounded">
+        <input
+          type="checkbox"
+          checked={selectedEmployees.includes(emp._id)}
+          onChange={() => {
+            setSelectedEmployees(prev => 
+              prev.includes(emp._id)
+                ? prev.filter(id => id !== emp._id)
+                : [...prev, emp._id]
+            );
+          }}
+          className="rounded text-blue-600 focus:ring-blue-500"
+        />
+        <span>{emp.name}</span>
+      </label>
+    ))}
+  </div>
+</div>
 
         {/* Actions */}
         <div className="flex justify-end gap-3">

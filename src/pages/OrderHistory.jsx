@@ -1,196 +1,143 @@
-import React, { useState, useEffect } from "react";
-import OrderRow from "../component/AdminOrder/OrderRow";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 import OrderModal from "../component/AdminOrder/OrderModal";
-// import EmployeeAssignmentModal from "./EmployeeAssignmentModal";
 
 const OrderHistory = () => {
+  const userData = JSON.parse(localStorage.getItem("user"));
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
   const [orders, setOrders] = useState([]);
-  const [employees, setEmployees] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [assignOrder, setAssignOrder] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchOrders = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(`${apiUrl}/orders/user/${userData.id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      setOrders(response.data);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      toast.error(error.response?.data?.message || "Failed to load order history");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          setError("Please log in to view order history.");
-          setLoading(false);
-          return;
-        }
+    fetchOrders();
+  }, []);
 
-        // Fetch orders
-        const orderResponse = await fetch(`${apiUrl}/admin/bills`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!orderResponse.ok) {
-          const data = await orderResponse.json();
-          throw new Error(data.message || "Failed to fetch orders");
-        }
-        const orderData = await orderResponse.json();
-        setOrders(orderData);
-
-        // Fetch employees
-        const employeeResponse = await fetch(`${apiUrl}/employees`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!employeeResponse.ok) {
-          const data = await employeeResponse.json();
-          throw new Error(data.message || "Failed to fetch employees");
-        }
-        const employeeData = await employeeResponse.json();
-        setEmployees(employeeData);
-
-        setLoading(false);
-      } catch (err) {
-        setError(err.message || "An error occurred while fetching data.");
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [apiUrl]);
-
-  const handleViewDetails = (order) => {
-    setSelectedOrder(order);
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  const handleCloseModal = () => {
-    setSelectedOrder(null);
-  };
-
-  const handleStatusChange = async (orderId, status) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`${apiUrl}/admin/bills/${orderId}/status`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status }),
-      });
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || "Failed to update status");
-      }
-      const updatedOrder = await response.json();
-      setOrders(orders.map(o => (o._id === orderId ? updatedOrder : o)));
-    } catch (err) {
-      setError(err.message);
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Completed": return "bg-green-100 text-green-800";
+      case "Confirmed": return "bg-blue-100 text-blue-800";
+      case "Pending": return "bg-yellow-100 text-yellow-800";
+      case "Cancelled": return "bg-red-100 text-red-800";
+      default: return "bg-gray-100 text-gray-800";
     }
   };
 
-  const handleAssignEmployees = (order) => {
-    setAssignOrder(order);
-  };
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
 
-  const handleAssignSubmit = async (orderId, employeeIds) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`${apiUrl}/admin/bills/${orderId}/assign`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ employeeIds }),
-      });
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || "Failed to assign employees");
-      }
-      const updatedOrder = await response.json();
-      setOrders(orders.map(o => (o._id === orderId ? updatedOrder : o)));
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
-  const handleDelete = async (orderId) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`${apiUrl}/admin/bills/${orderId}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || "Failed to delete order");
-      }
-      setOrders(orders.filter(o => o._id !== orderId));
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
-  const handleEdit = (order) => {
-  };
+  if (orders.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <h3 className="text-lg font-medium text-gray-700">No orders found</h3>
+        <p className="mt-2 text-gray-500">You haven't placed any orders yet.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg border border-gray-200 min-w-0">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Order History</h2>
-
-      {loading && <p className="text-gray-600 text-center">Loading orders...</p>}
-
-      {error && (
-        <div className="mb-4 p-2 rounded bg-red-100 text-red-700">{error}</div>
-      )}
-
-      {!loading && !error && orders.length === 0 && (
-        <p className="text-gray-600 text-center">No orders found.</p>
-      )}
-
-      {!loading && !error && orders.length > 0 && (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-gray-700">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="p-3 font-medium text-gray-800">Order Number</th>
-                <th className="p-3 font-medium text-gray-800">Customer</th>
-                <th className="p-3 font-medium text-gray-800">Email</th>
-                <th className="p-3 font-medium text-gray-800">Total</th>
-                <th className="p-3 font-medium text-gray-800">Advance</th>
-                <th className="p-3 font-medium text-gray-800">Due</th>
-                <th className="p-3 font-medium text-gray-800">Contact Method</th>
-                <th className="p-3 font-medium text-gray-800">Guests</th>
-                <th className="p-3 font-medium text-gray-800">Assigned Employees</th>
-                <th className="p-3 font-medium text-gray-800">Status</th>
-                <th className="p-3 font-medium text-gray-800">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => (
-                <OrderRow
-                  key={order._id}
-                  order={order}
-                  onStatusChange={handleStatusChange}
-                  onDelete={handleDelete}
-                  onView={handleViewDetails}
-                  onEdit={handleEdit}
-                  onAssignEmployees={handleAssignEmployees}
-                />
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+    <div className="max-w-6xl mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">Your Order History</h1>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {orders.map((order) => (
+          <div key={order._id} className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <div className="p-5">
+              <div className="flex justify-between items-start mb-3">
+                <h3 className="text-lg font-semibold text-gray-800">Order #{order.orderId}</h3>
+                <span className={`text-xs px-3 py-1 rounded-full ${getStatusColor(order.status)}`}>
+                  {order.status}
+                </span>
+              </div>
+              
+              <div className="space-y-2 text-sm text-gray-600 mb-4">
+                <div className="flex items-center">
+                  <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
+                  <span>{order.cart?.eventId?.title || "N/A"}</span>
+                </div>
+                
+                <div className="flex items-center">
+                  <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span>{order.eventDate ? formatDate(order.eventDate) : "N/A"}</span>
+                </div>
+                
+                <div className="flex items-center">
+                  <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  <span>Guests: {order.guestCount || "N/A"}</span>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-3 gap-3 text-center mb-4">
+                <div className="bg-gray-50 p-2 rounded">
+                  <p className="text-xs text-gray-500">Total</p>
+                  <p className="font-medium">Rs {order.cartTotal?.toFixed(2) || "0.00"}</p>
+                </div>
+                <div className="bg-blue-50 p-2 rounded">
+                  <p className="text-xs text-blue-500">Paid</p>
+                  <p className="font-medium text-blue-600">Rs {order.advancePayment?.toFixed(2) || "0.00"}</p>
+                </div>
+                <div className="bg-green-50 p-2 rounded">
+                  <p className="text-xs text-green-500">Due</p>
+                  <p className="font-medium text-green-600">Rs {order.duepayment?.toFixed(2) || "0.00"}</p>
+                </div>
+              </div>
+              
+              <button
+                onClick={() => setSelectedOrder(order)}
+                className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                View Details
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
 
       {selectedOrder && (
-        <OrderModal order={selectedOrder} onClose={handleCloseModal} />
-      )}
-
-      {/* {assignOrder && (
-        <EmployeeAssignmentModal
-          order={assignOrder}
-          employees={employees}
-          onClose={() => setAssignOrder(null)}
-          onAssign={handleAssignSubmit}
+        <OrderModal
+          order={selectedOrder}
+          onClose={() => setSelectedOrder(null)}
+          isCustomerView={true}
         />
-      )} */}
+      )}
     </div>
   );
 };

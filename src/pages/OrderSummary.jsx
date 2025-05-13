@@ -1,34 +1,30 @@
 import React from "react";
 
 const OrderSummary = ({ order }) => {
-  // Test data for fallback
+  // Fallback data aligned with updated cart model
   const testOrder = {
-    orderNumber: "ORD12345",
-    status: "Pending",
-    firstName: "John",
-    lastName: "Doe",
-    email: "john@example.com",
-    mobile: "0771234567",
-    contactMethod: "Email",
-    address: "123 Main Street, Colombo",
-    comment: "Please deliver between 2-4 PM.",
-    advancePayment: 2000,
-    totalAmount: 5000,
-    eventName: "Wedding Reception",
-    assignedEmployee: "Jane Smith",
-    eventDate: "2025-05-10",
-    items: [
-      { name: "Chair", quantity: 4, price: 1000 },
-      { name: "Table", quantity: 1, price: 3000 },
-    ],
+    _id: "",
+    userId: "",
+    eventId: "",
+    items: [{ productId: { pname: "Placeholder Item" }, quantity: 1, price: 0 }],
+    cartTotal: 0,
+    advancePayment: 0,
+    totalDue: 0,
+    orderNumber: "",
+    status: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    mobile: "",
+    contactMethod: "",
+    address: "",
+    guestCount: "",
+    eventName: "",
+    assignedEmployee: "",
+    eventDate: "",
   };
 
   const currentOrder = order || testOrder;
-
-  const dueAmount =
-    currentOrder.totalAmount && currentOrder.advancePayment
-      ? currentOrder.totalAmount - currentOrder.advancePayment
-      : 0;
 
   const statusColor = {
     Completed: "text-green-600 border-green-600 bg-green-50",
@@ -46,10 +42,10 @@ const OrderSummary = ({ order }) => {
       <div className="flex justify-between items-center border-b pb-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold">Order Summary</h1>
-          <p className="text-sm text-gray-500">Order No: {currentOrder.orderNumber}</p>
+          <p className="text-sm text-gray-500">Order No: {currentOrder.orderNumber || currentOrder._id}</p>
         </div>
         <div className={`px-3 py-1 rounded-full border text-sm ${statusClass}`}>
-          {currentOrder.status}
+          {currentOrder.status || "Unknown"}
         </div>
       </div>
 
@@ -62,9 +58,7 @@ const OrderSummary = ({ order }) => {
           <p><span className="font-medium">Mobile:</span> {currentOrder.mobile}</p>
           <p><span className="font-medium">Preferred Contact:</span> {currentOrder.contactMethod}</p>
           <p className="col-span-2"><span className="font-medium">Address:</span> {currentOrder.address}</p>
-          {currentOrder.comment && (
-            <p className="col-span-2"><span className="font-medium">Comment:</span> {currentOrder.comment}</p>
-          )}
+          <p><span className="font-medium">Guests:</span> {currentOrder.guestCount}</p>
           <p><span className="font-medium">Event Name:</span> {currentOrder.eventName}</p>
           <p><span className="font-medium">Assigned Employee:</span> {currentOrder.assignedEmployee}</p>
           <p><span className="font-medium">Event Date:</span> {currentOrder.eventDate}</p>
@@ -72,7 +66,7 @@ const OrderSummary = ({ order }) => {
       </div>
 
       {/* Ordered Items */}
-      {currentOrder.items && (
+      {currentOrder.items && currentOrder.items.length > 0 && (
         <div className="mb-6">
           <h2 className="text-lg font-semibold mb-2">Ordered Items</h2>
           <table className="w-full text-sm border">
@@ -86,9 +80,9 @@ const OrderSummary = ({ order }) => {
             <tbody>
               {currentOrder.items.map((item, i) => (
                 <tr key={i}>
-                  <td className="p-2 border">{item.name}</td>
-                  <td className="p-2 border">{item.quantity}</td>
-                  <td className="p-2 border">Rs. {item.price}</td>
+                  <td className="p-2 border">{item.productId?.pname || "Unknown Item"}</td>
+                  <td className="p-2 border">{item.quantity || 0}</td>
+                  <td className="p-2 border">Rs. {(item.price || 0).toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>
@@ -100,9 +94,9 @@ const OrderSummary = ({ order }) => {
       <div className="mb-6">
         <h2 className="text-lg font-semibold mb-2">Payment Summary</h2>
         <div className="grid grid-cols-2 gap-4 text-sm">
-          <p><span className="font-medium">Advance Paid:</span> Rs. {currentOrder.advancePayment || 0}</p>
-          <p><span className="font-medium">Total Amount:</span> Rs. {currentOrder.totalAmount || 0}</p>
-          <p><span className="font-medium">Amount Due:</span> Rs. {dueAmount}</p>
+          <p><span className="font-medium">Advance Paid:</span> Rs. {(currentOrder.advancePayment || 0).toFixed(2)}</p>
+          <p><span className="font-medium">Total Amount:</span> Rs. {(currentOrder.cartTotal || 0).toFixed(2)}</p>
+          <p><span className="font-medium">Total Due:</span> Rs. {(currentOrder.totalDue || 0).toFixed(2)}</p>
         </div>
       </div>
     </div>
