@@ -4,7 +4,7 @@ const FeedbackForm = () => {
   return (
     <form className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold">Customer Feedback</h2>
+        <h2 className="text-xl font-semibold">My Feedbacks</h2>
         <p className="text-sm text-gray-500 mt-1">
           Lorem ipsum dolor sit amet consectetur. Vivamus ac viverra neque...
         </p>

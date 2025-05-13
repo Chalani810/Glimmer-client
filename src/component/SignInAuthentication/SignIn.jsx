@@ -143,7 +143,7 @@ const SignIn = () => {
               <input type="checkbox" className="mr-2" />
               Remember
             </label>
-            <a href="#" className="text-red-500 hover:underline">
+            <a href="/forgot-password" className="text-red-500 hover:underline">
               Forgot Password?
             </a>
           </div>

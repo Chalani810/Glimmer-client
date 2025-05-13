@@ -66,7 +66,7 @@ const SignUpForm = () => {
         if (!value.trim()) {
           errors.email = "Email is required";
         } else if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(value)) {
-          errors.email = "Please enter a valid Gmail address";
+          errors.email = "Please enter a valid email address";
         } else {
           delete errors.email;
         }
@@ -76,7 +76,7 @@ const SignUpForm = () => {
         if (!value.trim()) {
           errors.phone = "Phone number is required";
         } else if (!/^\+94\d{9}$/.test(value)) {
-          errors.phone = "Please enter a valid Sri Lankan phone number (+94 followed by 9 digits)";
+          errors.phone = "Please enter a valid phone number (+94 followed by 9 digits)";
         } else {
           delete errors.phone;
         }
@@ -250,7 +250,7 @@ const SignUpForm = () => {
   };
 
   const handleSignInRedirect = () => {
-    navigate("/login");
+    navigate("/signin");
   };
 
   return (
