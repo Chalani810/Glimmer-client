@@ -22,6 +22,24 @@ const SalaryView = () => {
       toast.error("Failed to load employees. Please try again.");
     }
   };
+  const handleDownload = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/reports/employee`, {
+        responseType: 'blob'
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'report.pdf');
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('Failed to download PDF');
+    }
+  };
 
   useEffect(() => {
     fetchEmployees();
@@ -110,6 +128,13 @@ const SalaryView = () => {
               <h1 className="text-2xl font-semibold text-gray-800">
                 Salary Information
               </h1>
+
+              <button
+                onClick={handleDownload}
+                className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg shadow-sm text-white bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-400"
+              >
+                generate PDF
+              </button>
               <div className="flex gap-2 w-full sm:w-auto">
                 <div className="relative flex-grow sm:flex-grow-0 sm:w-64">
                   <input
