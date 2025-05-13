@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import FeedbackTable from '../component/Feedback/FeedbackTable';
-import FeedbackModal from '../component/Feedback/FeedbackModal';
+import React, { useState, useEffect } from "react";
+import FeedbackTable from "../component/Feedback/FeedbackTable";
+import FeedbackModal from "../component/Feedback/FeedbackModal";
+import axios from "axios";
 
 const FeedbackListPage = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
   const [feedbacks, setFeedbacks] = useState([]);
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -10,11 +13,12 @@ const FeedbackListPage = () => {
 
   const fetchFeedbacks = async () => {
     try {
-      const res = await fetch('/api/feedback');
-      const data = await res.json();
-      setFeedbacks(data);
+      const response = await axios.get(`${apiUrl}/feedback/${user.id}`);
+
+      setFeedbacks(response.data);
     } catch (error) {
-      console.error('Error fetching feedbacks:', error);
+      console.error("Error uploading file:", error);
+      return;
     }
   };
 
@@ -35,40 +39,33 @@ const FeedbackListPage = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this feedback?')) {
-      try {
-        await fetch(`/api/feedback/${id}`, { method: 'DELETE' });
-        fetchFeedbacks();
-      } catch (error) {
-        console.error('Error deleting feedback:', error);
-      }
+    try {
+      await axios.delete(`${apiUrl}/feedback/${id}`);
+      fetchFeedbacks();
+    } catch (error) {
+      console.error("Error deleting feedback:", error);
     }
   };
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">My Feedbacks</h1>
-        <button
-          onClick={handleAddNew}
-          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md shadow"
-        >
-          Add a New Feedback
-        </button>
-      </div>
-      
+    <div className="max-w-7xl mx-auto py-8">
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">
+        Your Order History
+      </h1>
+
       <FeedbackTable
         feedbacks={feedbacks}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
-      
+
       {modalOpen && (
         <FeedbackModal
           isEdit={isEdit}
           feedback={selectedFeedback}
           onClose={() => setModalOpen(false)}
           onRefresh={fetchFeedbacks}
+          orderId={selectedFeedback ? selectedFeedback.orderId._id : null}
         />
       )}
     </div>

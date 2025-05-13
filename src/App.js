@@ -38,7 +38,7 @@ import LoginPage from "./pages/SignInPage";
 import HomePage from "./pages/HomePage";
 import ContactUs from "./pages/ContactUs";
 import Checkout from "./pages/Checkout";
-import FeedbackPage from "./pages/FeedbackPage";
+import FeedbackPage from "./pages/FeedbackListPage";
 import FeedbackListPage from "./pages/FeedbackListPage";
 import ProfilePage from "./pages/CustomerProfilePage";
 import Cart from "./pages/UserCart";

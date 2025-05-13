@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import OrderModal from "../component/AdminOrder/OrderModal";
+import FeedbackModal from "../component/Feedback/FeedbackModal";
+import { useNavigate } from "react-router-dom";
 
 const OrderHistory = () => {
   const userData = JSON.parse(localStorage.getItem("user"));
@@ -9,6 +11,8 @@ const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const fetchOrders = async () => {
     setIsLoading(true);
@@ -75,9 +79,13 @@ const OrderHistory = () => {
       </div>
     );
   }
+  const handleAddFeedback = (orderId) => {
+    setSelectedOrder(orderId);
+    setModalOpen(true);
+  };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto py-8">
       <h1 className="text-2xl font-bold text-gray-800 mb-6">
         Your Order History
       </h1>
@@ -197,18 +205,67 @@ const OrderHistory = () => {
                   </p>
                 </div>
               </div>
+              {order.status == "Completed" && !order.hasFeedback ? (
+                <div className="flex items-center justify-end">
+                  <button
+                    type="button"
+                    className="text-sm text-red-600 font-medium flex items-center space-x-1"
+                    onClick={() => handleAddFeedback(order._id)}
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4-.84L3 20l1.09-3.27A8.969 8.969 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                      />
+                    </svg>
+                    <span>Add Feedback</span>
+                  </button>
+                </div>
+              ) : null}
+              {order.status == "Completed" && order.hasFeedback ? (
+                <div className="flex items-center justify-end">
+                  <button
+                    type="button"
+                    className="text-sm text-blue-600 font-medium flex items-center space-x-1"
+                    onClick={() => {navigate("/feedback");}}
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4-.84L3 20l1.09-3.27A8.969 8.969 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                      />
+                    </svg>
+                    <span>View Feedbacks</span>
+                  </button>
+                </div>
+              ) : null}
             </div>
           </div>
         ))}
+        {modalOpen && (
+          <FeedbackModal
+            isEdit={false}
+            feedback={null}
+            onClose={() => setModalOpen(false)}
+            onRefresh={fetchOrders}
+            orderId={selectedOrder}
+          />
+        )}
       </div>
-
-      {selectedOrder && (
-        <OrderModal
-          order={selectedOrder}
-          onClose={() => setSelectedOrder(null)}
-          isCustomerView={true}
-        />
-      )}
     </div>
   );
 };
