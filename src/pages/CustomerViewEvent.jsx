@@ -60,7 +60,7 @@ const EventsPage = () => {
                   onClick={() => handleReadMore(event._id,event.title)}
                   className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 w-fit"
                 >
-                  View Product
+                  View Products
                 </button>
               </div>
             </div>
