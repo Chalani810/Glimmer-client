@@ -13,8 +13,9 @@ const Footer = () => {
         <span className="text-black">er</span>
        </h1>
           <p className="mt-4 text-white font-semibold leading-6">
-            Don’t Wait! It’s Time To Plan <br />
-            Unforgettable Events And Create <br />
+            Don’t Wait! <br />   It’s Time To Plan <br />
+            Unforgettable Events <br />
+            & Create 
             Magical Moments That Last A Lifetime.
           </p>
         </div>
@@ -36,7 +37,9 @@ const Footer = () => {
           <ul className="space-y-1 text-white">
             <li>Feedback</li>
             <li>Contact Us</li>
-            <li>Help Center</li>
+            <li>
+               <a href="mailto:glimmer.infomail@gmail.com">glimmer.infomail@gmail.com</a>
+            </li>
             <li>Terms of Service</li>
           </ul>
         </div>
@@ -55,10 +58,11 @@ const Footer = () => {
         <div>
           <h2 className="text-lg font-bold text-black mb-3">Address</h2>
           <p className="text-white">
-            Lavender Lights Events <br />
-            123 Celebration Lane <br />
-            Blissville, Dreamstate 4567 <br />
-            United States
+            Glimmer Events <br />
+            1B 28th Lane <br />
+            Flower Road<br />
+            Colombo 7<br />
+            Sri Lanka
           </p>
         </div>
       </div>

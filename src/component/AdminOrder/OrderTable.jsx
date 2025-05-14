@@ -92,6 +92,25 @@ const OrderTable = () => {
   (order.status?.toLowerCase() || "").includes(searchTerm.toLowerCase())
 );
 
+const handleDownloadOrderReport = async () => {
+  try {
+    const response = await axios.get(`${apiUrl}/order_report/orders`, {
+      responseType: 'blob'
+    });
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'order_report.pdf');
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode.removeChild(link);
+  } catch (error) {
+    console.error('Download failed:', error);
+    alert('Failed to download order report PDF');
+  }
+};
+
   return (
     <div className="max-w-full mx-auto bg-gray-50">
       {/* Header */}
@@ -99,6 +118,14 @@ const OrderTable = () => {
         <h1 className="text-2xl font-semibold text-gray-800">
           Order Management
         </h1>
+
+      <button
+       onClick={handleDownloadOrderReport}
+       className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg shadow-sm text-white bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-400"
+        >
+         Generate Order Report
+      </button>
+
         <div className="relative flex-grow sm:flex-grow-0 sm:w-64">
           <input
             type="text"
