@@ -50,7 +50,7 @@ const FeedbackListPage = () => {
   return (
     <div className="max-w-7xl mx-auto py-8">
       <h1 className="text-2xl font-bold text-gray-800 mb-6">
-        Your Order History
+        Your Feedback History
       </h1>
 
       <FeedbackTable
