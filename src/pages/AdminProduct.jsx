@@ -13,109 +13,160 @@ const AddProductPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [editProductId, setEditProductId] = useState(null);
+  const [editProduct, setEditProduct] = useState(null); // Store full product object
   const [isLoading, setIsLoading] = useState(false);
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
   const [error, setError] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null);
-  
 
   const fetchProducts = async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`${apiUrl}/product/`);
+      const response = await axios.get(`${apiUrl}/product`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       setProducts(response.data);
       setFilteredProducts(response.data);
+      console.log("AddProductPage - Fetched products:", response.data);
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch products");
-      console.error("Error fetching products:", err);
-      toast.error("Failed to fetch products");
+      const errMsg = err.response?.data?.message || "Failed to fetch products";
+      setError(errMsg);
+      console.error("AddProductPage - Error fetching products:", err);
+      toast.error(errMsg);
     } finally {
       setIsLoading(false);
     }
   };
-  const handleUpdateProduct = async (updatedPId,updatedProduct) => {
-    
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const formData = new FormData();
-      formData.append("pname", updatedProduct.pname);
-      formData.append("stock", updatedProduct.stock);
-      formData.append("pprice", updatedProduct.pprice);
-      updatedProduct.events.forEach((event) => {
-        formData.append("events", event);
-      });
-      
-      if (updatedProduct.productImage instanceof File) {
-        formData.append("productImage", updatedProduct.productImage);
-      }
-
-      await axios.put(
-        `${apiUrl}/product/${updatedPId}`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-
-      await fetchProducts();
-      setShowModal(false);
-      setIsEditMode(false);
-      setEditProductId(null);
-      toast.success("Product updated successfully");
-    } catch (err) {
-      setError(err.response?.data?.message || "Failed to update product");
-      console.error("Error updating product:", err);
-      toast.error("Failed to update product");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
 
   const handleAddProduct = async (newProduct) => {
     setIsLoading(true);
     setError(null);
 
     try {
+      console.log("AddProductPage - Received newProduct:", newProduct);
+
+      // Validate required fields
+      if (!newProduct.pname || !newProduct.pprice || !newProduct.category) {
+        throw new Error("Missing required fields: name, price, or category");
+      }
+      if (!Array.isArray(newProduct.events) || newProduct.events.length === 0) {
+        throw new Error("At least one event is required");
+      }
+
       const formData = new FormData();
       formData.append("pname", newProduct.pname);
-      formData.append("stock", newProduct.stock);
+      formData.append("stock", newProduct.stock || 0);
       formData.append("pprice", newProduct.pprice);
+      formData.append("category", newProduct.category);
       newProduct.events.forEach((event) => {
-        formData.append("events", event);
+        formData.append("events[]", event); // Use events[] for array
       });
       if (newProduct.productImage) {
         formData.append("productImage", newProduct.productImage);
       }
 
-      await axios.post(`${apiUrl}/product/add`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      // Log FormData
+      for (let [key, value] of formData.entries()) {
+        console.log(`AddProductPage - Sending FormData - ${key}:`, value);
+      }
+
+      const response = await axios.post(`${apiUrl}/product`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
 
+      console.log("AddProductPage - Add product response:", response.data);
       await fetchProducts();
       setShowModal(false);
       toast.success("Product added successfully");
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to add product");
-      console.error("Error adding product:", err);
-      toast.error("Failed to add product");
+      const errMsg = err.response?.data?.message || err.message || "Failed to add product";
+      setError(errMsg);
+      console.error("AddProductPage - Error adding product:", err.response?.data || err);
+      toast.error(errMsg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleUpdateProduct = async (updatedPId, updatedProduct) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      console.log("AddProductPage - Received updatedProduct:", updatedProduct);
+
+      // Validate required fields
+      if (!updatedProduct.pname || !updatedProduct.pprice || !updatedProduct.category) {
+        throw new Error("Missing required fields: name, price, or category");
+      }
+      if (!Array.isArray(updatedProduct.events) || updatedProduct.events.length === 0) {
+        throw new Error("At least one event is required");
+      }
+
+      const formData = new FormData();
+      formData.append("pname", updatedProduct.pname);
+      formData.append("stock", updatedProduct.stock || 0);
+      formData.append("pprice", updatedProduct.pprice);
+      formData.append("category", updatedProduct.category);
+      updatedProduct.events.forEach((event) => {
+        formData.append("events[]", event); // Use events[] for array
+      });
+      if (updatedProduct.productImage instanceof File) {
+        formData.append("productImage", updatedProduct.productImage);
+      }
+
+      // Log FormData
+      for (let [key, value] of formData.entries()) {
+        console.log(`AddProductPage - Sending FormData - ${key}:`, value);
+      }
+
+      const response = await axios.put(
+        `${apiUrl}/product/${updatedPId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      console.log("AddProductPage - Update product response:", response.data);
+      await fetchProducts();
+      setShowModal(false);
+      setIsEditMode(false);
+      setEditProduct(null);
+      toast.success("Product updated successfully");
+    } catch (err) {
+      const errMsg = err.response?.data?.message || err.message || "Failed to update product";
+      setError(errMsg);
+      console.error("AddProductPage - Error updating product:", err.response?.data || err);
+      toast.error(errMsg);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleEditProduct = (productId) => {
-    setEditProductId(productId);
-    setIsEditMode(true);
-    setShowModal(true);
+    console.log(productId);
+    
+    const product = products.find((p) => p._id === productId._id);
+    console.log("AddProductPage - Selected product for edit:", product);
+    if (product) {
+      setEditProduct(product); // Store full product object
+      setIsEditMode(true);
+      setShowModal(true);
+    } else {
+      console.warn("AddProductPage - Product not found for ID:", productId);
+      toast.error("Product not found for editing");
+    }
   };
 
   const handleDeleteRequest = (productId) => {
@@ -129,14 +180,19 @@ const AddProductPage = () => {
 
     setIsLoading(true);
     try {
-      await axios.delete(`${apiUrl}/product/${selectedProductId}`);
+      await axios.delete(`${apiUrl}/product/${selectedProductId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       await fetchProducts();
       setSelectedProductId(null);
       toast.success("Product deleted successfully");
     } catch (err) {
-      console.error("Error deleting product:", err);
-      setError(err.response?.data?.message || "Failed to delete product");
-      toast.error("Failed to delete product");
+      const errMsg = err.response?.data?.message || "Failed to delete product";
+      setError(errMsg);
+      console.error("AddProductPage - Error deleting product:", err);
+      toast.error(errMsg);
     } finally {
       setIsLoading(false);
     }
@@ -156,24 +212,35 @@ const AddProductPage = () => {
     }
   };
 
-  const handleDownloadPDF = async () =>{
-    try{
-      const response = await axios.get(`${apiUrl}/product_report/products`,{
-        responseType: 'blob'
+  const handleDownloadPDF = async () => {
+    setIsDownloadingPDF(true);
+    try {
+      const response = await axios.get(`${apiUrl}/product_report/products`, {
+        responseType: "blob",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
 
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'product_report.pdf');
-    document.body.appendChild(link);
-    link.click();
-    link.parentNode.removeChild(link);
-  } catch (error) {
-    console.error('Download failed:', error);
-    alert('Failed to download order report PDF');
-  }
-};
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "product_report.pdf");
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      toast.success("Product report downloaded");
+    } catch (err) {
+      console.error("AddProductPage - Download failed:", err);
+      toast.error("Failed to download product report PDF");
+    } finally {
+      setIsDownloadingPDF(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -181,19 +248,17 @@ const AddProductPage = () => {
       <div className="flex-1 overflow-auto ml-0 md:ml-64">
         <div className="p-4 md:p-6 lg:p-8">
           <div className="max-w-full mx-auto">
-            {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
               <h1 className="text-2xl font-semibold text-gray-800">
                 Product Management
               </h1>
-
-<button
-  onClick={handleDownloadPDF}  
-  className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg shadow-sm text-white bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-400"
->
-  Generate Product Report 
-</button>
-
+              <button
+                onClick={handleDownloadPDF}
+                className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg shadow-sm text-white bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-400"
+                disabled={isDownloadingPDF}
+              >
+                {isDownloadingPDF ? "Downloading..." : "Generate Report"}
+              </button>
               <div className="flex gap-2 w-full sm:w-auto">
                 <div className="relative flex-grow sm:flex-grow-0 sm:w-64">
                   <input
@@ -208,7 +273,7 @@ const AddProductPage = () => {
                   onClick={() => {
                     setShowModal(true);
                     setIsEditMode(false);
-                    setEditProductId(null);
+                    setEditProduct(null);
                   }}
                   className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow-sm whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
                   disabled={isLoading}
@@ -244,14 +309,12 @@ const AddProductPage = () => {
               </div>
             </div>
 
-            {/* Error Message */}
             {error && (
               <div className="mb-6 p-3 bg-red-100 text-red-700 rounded-lg border border-red-200">
                 {error}
               </div>
             )}
 
-            {/* Loading Indicator */}
             {isLoading && !showModal && (
               <div className="mb-6 p-3 bg-blue-100 text-blue-700 rounded-lg border border-blue-200 flex items-center">
                 <svg
@@ -278,7 +341,6 @@ const AddProductPage = () => {
               </div>
             )}
 
-            {/* Table Container */}
             <div className="w-full overflow-x-auto rounded-xl shadow-sm bg-white">
               <ProductTable
                 products={filteredProducts}
@@ -288,7 +350,6 @@ const AddProductPage = () => {
               />
             </div>
 
-            {/* Add/Edit Product Modal */}
             {showModal && (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                 <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4 shadow-lg relative">
@@ -318,13 +379,12 @@ const AddProductPage = () => {
                     onCancel={() => setShowModal(false)}
                     isLoading={isLoading}
                     isEditMode={isEditMode}
-                    productId={editProductId}
+                    productId={editProduct} // Pass full product object
                   />
                 </div>
               </div>
             )}
 
-            {/* Delete Confirmation Modal */}
             <ConfirmationModal
               isOpen={showConfirmModal}
               onCancel={() => setShowConfirmModal(false)}

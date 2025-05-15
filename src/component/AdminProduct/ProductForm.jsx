@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const ProductForm = ({
   onAddProduct,
@@ -15,13 +16,23 @@ const ProductForm = ({
   const [selectedEvents, setSelectedEvents] = useState([]);
   const [stock, setStock] = useState(50);
   const [price, setPrice] = useState("");
+  const [category, setCategory] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [events, setEvents] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const categories = [
+    "Chair",
+    "Table",
+    "Carpet",
+    "Curtain",
+    "Buffet Set",
+    "Tent",
+    "Table Cloth",
+  ];
+
   const dropdownRef = useRef(null);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -48,51 +59,115 @@ const ProductForm = ({
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/event`);
+        const response = await axios.get(`${apiUrl}/event`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         setEvents(response.data);
+        console.log("ProductForm - Fetched events:", response.data);
 
-        if (productId && isEditMode) {
+        // Handle edit mode
+        if (isEditMode && productId && typeof productId === "object") {
+          console.log("ProductForm - Received productId:", productId);
           setProductName(productId.pname || "");
-          setStock(productId.stockqut || "");
+          setStock(productId.stockqut || 50);
           setPrice(productId.pprice || "");
-
-          // Extract just the event IDs from the array of event objects
-          const eventIds = productId.events.map((event) => event._id);
+          setCategory(productId.category || "");
+          const eventIds = Array.isArray(productId.events)
+            ? productId.events.map((event) =>
+                typeof event === "object" && event._id ? event._id : event
+              )
+            : [];
           setSelectedEvents(eventIds);
+          console.log("ProductForm - Set eventIds:", eventIds);
+        } else if (isEditMode) {
+          console.warn("ProductForm - Invalid productId for edit mode:", productId);
+          toast.error("Invalid product data for editing");
         }
       } catch (err) {
-        console.error("Error fetching events:", err);
+        console.error("ProductForm - Error fetching events:", err);
+        toast.error("Failed to load events");
       }
     };
 
     fetchEvents();
   }, [productId, isEditMode, apiUrl]);
 
-const handleSubmit = (e) => {
-  e.preventDefault();
-
-  const productData = {
-    pname: productName,
-    events: selectedEvents,
-    stock,
-    pprice: price,
-    ...(imageFile && { productImage: imageFile }),
+  const isFormValid = () => {
+    return (
+      productName.trim() &&
+      selectedEvents.length > 0 &&
+      price &&
+      category &&
+      (isEditMode || imageFile)
+    );
   };
 
-  if (isEditMode && productId) {
-    onUpdateProduct(productId._id, productData);
-  } else {
-    onAddProduct(productData);
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!isEditMode) {
-    setProductName("");
-    setSelectedEvents([]);
-    setStock(50);
-    setPrice("");
-    setImageFile(null);
-  }
-};
+    // Log form state for debugging
+    console.log("ProductForm - Form state:", {
+      productName,
+      selectedEvents,
+      stock,
+      price,
+      category,
+      imageFile: imageFile ? imageFile.name : null,
+    });
+
+    // Client-side validation
+    if (!productName.trim()) {
+      toast.error("Product name is required");
+      return;
+    }
+    if (selectedEvents.length === 0) {
+      toast.error("At least one event must be selected");
+      return;
+    }
+    if (!price) {
+      toast.error("Price is required");
+      return;
+    }
+    if (!category) {
+      toast.error("Category is required");
+      return;
+    }
+    if (!isEditMode && !imageFile) {
+      toast.error("Product image is required");
+      return;
+    }
+
+    const productData = {
+      pname: productName.trim(),
+      events: selectedEvents,
+      stock,
+      pprice: price,
+      category,
+      productImage: imageFile,
+    };
+
+    try {
+      if (isEditMode && productId && productId._id) {
+        await onUpdateProduct(productId._id, productData);
+      } else {
+        await onAddProduct(productData);
+      }
+
+      if (!isEditMode) {
+        setProductName("");
+        setSelectedEvents([]);
+        setStock(50);
+        setPrice("");
+        setCategory("");
+        setImageFile(null);
+      }
+    } catch (err) {
+      console.error("ProductForm - Error submitting form:", err.response?.data);
+      toast.error(err.response?.data?.message || "Failed to save product");
+    }
+  };
 
   const getSelectedEventTitles = () => {
     if (selectedEvents.length === 0) return "Select events...";
@@ -181,6 +256,25 @@ const handleSubmit = (e) => {
 
       <div>
         <label className="block text-sm font-medium text-gray-700">
+          Category
+        </label>
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          required
+          className="w-full px-3 py-2 border border-gray-300 rounded"
+        >
+          <option value="">Select a category</option>
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
           Stock Quantity
         </label>
         <input
@@ -217,7 +311,7 @@ const handleSubmit = (e) => {
         <button
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          disabled={isLoading}
+          disabled={isLoading || !isFormValid()}
         >
           {isLoading
             ? "Saving..."

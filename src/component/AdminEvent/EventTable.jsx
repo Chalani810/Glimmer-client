@@ -11,7 +11,6 @@ const EventTable = ({ events, handleEdit, handleDeleteRequest }) => {
             <th className="p-4 text-left font-medium">Photo</th>
             <th className="p-4 text-left font-medium">Event</th>
             <th className="p-4 text-left font-medium">Description</th>
-            <th className="p-4 text-left font-medium">Visibility</th>
             <th className="p-4 font-medium text-center">Actions</th>
           </tr>
         </thead>
@@ -42,7 +41,7 @@ const EventTable = ({ events, handleEdit, handleDeleteRequest }) => {
                 <input
                   type="checkbox"
                   className="toggle toggle-sm"
-                  checked={event.visibility}
+                 // checked={event.visibility}
                   readOnly
                 />
               </td>

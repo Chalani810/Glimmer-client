@@ -51,7 +51,7 @@ const EventsPage = () => {
                 alt={title}
                 className="w-full md:w-1/2 h-64 object-cover"
               />
-              <div className="p-6 flex flex-col justify-between w-full md:w-1/2">
+              <div className="p-6 flex flex-col justify-between w-full md:w-3/4">
                 <div>
                   <h2 className="text-2xl font-bold mb-2">{title}</h2>
                   <p className="text-gray-700 mb-4">{description}</p>

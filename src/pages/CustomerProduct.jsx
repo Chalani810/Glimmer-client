@@ -6,28 +6,31 @@ import { toast } from "react-hot-toast";
 const apiUrl = "http://localhost:5000"; // Set your backend API base URL
 
 const ProductPage = () => {
-  const [products, setProducts] = useState([]);
-   const [loading, setLoading] = useState(false);
+  const [groupedProducts, setGroupedProducts] = useState({});
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
   const { eventId, eventName } = useParams();
-   const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        setLoading(true);
         const response = await axios.get(
-          `${apiUrl}/product/by-event/${eventId}`
+          `${apiUrl}/product/by-event-category/${eventId}`
         );
-        setProducts(response.data);
+        setGroupedProducts(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
-        setProducts([]);
+        setGroupedProducts({});
+        toast.error("Failed to load products");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchProducts();
-  }, []);
+  }, [eventId]);
 
   const addToCart = async (productId) => {
     if (!user) {
@@ -68,38 +71,52 @@ const ProductPage = () => {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 p-10">
-        {products
-          .filter((product) => product.visibility !== false) // Only show visible products
-          .map((product) => {
-            return (
-              <div
-                key={product._id}
-                className="flex flex-col bg-gray-100 rounded-lg overflow-hidden shadow-md"
-              >
-                <img
-                  src={product.photoUrl}
-                  alt={product.pname}
-                  className="w-full h-64 object-cover"
-                />
-                <div className="p-6 flex flex-col justify-between w-full">
-                  <div>
-                    <h2 className="text-2xl font-bold mb-2">{product.pname}</h2>
-                    <p className="text-lg font-semibold text-gray-900 mb-4">
-                      LKR {product.pprice}
-                    </p>
+      {loading ? (
+        <div className="text-center py-10">
+          <p className="text-gray-600">Loading products...</p>
+        </div>
+      ) : Object.keys(groupedProducts).length === 0 ? (
+        <div className="text-center py-10">
+          <p className="text-gray-600">No products available for this event.</p>
+        </div>
+      ) : (
+        Object.keys(groupedProducts).map((category) => (
+          <div key={category} className="px-10 py-6">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+              {category}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+              {groupedProducts[category].map((product) => (
+                <div
+                  key={product._id}
+                  className="flex flex-col bg-gray-100 rounded-lg overflow-hidden shadow-md"
+                >
+                  <img
+                    src={product.photoUrl}
+                    alt={product.pname}
+                    className="w-full h-64 object-cover"
+                  />
+                  <div className="p-6 flex flex-col justify-between w-full">
+                    <div>
+                      <h3 className="text-2xl font-bold mb-2">{product.pname}</h3>
+                      <p className="text-lg font-semibold text-gray-900 mb-4">
+                        LKR {product.pprice.toFixed(2)}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => addToCart(product._id)}
+                      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 w-fit"
+                      disabled={loading}
+                    >
+                      {loading ? "Adding..." : "Add to Cart"}
+                    </button>
                   </div>
-                  <button
-                    onClick={() => addToCart(product._id)}
-                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 w-fit"
-                  >
-                    Add to Cart
-                  </button>
                 </div>
-              </div>
-            );
-          })}
-      </div>
+              ))}
+            </div>
+          </div>
+        ))
+      )}
     </div>
   );
 };

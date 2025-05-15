@@ -82,7 +82,7 @@ const EventsPage = () => {
       formDataToSend.append("eventImage", formData.eventImage);
     }
 
-    formDataToSend.append("visibility", "false");
+    //formDataToSend.append("visibility", "false");
 
     try {
       if (isEditMode) {

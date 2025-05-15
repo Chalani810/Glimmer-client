@@ -43,7 +43,6 @@ import FeedbackListPage from "./pages/FeedbackListPage";
 import ProfilePage from "./pages/CustomerProfilePage";
 import Cart from "./pages/UserCart";
 import Invoice from "./pages/Invoice";
-//import OrderSummary from "./pages/OrderSummary";
 import OrderHistory from "./pages/OrderHistory";
 import CustomerViewEvent from "./pages/CustomerViewEvent";
 import CustomerProduct from "./pages/CustomerProduct";
@@ -205,7 +204,7 @@ function AppWithRoutes() {
             </UserRoute>
           }
         />
-        <Route
+  <Route
           path="/invoice"
           element={
             <UserRoute>
@@ -250,7 +249,6 @@ function AppWithRoutes() {
         <Route path="/forgot-password/*" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordForm />} />
 
-        {/* <Route path="/" element={<AboutUs />} /> */}
         <Route path="/" element={<HomePage />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/contactus" element={<ContactUs />} />

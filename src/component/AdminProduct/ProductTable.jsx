@@ -12,7 +12,7 @@ const ProductTable = ({ products, isLoading, onEdit, onDelete }) => {
             <th className="p-4 text-left font-medium">Events</th>
             <th className="p-4 text-left font-medium">Stock</th>
             <th className="p-4 text-right font-medium">Price</th>
-            <th className="p-4 text-left font-medium">Visibility</th>
+            <th className="p-4 text-left font-medium">Category</th>
             <th className="p-4 font-medium text-center">Actions</th>
           </tr>
         </thead>
@@ -47,14 +47,7 @@ const ProductTable = ({ products, isLoading, onEdit, onDelete }) => {
               <td className="p-4 text-right text-gray-700">
                 {product.pprice ? Number(product.pprice).toFixed(2) : "0.00"}
               </td>
-              <td className="p-4">
-                <input
-                  type="checkbox"
-                  className="toggle toggle-sm"
-                  checked={product.visibility}
-                  readOnly
-                />
-              </td>
+              <td className="p-4 text-gray-700">{product.category}</td>
               <td className="p-4 text-center">
                 <div className="flex justify-center gap-3">
                   <button
