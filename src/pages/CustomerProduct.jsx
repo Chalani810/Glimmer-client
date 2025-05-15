@@ -86,7 +86,7 @@ const ProductPage = () => {
                   <div>
                     <h2 className="text-2xl font-bold mb-2">{product.pname}</h2>
                     <p className="text-lg font-semibold text-gray-900 mb-4">
-                      Rs. {product.pprice}
+                      LKR {product.pprice}
                     </p>
                   </div>
                   <button

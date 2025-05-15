@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { useCart } from "../CartContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FaCalendarAlt, FaCheckCircle } from "react-icons/fa";
@@ -234,98 +233,117 @@ const CheckoutForm = () => {
       setMessage(error.message || "Failed to submit order. Please try again.");
     }
   };
+
   const generateInvoice = () => {
     const doc = new jsPDF();
+    
+    // ===== HEADER SECTION =====
+     doc.setFontSize(22);
+     doc.setFont("helvetica", "bold");
 
-    doc.setFontSize(20);
-    doc.setFont("helvetica", "bold");
+    // Set initial color to black
+     doc.setTextColor(0, 0, 0);
+     doc.text("Gli", 105, 20, { align: "center" });
+
+    // Calculate width of "Gli" to position "mm" correctly
+    const gliWidth = doc.getTextWidth("Gli");
+    const startX = 105 - (gliWidth / 2);
+
+    // Switch to red for "mm"
     doc.setTextColor(255, 0, 0);
-    doc.text("Glimmer", 105, 20, null, null, "center");
+    doc.text("mm", startX + gliWidth, 20);
 
-    doc.setFontSize(16);
-    doc.setFont("helvetica", "normal");
+    // Calculate width of "mm" to position "er" correctly
+    const mmWidth = doc.getTextWidth("mm");
+
+   // Switch back to black for "er"
     doc.setTextColor(0, 0, 0);
-    doc.text("Invoice | Flower Road, Colombo 7", 105, 35, null, null, "center");
-
+    doc.text("er", startX + gliWidth + mmWidth, 20);
+    
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(0, 0, 0); // Black color
+    doc.text("Invoice | Flower Road, Colombo 7", 105, 30, { align: "center" });
+    
+    // Divider line
+    doc.setDrawColor(255, 0, 0);
+    doc.setLineWidth(0.3);
+    doc.line(20, 35, 190, 35);
+    
+    // ===== INVOICE INFO =====
     const currentDate = new Date().toLocaleDateString();
-    doc.setFontSize(12);
-    doc.text(`Date: ${currentDate}`, 10, 40);
-
-    doc.setDrawColor(0, 0, 0);
-    doc.setLineWidth(0.5);
-    doc.rect(10, 60, 190, 120);
-
-    doc.setFontSize(12);
-    let y = 70;
-
-    doc.text("Item", 15, y);
-    doc.text("Quantity", 105, y);
-    doc.text("Amount", 170, y);
-    y += 8;
-
-    cart.items.forEach((item) => {
-      doc.text(item.productId?.pname || "Product", 15, y);
-      doc.text(`${item.quantity}`, 105, y, null, null, "center");
-      doc.text(
-        `Rs.${(item.quantity * item.price).toFixed(2)}`,
-        170,
-        y,
-        null,
-        null,
-        "right"
-      );
-      y += 8;
-    });
-
-    doc.text(
-      `Total Amount: Rs.${cart.cartTotal.toFixed(2)}`,
-      170,
-      y,
-      null,
-      null,
-      "right"
-    );
-    doc.text(
-      `Advance Payment: Rs.${cart.advancePayment.toFixed(2)}`,
-      170,
-      y + 10,
-      null,
-      null,
-      "right"
-    );
-    doc.text(
-      `Total Due: Rs.${cart.totalDue.toFixed(2)}`,
-      170,
-      y + 20,
-      null,
-      null,
-      "right"
-    );
-
+    doc.setFontSize(10);
+    doc.text(`Date: ${currentDate}`, 20, 45);
+    doc.text(`Invoice #: ${Math.floor(Math.random() * 10000)}`, 20, 52);
+    
+    // ===== ITEMS TABLE =====
+    // Table header with light gray background
+    doc.setFillColor(240, 240, 240);
+    doc.rect(20, 60, 170, 10, 'F');
+    
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
-    doc.text("Bank Details:", 10, y + 40);
+    doc.text("Item Description", 25, 67);
+    doc.text("Qty", 110, 67, { align: "center" });
+    doc.text("Amount", 180, 67, { align: "right" });
+    
+    // Table rows with alternating colors
+    let y = 70;
     doc.setFont("helvetica", "normal");
-    doc.text("Account No: 200067834", 10, y + 48);
-    doc.text("Account Name: Glimmer", 10, y + 56);
-    doc.text("Branch: Colombo 7", 10, y + 64);
-    doc.text("Bank: Commercial Bank", 10, y + 72);
-    doc.text("Email: thathsaraniwijesinghe2001@gmail.com", 10, y + 80);
-
     doc.setFontSize(10);
-    doc.setFont("helvetica", "italic");
+    
+    cart.items.forEach((item, index) => {
+        y += 10;
+        
+        // Alternate row colors
+        if (index % 2 === 0) {
+            doc.setFillColor(240, 240, 240);
+            doc.rect(20, y - 5, 170, 10, 'F');
+        }
+        
+        doc.text(item.productId?.pname || "Product", 25, y);
+        doc.text(`${item.quantity}`, 110, y, { align: "center" });
+        doc.text(`Rs.${(item.quantity * item.price).toFixed(2)}`, 180, y, { align: "right" });
+    });
+    
+    // ===== TOTALS SECTION =====
+    y += 15;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    
+    doc.text("Subtotal:", 150, y, { align: "right" });
+    doc.text(`Rs.${cart.cartTotal.toFixed(2)}`, 180, y, { align: "right" });
+    y += 8;
+    
+    doc.text("Advance Payment:", 150, y, { align: "right" });
+    doc.text(`Rs.${cart.advancePayment.toFixed(2)}`, 180, y, { align: "right" });
+    y += 8;
+    
+    doc.setTextColor(255, 0, 0); // Red for due amount
+    doc.text("Balance Due:", 150, y, { align: "right" });
+    doc.text(`Rs.${cart.totalDue.toFixed(2)}`, 180, y, { align: "right" });
+    doc.setTextColor(0, 0, 0); // Reset to black
+    
+    // ===== BANK DETAILS =====
+    y += 20;
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.text("Payment Information:", 20, y);
+    doc.setFont("helvetica", "normal");
+    doc.text("Account Name: Glimmer", 20, y + 8);
+    doc.text("Bank: Commercial Bank", 20, y + 16);
+    doc.text("Account No: 200067834", 20, y + 24);
+    doc.text("Branch: Colombo 7", 20, y + 32);
+    doc.text("Email: glimmer.infomail@gmail.com", 20, y + 40);
+    
+    // ===== FOOTER =====
+    doc.setFontSize(9);
     doc.setTextColor(100, 100, 100);
-    doc.text(
-      "Thank you for your purchase!",
-      105,
-      y + 108,
-      null,
-      null,
-      "center"
-    );
-
-    doc.save("invoice.pdf");
-  };
+    doc.setFont("helvetica", "italic");
+    doc.text("Thank you for your business!", 105, 280, { align: "center" });
+    
+    doc.save(`Glimmer_Invoice_${currentDate.replace(/\//g, '-')}.pdf`);
+   };
 
   if (orderSubmitted && isSuccess) {
     return (
@@ -599,7 +617,7 @@ const CheckoutForm = () => {
             </label>
             <input
               type="text"
-              value={`Rs.${formData.cartTotal}`}
+              value={`LKR ${formData.cartTotal}`}
               readOnly
               className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md shadow-sm py-2 px-3"
             />
@@ -611,7 +629,7 @@ const CheckoutForm = () => {
             </label>
             <input
               type="text"
-              value={`Rs.${formData.advancePayment}`}
+              value={`LKR ${formData.advancePayment}`}
               readOnly
               className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md shadow-sm py-2 px-3"
             />
@@ -622,7 +640,7 @@ const CheckoutForm = () => {
             </label>
             <input
               type="text"
-              value={`Rs.${formData.duepayment}`}
+              value={`LKR ${formData.duepayment}`}
               readOnly
               className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md shadow-sm py-2 px-3"
             />

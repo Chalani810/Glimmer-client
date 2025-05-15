@@ -378,7 +378,7 @@ const EditOrderModal = ({ order, onClose, onStatusChange, refresh }) => {
             className={`w-full px-4 py-2 text-sm font-medium text-white rounded-md transition-colors ${
               staffLoading || !isConfirmed
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-green-600 hover:bg-green-700"
+                : "bg-blue-600 hover:bg-blue-700"
             }`}
           >
             {staffLoading ? "Saving..." : "Save Staff Assignments"}

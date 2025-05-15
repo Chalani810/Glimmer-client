@@ -15,9 +15,11 @@ const AddProductPage = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editProductId, setEditProductId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
   const [error, setError] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null);
+  
 
   const fetchProducts = async () => {
     setIsLoading(true);
@@ -154,6 +156,25 @@ const AddProductPage = () => {
     }
   };
 
+  const handleDownloadPDF = async () =>{
+    try{
+      const response = await axios.get(`${apiUrl}/product_report/products`,{
+        responseType: 'blob'
+      });
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'product_report.pdf');
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode.removeChild(link);
+  } catch (error) {
+    console.error('Download failed:', error);
+    alert('Failed to download order report PDF');
+  }
+};
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
@@ -165,6 +186,14 @@ const AddProductPage = () => {
               <h1 className="text-2xl font-semibold text-gray-800">
                 Product Management
               </h1>
+
+<button
+  onClick={handleDownloadPDF}  
+  className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg shadow-sm text-white bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-400"
+>
+  Generate Product Report 
+</button>
+
               <div className="flex gap-2 w-full sm:w-auto">
                 <div className="relative flex-grow sm:flex-grow-0 sm:w-64">
                   <input

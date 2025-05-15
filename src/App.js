@@ -47,6 +47,8 @@ import Invoice from "./pages/Invoice";
 import OrderHistory from "./pages/OrderHistory";
 import CustomerViewEvent from "./pages/CustomerViewEvent";
 import CustomerProduct from "./pages/CustomerProduct";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordForm from "./pages/ResetPasswordForm";
 
 import { CartProvider } from "./CartContext";
 
@@ -66,6 +68,7 @@ function AppWithRoutes() {
     location.pathname === "/adminevents" ||
     location.pathname === "/adminaddevent";
   const isCustomerAdminPage = location.pathname === "/customers";
+  const isPasswordResetPage = location.pathname.startsWith("/forgot-password");
 
   const userData = JSON.parse(localStorage.getItem("user"));
 
@@ -172,17 +175,10 @@ function AppWithRoutes() {
         <Route path="/feedback" element={<FeedbackPage />} />
         <Route path="/orders/:userId" element={<OrderHistory />} />
 
-        <Route
-          path="/customerviewevent"
-          element={
-              <CustomerViewEvent />
-          }
-        />
+        <Route path="/customerviewevent" element={<CustomerViewEvent />} />
         <Route
           path="/customerproduct/:eventId/:eventName?"
-          element={
-              <CustomerProduct />
-          }
+          element={<CustomerProduct />}
         />
 
         <Route
@@ -250,6 +246,9 @@ function AppWithRoutes() {
             )
           }
         />
+
+        <Route path="/forgot-password/*" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password/:token" element={<ResetPasswordForm />} />
 
         {/* <Route path="/" element={<AboutUs />} /> */}
         <Route path="/" element={<HomePage />} />
