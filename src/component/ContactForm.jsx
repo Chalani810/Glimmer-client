@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ContactForm = () => {
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -19,6 +20,34 @@ const ContactForm = () => {
     'Other',
   ];
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const response = await fetch(`${apiUrl}/auth/me`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const userData = await response.json();
+
+          if (response.ok) {
+            setForm(prev => ({
+              ...prev,
+              firstName: userData.firstName || '',
+              lastName: userData.lastName || '',
+              email: userData.email || '',
+              phone: userData.phone || '',
+            }));
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, [apiUrl]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     if (type === 'checkbox') {
@@ -36,24 +65,28 @@ const ContactForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/contact", {
+      const token = localStorage.getItem("token");
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`${apiUrl}/contact`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers,
         body: JSON.stringify(form),
       });
 
       if (response.ok) {
         alert("Your message has been sent!");
-        setForm({
-          firstName: '',
-          lastName: '',
-          email: '',
-          phone: '',
+        setForm(prev => ({
+          ...prev,
           message: '',
           services: [],
-        });
+        }));
       } else {
         alert("Failed to send message. Please try again.");
       }
@@ -76,6 +109,7 @@ const ContactForm = () => {
           value={form.firstName}
           onChange={handleChange}
           className="border p-2 rounded"
+          required
         />
         <input
           type="text"
@@ -84,6 +118,7 @@ const ContactForm = () => {
           value={form.lastName}
           onChange={handleChange}
           className="border p-2 rounded"
+          required
         />
       </div>
 
@@ -94,6 +129,7 @@ const ContactForm = () => {
         value={form.email}
         onChange={handleChange}
         className="w-full border p-2 rounded mb-4"
+        required
       />
 
       <input
@@ -103,6 +139,7 @@ const ContactForm = () => {
         value={form.phone}
         onChange={handleChange}
         className="w-full border p-2 rounded mb-4"
+        required
       />
 
       <textarea
@@ -112,6 +149,7 @@ const ContactForm = () => {
         value={form.message}
         onChange={handleChange}
         className="w-full border p-2 rounded mb-4"
+        required
       />
 
       <div className="mb-4">

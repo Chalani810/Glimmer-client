@@ -85,7 +85,7 @@ const EmployeeManagement = () => {
       formData.append("name", employee.name);
       formData.append("email", employee.email);
       formData.append("phone", employee.phone);
-      formData.append("occupation", employee.occupation);
+      formData.append("occupation", employee.occupation?._id || employee.occupation);
 
       if (employee.file) {
         formData.append("profileImg", employee.file);
