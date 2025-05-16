@@ -4,6 +4,8 @@ import AddEmployeeModel from "../component/Employee/AddEmployeeModel";
 import ConfirmationModal from "../component/ConfirmationModal";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { FaEye, FaEdit, FaTrash, FaUsers } from "react-icons/fa";
+
 
 const EmployeeManagement = () => {
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
@@ -31,7 +33,7 @@ const EmployeeManagement = () => {
   const fetchOccupations = async () => {
     try {
       const response = await axios.get(`${apiUrl}/role`);
-      const options = response.data; 
+      const options = response.data;
       setOccupationOptions(options);
     } catch (error) {
       console.error("Error fetching occupations:", error);
@@ -85,7 +87,10 @@ const EmployeeManagement = () => {
       formData.append("name", employee.name);
       formData.append("email", employee.email);
       formData.append("phone", employee.phone);
-      formData.append("occupation", employee.occupation?._id || employee.occupation);
+      formData.append(
+        "occupation",
+        employee.occupation?._id || employee.occupation
+      );
 
       if (employee.file) {
         formData.append("profileImg", employee.file);
@@ -200,7 +205,9 @@ const EmployeeManagement = () => {
                 <thead>
                   <tr className="bg-red-100 text-left border-b border-red-200">
                     <th className="p-4 text-left font-medium">Employee</th>
-                    <th className="p-4 text-left font-medium hidden sm:table-cell">Occupation</th>
+                    <th className="p-4 text-left font-medium hidden sm:table-cell">
+                      Occupation
+                    </th>
                     <th className="p-4 text-center font-medium">Status</th>
                     <th className="p-4 font-medium text-center">Actions</th>
                   </tr>
@@ -245,41 +252,27 @@ const EmployeeManagement = () => {
                               : "bg-green-100 text-green-800"
                           }`}
                         >
-                          {employee.availability == 0 ? "Assigned" : "Available"}
+                          {employee.availability == 0
+                            ? "Assigned"
+                            : "Available"}
                         </span>
                       </td>
-                      <td className="p-4 text-center relative">
-                        <div className="flex justify-center">
-                          <button
-                            className="text-gray-500 hover:text-gray-700 font-bold hover:bg-gray-100 p-1 rounded"
-                            onClick={(e) => toggleMenu(employee._id, e)}
-                          >
-                            ⋮
-                          </button>
 
-                          {activeMenu === employee._id && (
-                            <div className="absolute right-0 mt-6 w-32 bg-white rounded-lg shadow-lg z-10 border border-gray-200">
-                              <button
-                                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleEdit(employee);
-                                }}
-                              >
-                                Edit
-                              </button>
-                              <button
-                                className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  confirmDelete(employee._id);
-                                }}
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          )}
-                        </div>
+                      <td className="px-4 py-3 flex justify-end md:justify-center gap-3">
+                        <button
+                          onClick={() => handleEdit(employee)}
+                          className="text-black-600 hover:text-black-800"
+                          title="Edit Order"
+                        >
+                          <FaEdit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => confirmDelete(employee._id)}
+                          className="text-red-600 hover:text-red-800"
+                          title="Delete Order"
+                        >
+                          <FaTrash className="w-4 h-4" />
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -305,7 +298,13 @@ const EmployeeManagement = () => {
           onSave={handleSave}
           employeeData={editingEmployee}
           occupationOptions={occupationOptions}
-          key={isModalOpen ? (editingEmployee ? `edit-${editingEmployee._id}` : 'add') : 'closed'}
+          key={
+            isModalOpen
+              ? editingEmployee
+                ? `edit-${editingEmployee._id}`
+                : "add"
+              : "closed"
+          }
         />
 
         <ConfirmationModal

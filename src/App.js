@@ -48,6 +48,7 @@ import CustomerViewEvent from "./pages/CustomerViewEvent";
 import CustomerProduct from "./pages/CustomerProduct";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordForm from "./pages/ResetPasswordForm";
+import SettingsPage from "./pages/Settings";
 
 import { CartProvider } from "./CartContext";
 
@@ -109,6 +110,7 @@ function AppWithRoutes() {
         location.pathname !== "/employee-payroll" &&
         location.pathname !== "/EmployeeManagement" &&
         location.pathname !== "/dashboard" &&
+        location.pathname !== "/settings" &&
         !isEventAdminPage &&
         !isCustomerAdminPage && <Header />}
 
@@ -161,7 +163,6 @@ function AppWithRoutes() {
             </AdminRoute>
           }
         />
-
         <Route
           path="/customers"
           element={
@@ -170,6 +171,15 @@ function AppWithRoutes() {
             </AdminRoute>
           }
         />
+        <Route
+          path="/settings"
+          element={
+            <AdminRoute>
+              <SettingsPage />
+            </AdminRoute>
+          }
+        />
+
 
         <Route path="/feedback" element={<FeedbackPage />} />
         <Route path="/orders/:userId" element={<OrderHistory />} />
@@ -260,6 +270,7 @@ function AppWithRoutes() {
         location.pathname !== "/EmployeeManagement" &&
         location.pathname !== "/employee-payroll" &&
         location.pathname !== "/dashboard" &&
+        location.pathname !== "/settings" &&
         !isEventAdminPage &&
         !isCustomerAdminPage && <Footer />}
     </>
