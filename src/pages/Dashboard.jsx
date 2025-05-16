@@ -5,6 +5,7 @@ import PieChart from "../component/PieChart";
 import PopularProducts from "../component/PopularProducts";
 import CustomerList from "../component/CustomerList";
 import Sidebar from "../component/AdminEvent/Sidebar";
+import PredictPage from './PredictPage';
 
 export default function Dashboard() {
   return (
@@ -24,9 +25,14 @@ export default function Dashboard() {
             <CustomerList />
             <PopularProducts />
           </div>
+
+          {/* Add PredictForm here */}
+          <div className="mt-8">
+            <PredictPage />
+          </div>
+
         </div>
       </div>
     </div>
   );
 }
-
