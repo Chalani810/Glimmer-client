@@ -65,11 +65,9 @@ const ProductForm = ({
           },
         });
         setEvents(response.data);
-        console.log("ProductForm - Fetched events:", response.data);
 
         // Handle edit mode
         if (isEditMode && productId && typeof productId === "object") {
-          console.log("ProductForm - Received productId:", productId);
           setProductName(productId.pname || "");
           setStock(productId.stockqut || 50);
           setPrice(productId.pprice || "");
@@ -80,13 +78,10 @@ const ProductForm = ({
               )
             : [];
           setSelectedEvents(eventIds);
-          console.log("ProductForm - Set eventIds:", eventIds);
         } else if (isEditMode) {
-          console.warn("ProductForm - Invalid productId for edit mode:", productId);
           toast.error("Invalid product data for editing");
         }
       } catch (err) {
-        console.error("ProductForm - Error fetching events:", err);
         toast.error("Failed to load events");
       }
     };
@@ -106,16 +101,6 @@ const ProductForm = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Log form state for debugging
-    console.log("ProductForm - Form state:", {
-      productName,
-      selectedEvents,
-      stock,
-      price,
-      category,
-      imageFile: imageFile ? imageFile.name : null,
-    });
 
     // Client-side validation
     if (!productName.trim()) {

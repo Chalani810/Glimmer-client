@@ -7,9 +7,6 @@ const FeedbackModal = ({ isEdit, feedback, onClose, onRefresh, orderId }) => {
   const currentDate = new Date().toISOString().split("T")[0];
   const user = JSON.parse(localStorage.getItem("user"));
 
-  console.log(" order " ,orderId);
-  
-
   const [formData, setFormData] = useState({
     orderId: orderId || "",
     message: "",

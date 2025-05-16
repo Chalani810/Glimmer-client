@@ -31,11 +31,9 @@ const AddProductPage = () => {
       });
       setProducts(response.data);
       setFilteredProducts(response.data);
-      console.log("AddProductPage - Fetched products:", response.data);
     } catch (err) {
       const errMsg = err.response?.data?.message || "Failed to fetch products";
       setError(errMsg);
-      console.error("AddProductPage - Error fetching products:", err);
       toast.error(errMsg);
     } finally {
       setIsLoading(false);
@@ -47,8 +45,6 @@ const AddProductPage = () => {
     setError(null);
 
     try {
-      console.log("AddProductPage - Received newProduct:", newProduct);
-
       // Validate required fields
       if (!newProduct.pname || !newProduct.pprice || !newProduct.category) {
         throw new Error("Missing required fields: name, price, or category");
@@ -68,12 +64,6 @@ const AddProductPage = () => {
       if (newProduct.productImage) {
         formData.append("productImage", newProduct.productImage);
       }
-
-      // Log FormData
-      for (let [key, value] of formData.entries()) {
-        console.log(`AddProductPage - Sending FormData - ${key}:`, value);
-      }
-
       const response = await axios.post(`${apiUrl}/product`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -81,14 +71,12 @@ const AddProductPage = () => {
         },
       });
 
-      console.log("AddProductPage - Add product response:", response.data);
       await fetchProducts();
       setShowModal(false);
       toast.success("Product added successfully");
     } catch (err) {
       const errMsg = err.response?.data?.message || err.message || "Failed to add product";
       setError(errMsg);
-      console.error("AddProductPage - Error adding product:", err.response?.data || err);
       toast.error(errMsg);
     } finally {
       setIsLoading(false);
@@ -100,8 +88,6 @@ const AddProductPage = () => {
     setError(null);
 
     try {
-      console.log("AddProductPage - Received updatedProduct:", updatedProduct);
-
       // Validate required fields
       if (!updatedProduct.pname || !updatedProduct.pprice || !updatedProduct.category) {
         throw new Error("Missing required fields: name, price, or category");
@@ -122,11 +108,6 @@ const AddProductPage = () => {
         formData.append("productImage", updatedProduct.productImage);
       }
 
-      // Log FormData
-      for (let [key, value] of formData.entries()) {
-        console.log(`AddProductPage - Sending FormData - ${key}:`, value);
-      }
-
       const response = await axios.put(
         `${apiUrl}/product/${updatedPId}`,
         formData,
@@ -138,7 +119,6 @@ const AddProductPage = () => {
         }
       );
 
-      console.log("AddProductPage - Update product response:", response.data);
       await fetchProducts();
       setShowModal(false);
       setIsEditMode(false);
@@ -155,10 +135,7 @@ const AddProductPage = () => {
   };
 
   const handleEditProduct = (productId) => {
-    console.log(productId);
-    
     const product = products.find((p) => p._id === productId._id);
-    console.log("AddProductPage - Selected product for edit:", product);
     if (product) {
       setEditProduct(product); // Store full product object
       setIsEditMode(true);
