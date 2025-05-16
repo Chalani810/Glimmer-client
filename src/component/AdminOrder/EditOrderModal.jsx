@@ -34,7 +34,6 @@ const EditOrderModal = ({ order, onClose, onStatusChange, refresh }) => {
         setEmployees(filteredEmployees);
 
         if (order.employees && order.employees.length > 0) {
-          console.log("Assigned Employees:", order.employees);
 
           setSelectedSupervisors(
             order.employees

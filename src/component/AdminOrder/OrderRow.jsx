@@ -112,7 +112,7 @@ const OrderRow = ({
         </button>
         <button
           onClick={() => onEdit?.(order)}
-          className="text-green-600 hover:text-green-800"
+          className="text-black-600 hover:text-black-800"
           title="Edit Order"
         >
           <FaEdit className="w-4 h-4" />

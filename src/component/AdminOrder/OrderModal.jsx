@@ -14,8 +14,6 @@ const OrderModal = ({ order, onClose }) => {
     }
   };
 
-  console.log("Order with employees:", order);
-
   const getHeadingClasses = (status) => {
     switch (status) {
       case "Completed":
