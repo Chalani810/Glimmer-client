@@ -128,12 +128,13 @@ const SalaryView = () => {
               <h1 className="text-2xl font-semibold text-gray-800">
                 Salary Information
               </h1>
+              <div className="flex gap-4">
 
               <button
                 onClick={handleDownload}
                 className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg shadow-sm text-white bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-400"
               >
-                Generate Salary Report
+                Export
               </button>
               <div className="flex gap-2 w-full sm:w-auto">
                 <div className="relative flex-grow sm:flex-grow-0 sm:w-64">
@@ -145,6 +146,7 @@ const SalaryView = () => {
                     className="pl-4 pr-4 py-2 border border-gray-300 rounded-lg w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   />
                 </div>
+              </div>
               </div>
             </div>
 
