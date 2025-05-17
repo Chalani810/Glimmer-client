@@ -111,7 +111,6 @@ const Header = () => {
 
       
       <div className="flex items-center space-x-4">
-        {/* Search input smoothly expanding */}
         <div className="flex items-center border border-gray-300 rounded-full px-2 transition-all duration-300 ease-in-out">
           <FiSearch
             className="text-2xl cursor-pointer"
