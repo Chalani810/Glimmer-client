@@ -149,7 +149,6 @@ const SalaryView = () => {
               </div>
             </div>
 
-            {/* Table Container */}
             <div className="w-full overflow-x-auto rounded-xl shadow-sm bg-white">
               <table className="w-full border-collapse text-sm">
                 <thead>
