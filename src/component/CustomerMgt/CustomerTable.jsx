@@ -1,9 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Trash, ChevronLeft, ChevronRight, Loader2, ToggleLeft, ToggleRight, Eye, Edit } from "lucide-react";
+import {
+  Trash,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+  ToggleLeft,
+  ToggleRight,
+  Eye,
+  Edit,
+} from "lucide-react";
 import profileImg from "../CustomerProfile/CustomerMgtProfile.jpg";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import ConfirmationModal from "../../component/ConfirmationModal";
+import CustomerModal from "./CustomerModal";
 
 const CustomerTable = () => {
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
@@ -14,14 +24,16 @@ const CustomerTable = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 10,
     total: 0,
-    pages: 1
+    pages: 1,
   });
 
   useEffect(() => {
@@ -29,40 +41,40 @@ const CustomerTable = () => {
       setIsMobile(window.innerWidth < 768);
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const fetchUsers = async (page = 1, search = '') => {
+  const fetchUsers = async (page = 1, search = "") => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const response = await axios.get(`${apiUrl}/auth/users`, {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         params: {
           page,
           limit: pagination.limit,
-          search
-        }
+          search,
+        },
       });
-      
+
       setUsers(response.data.users);
       setPagination({
         ...pagination,
         page,
         total: response.data.pagination.total,
-        pages: response.data.pagination.pages
+        pages: response.data.pagination.pages,
       });
     } catch (error) {
       if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = '/signin';
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/signin";
         return;
       }
-      setError(error.response?.data?.message || 'Failed to fetch users');
+      setError(error.response?.data?.message || "Failed to fetch users");
       console.error("Error fetching data:", error);
       toast.error("Failed to load users");
     } finally {
@@ -73,12 +85,12 @@ const CustomerTable = () => {
   useEffect(() => {
     fetchUsers();
   }, []);
-  
+
   useEffect(() => {
     const refreshInterval = setInterval(() => {
       fetchUsers(pagination.page, searchTerm);
     }, 5000);
-  
+
     return () => clearInterval(refreshInterval);
   }, [pagination.page, searchTerm]);
 
@@ -95,16 +107,20 @@ const CustomerTable = () => {
 
   const handleToggleStatus = async (userId) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.patch(`${apiUrl}/auth/users/${userId}/toggle-status`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`
+      const token = localStorage.getItem("token");
+      await axios.patch(
+        `${apiUrl}/auth/users/${userId}/toggle-status`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
       fetchUsers(pagination.page, searchTerm);
       toast.success("User status updated successfully");
     } catch (error) {
-      setError(error.response?.data?.message || 'Failed to toggle user status');
+      setError(error.response?.data?.message || "Failed to toggle user status");
       console.error("Error toggling user status:", error);
       toast.error("Failed to update user status");
     }
@@ -117,26 +133,26 @@ const CustomerTable = () => {
 
   const handleDelete = async () => {
     if (!userToDelete) return;
-  
+
     try {
       setIsDeleting(true);
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       await axios.delete(`${apiUrl}/auth/users/${userToDelete}`, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
-      
+
       await fetchUsers(pagination.page, searchTerm);
       toast.success("User deleted successfully");
     } catch (error) {
       if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = '/signin';
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/signin";
         return;
       }
-      setError(error.response?.data?.message || 'Failed to delete user');
+      setError(error.response?.data?.message || "Failed to delete user");
       console.error("Error deleting user:", error);
       toast.error("Failed to delete user");
     } finally {
@@ -147,16 +163,44 @@ const CustomerTable = () => {
   };
 
   const handleView = (user) => {
-    setSelectedUser(user);
+    setSelectedCustomer(user);
   };
 
-  const filteredUsers = users.filter(user => 
-    (user.userId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (user.firstName?.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (user.lastName?.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (user.email?.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (user.phone?.toLowerCase().includes(searchTerm.toLowerCase()))
-  ));
+  const handleGenerateReport = async () => {
+    setIsGeneratingReport(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${apiUrl}/customer_report`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: "blob",
+      });
+
+      //Download link for the PDF
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "Customer_Report.pdf");
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error("Error generating report:", error);
+      toast.error("Failed to generate customer report");
+    } finally {
+      setIsGeneratingReport(false);
+    }
+  };
+
+  const filteredUsers = users.filter(
+    (user) =>
+      user.userId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.phone?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const getStatusColor = (isActive) => {
     return isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800";
@@ -210,6 +254,32 @@ const CustomerTable = () => {
             className="pl-4 pr-4 py-2 border border-gray-300 rounded-lg w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent"
           />
         </div>
+
+        <button
+          onClick={handleGenerateReport}
+          disabled={isGeneratingReport}
+          className={`px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2 ${
+            isGeneratingReport ? "opacity-70 cursor-not-allowed" : ""
+          }`}
+        >
+          {isGeneratingReport ? (
+            <Loader2 className="h-5 w-5 animate-spin" />
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+          )}
+          {isGeneratingReport ? "Generating..." : "Generate Report"}
+        </button>
       </div>
 
       {filteredUsers.length === 0 && !loading ? (
@@ -220,11 +290,18 @@ const CustomerTable = () => {
         // Mobile view - cards
         <div className="space-y-4">
           {filteredUsers.map((user) => (
-            <div key={user._id} className="bg-white p-4 rounded-xl shadow-sm border border-white">
+            <div
+              key={user._id}
+              className="bg-white p-4 rounded-xl shadow-sm border border-white"
+            >
               <div className="flex justify-between items-start">
                 <div className="flex items-center space-x-3">
                   <img
-                    src={user.profilePicture ? `${apiUrl}/uploads/${user.profilePicture}` : profileImg}
+                    src={
+                      user.profilePicture
+                        ? `${apiUrl}/uploads/${user.profilePicture}`
+                        : profileImg
+                    }
                     alt="avatar"
                     className="w-10 h-10 rounded-full"
                   />
@@ -233,11 +310,15 @@ const CustomerTable = () => {
                     <p className="text-sm text-gray-600">{user.email}</p>
                   </div>
                 </div>
-                <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(user.isActive)}`}>
+                <span
+                  className={`text-xs px-2 py-1 rounded-full ${getStatusColor(
+                    user.isActive
+                  )}`}
+                >
                   {user.isActive ? "Active" : "Inactive"}
                 </span>
               </div>
-              
+
               <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
                 <div>
                   <p className="text-gray-500">User ID</p>
@@ -245,7 +326,9 @@ const CustomerTable = () => {
                 </div>
                 <div>
                   <p className="text-gray-500">Phone</p>
-                  <p className="text-gray-700">{user.phone || "Not provided"}</p>
+                  <p className="text-gray-700">
+                    {user.phone || "Not provided"}
+                  </p>
                 </div>
                 <div>
                   <p className="text-gray-500">Points</p>
@@ -253,12 +336,14 @@ const CustomerTable = () => {
                 </div>
                 <div>
                   <p className="text-gray-500">Joined</p>
-                  <p className="text-gray-700">{new Date(user.createdAt).toLocaleDateString()}</p>
+                  <p className="text-gray-700">
+                    {new Date(user.createdAt).toLocaleDateString()}
+                  </p>
                 </div>
               </div>
-              
+
               <div className="mt-3 flex justify-end space-x-2">
-                <button 
+                <button
                   onClick={() => handleView(user)}
                   className="text-blue-500 hover:text-blue-700 p-1"
                   aria-label="View user"
@@ -270,9 +355,13 @@ const CustomerTable = () => {
                   className="text-green-500 hover:text-green-700 p-1"
                   aria-label="Toggle status"
                 >
-                  {user.isActive ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
+                  {user.isActive ? (
+                    <ToggleRight size={18} />
+                  ) : (
+                    <ToggleLeft size={18} />
+                  )}
                 </button>
-                <button 
+                <button
                   onClick={() => handleDeleteClick(user._id)}
                   className="text-red-500 hover:text-red-700 p-1"
                   aria-label="Delete user"
@@ -302,10 +391,17 @@ const CustomerTable = () => {
             </thead>
             <tbody>
               {filteredUsers.map((user) => (
-                <tr key={user._id} className="border-b hover:bg-gray-50 bg-white">
+                <tr
+                  key={user._id}
+                  className="border-b hover:bg-gray-50 bg-white"
+                >
                   <td className="p-4 flex items-center space-x-3">
                     <img
-                      src={user.profilePicture ? `${apiUrl}/uploads/${user.profilePicture}` : profileImg}
+                      src={
+                        user.profilePicture
+                          ? `${apiUrl}/uploads/${user.profilePicture}`
+                          : profileImg
+                      }
                       alt="avatar"
                       className="w-8 h-8 rounded-full"
                     />
@@ -314,15 +410,21 @@ const CustomerTable = () => {
                       <p className="text-sm text-gray-500">{user.email}</p>
                     </div>
                   </td>
-                  <td className="p-4">{user.userId || 'N/A'}</td>
-                  <td className="p-4">{user.phone || 'Not provided'}</td>
+                  <td className="p-4">{user.userId || "N/A"}</td>
+                  <td className="p-4">{user.phone || "Not provided"}</td>
                   <td className="p-4">
-                    {user.address ? 
-                      `${user.address.street || ''}, ${user.address.city || ''}`
-                      : 'Not provided'}
+                    {user.address
+                      ? `${user.address.street || ""}, ${
+                          user.address.city || ""
+                        }`
+                      : "Not provided"}
                   </td>
                   <td className="p-4">
-                    <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(user.isActive)}`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs ${getStatusColor(
+                        user.isActive
+                      )}`}
+                    >
                       {user.isActive ? "Active" : "Inactive"}
                     </span>
                   </td>
@@ -331,14 +433,14 @@ const CustomerTable = () => {
                     {new Date(user.createdAt).toLocaleDateString()}
                   </td>
                   <td className="p-4 flex justify-center space-x-2">
-                    <button 
+                    <button
                       onClick={() => handleView(user)}
                       className="text-blue-500 hover:text-blue-700 p-1"
                       aria-label="View user"
                     >
                       <Eye size={18} />
                     </button>
-                    <button 
+                    <button
                       onClick={() => handleDeleteClick(user._id)}
                       className="text-red-500 hover:text-red-700 p-1"
                       aria-label="Delete user"
@@ -389,6 +491,12 @@ const CustomerTable = () => {
           message="Are you sure you want to delete this user? This action cannot be undone."
           confirmText={isDeleting ? "Deleting..." : "Delete"}
           confirmColor="red"
+        />
+      )}
+      {selectedCustomer && (
+        <CustomerModal
+          customer={selectedCustomer}
+          onClose={() => setSelectedCustomer(null)}
         />
       )}
 

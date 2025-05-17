@@ -58,23 +58,6 @@ const FAQ = () => {
         ))}
       </div>
 
-      {/* Email Subscription Box */}
-      <div className="mt-16 text-center">
-        <h3 className="text-2xl font-bold mb-4">Stay in the Loop!</h3>
-        <p className="text-gray-600 mb-6">
-        Subscribe with your email to get the latest event rental offers, updates, and inspiration straight to your inbox.
-        </p>
-        <div className="flex flex-col md:flex-row justify-center items-center gap-4">
-          <input
-            type="email"
-            placeholder="Enter your email address..."
-            className="px-6 py-3 border border-gray-300 rounded-md w-72"
-          />
-          <button className="bg-red-500 text-white px-6 py-3 rounded-md shadow">
-            Subscribe
-          </button>
-        </div>
-      </div>
     </section>
   );
 };

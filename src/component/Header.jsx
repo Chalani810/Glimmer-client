@@ -126,9 +126,9 @@ const Header = () => {
               onClick={toggleProfileMenu}
               className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition-colors"
             >
-              {user?.profilePicture ? (
+              {user?.photoUrl ? (
                 <img
-                  src={`${process.env.REACT_APP_API_URL}/uploads/${user.profilePicture}`}
+                  src={user.photoUrl}
                   alt="Profile"
                   className="w-full h-full rounded-full object-cover"
                 />
