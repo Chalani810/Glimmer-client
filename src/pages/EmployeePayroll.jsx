@@ -25,19 +25,19 @@ const SalaryView = () => {
   const handleDownload = async () => {
     try {
       const response = await axios.get(`${apiUrl}/reports/employee`, {
-        responseType: 'blob'
+        responseType: "blob",
       });
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      link.setAttribute('download', 'report.pdf');
+      link.setAttribute("download", "report.pdf");
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
     } catch (error) {
-      console.error('Download failed:', error);
-      alert('Failed to download PDF');
+      console.error("Download failed:", error);
+      alert("Failed to download PDF");
     }
   };
 
@@ -129,24 +129,23 @@ const SalaryView = () => {
                 Salary Information
               </h1>
               <div className="flex gap-4">
-
-              <button
-                onClick={handleDownload}
-                className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg shadow-sm text-white bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-400"
-              >
-                Export
-              </button>
-              <div className="flex gap-2 w-full sm:w-auto">
-                <div className="relative flex-grow sm:flex-grow-0 sm:w-64">
-                  <input
-                    type="text"
-                    placeholder="Search by name or email"
-                    value={searchQuery}
-                    onChange={handleSearch}
-                    className="pl-4 pr-4 py-2 border border-gray-300 rounded-lg w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                  />
+                <button
+                  onClick={handleDownload}
+                  className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg shadow-sm text-white bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-400"
+                >
+                  Export
+                </button>
+                <div className="flex gap-2 w-full sm:w-auto">
+                  <div className="relative flex-grow sm:flex-grow-0 sm:w-64">
+                    <input
+                      type="text"
+                      placeholder="Search by name or email"
+                      value={searchQuery}
+                      onChange={handleSearch}
+                      className="pl-4 pr-4 py-2 border border-gray-300 rounded-lg w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                    />
+                  </div>
                 </div>
-              </div>
               </div>
             </div>
 

@@ -2,7 +2,7 @@ import React from 'react';
 import HeroSection from '../component/HomePage/HeroSection';
 import Features from '../component/HomePage/Features';
 import PopularEvents from '../component/HomePage/PopularEvents';
-import Testimonials from '../component/HomePage/Testimonials';
+//import Testimonials from '../component/HomePage/Testimonials';
 import FAQ from '../component/HomePage/FAQ';
 import Footer from '../component/Footer';
 import Header from '../component/Header';
@@ -14,7 +14,6 @@ const Home = () => {
       <HeroSection />
       <Features />
       <PopularEvents />
-      <Testimonials />
       <FAQ />
       
     </div>

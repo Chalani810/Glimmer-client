@@ -7,7 +7,7 @@ const Sidebar = () => {
   const user = JSON.parse(localStorage.getItem("user"));
 
   const menuItems = [
-    { name: "Dashboard", path: "/dashboard" },
+    { name: "Prediction", path: "/dashboard" },
     { name: "Orders", path: "/admin-bills" },
     { name: "Events", path: "/adminEvents" },
     { name: "All Products", path: "/AdminProduct" },

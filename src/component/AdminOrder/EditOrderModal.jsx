@@ -240,7 +240,7 @@ const EditOrderModal = ({ order, onClose, onStatusChange, refresh }) => {
             className={`w-full px-4 py-2 text-sm font-medium text-white rounded-md transition-colors ${
               statusLoading || !newStatus || newStatus === order.status
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
+                : "bg-black hover:bg-black"
             }`}
           >
             {statusLoading ? "Updating..." : "Update Status"}
@@ -377,7 +377,7 @@ const EditOrderModal = ({ order, onClose, onStatusChange, refresh }) => {
             className={`w-full px-4 py-2 text-sm font-medium text-white rounded-md transition-colors ${
               staffLoading || !isConfirmed
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
+                : "bg-black hover:bg-black"
             }`}
           >
             {staffLoading ? "Saving..." : "Save Staff Assignments"}

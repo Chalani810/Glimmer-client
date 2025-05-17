@@ -37,14 +37,6 @@ const EventTable = ({ events, handleEdit, handleDeleteRequest }) => {
               <td className="p-4 text-gray-700">
                 {event.description || "No description"}
               </td>
-              <td className="p-4">
-                <input
-                  type="checkbox"
-                  className="toggle toggle-sm"
-                 // checked={event.visibility}
-                  readOnly
-                />
-              </td>
               <td className="p-4 text-center">
                 <div className="flex justify-center gap-3">
                   <button

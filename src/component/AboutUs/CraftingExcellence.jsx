@@ -1,6 +1,6 @@
 import React from "react";
-import ExcellenceImage from "../../assets/au1.png"; // BACK image
-import ExcellenceSmallImage from "../../assets/au2.png"; // FRONT image
+import ExcellenceImage from "../../assets/au1.jpeg"; // BACK image
+import ExcellenceSmallImage from "../../assets/au2.jpeg"; // FRONT image
 
 const CraftingExcellence = () => {
   return (

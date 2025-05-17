@@ -16,15 +16,7 @@ export default function Dashboard() {
       {/* Main Content */}
       <div className="flex-1 overflow-auto">
         <div className="p-6 space-y-6 ml-64"> {/* Add ml-64 to account for sidebar width */}
-          <StatsCard />
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <LineChart className="lg:col-span-2" />
-            <PieChart />
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <CustomerList />
-            <PopularProducts />
-          </div>
+
 
           {/* Add PredictForm here */}
           <div className="mt-8">

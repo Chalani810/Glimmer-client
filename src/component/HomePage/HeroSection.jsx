@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; // Import Link
-import image45 from '../../component/HomePage/image45.jpg';
+import image45 from '../../component/HomePage/image45.jpeg';
 import image23 from '../../component/HomePage/image23.jpg';
 import image25 from '../../component/HomePage/image25.jpg';
-import image16 from '../../component/HomePage/image16.jpg';
+import image16 from '../../component/HomePage/image16.jpeg';
 
 const HeroSection = () => {
   return (
@@ -32,11 +32,6 @@ const HeroSection = () => {
           src={image45} 
           alt="event1" 
           className="absolute top-0 left-0 w-48 h-64 object-cover rounded-xl shadow-lg z-10" 
-        />
-        <img 
-          src={image23} 
-          alt="event2" 
-          className="absolute top-12 left-32 w-48 h-64 object-cover rounded-xl shadow-lg z-20" 
         />
         <img 
           src={image25} 

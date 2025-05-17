@@ -245,7 +245,16 @@ const CustomerTable = () => {
         <h1 className="text-2xl font-semibold text-gray-800">
           Customer Management
         </h1>
-        <div className="relative flex-grow sm:flex-grow-0 sm:w-64">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={handleGenerateReport}
+            disabled={isGeneratingReport}
+            className={`px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2 ${
+              isGeneratingReport ? "opacity-70 cursor-not-allowed" : ""
+            }`}
+          >
+            {isGeneratingReport ? "Exporting..." : "Export"}
+          </button>
           <input
             type="text"
             placeholder="Search customers..."
@@ -254,32 +263,6 @@ const CustomerTable = () => {
             className="pl-4 pr-4 py-2 border border-gray-300 rounded-lg w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent"
           />
         </div>
-
-        <button
-          onClick={handleGenerateReport}
-          disabled={isGeneratingReport}
-          className={`px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2 ${
-            isGeneratingReport ? "opacity-70 cursor-not-allowed" : ""
-          }`}
-        >
-          {isGeneratingReport ? (
-            <Loader2 className="h-5 w-5 animate-spin" />
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
-          )}
-          {isGeneratingReport ? "Generating..." : "Generate Report"}
-        </button>
       </div>
 
       {filteredUsers.length === 0 && !loading ? (

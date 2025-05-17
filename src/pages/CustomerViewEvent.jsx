@@ -49,7 +49,7 @@ const EventsPage = () => {
               <img
                 src={imageSrc}
                 alt={title}
-                className="w-full md:w-1/2 h-64 object-cover"
+                className="w-full md:w-1/2 h-80 object-cover"
               />
               <div className="p-6 flex flex-col justify-between w-full md:w-3/4">
                 <div>

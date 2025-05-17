@@ -1,9 +1,7 @@
-
 import React, { useState, useEffect } from "react";
 import { FiSearch, FiShoppingCart, FiUser, FiLogOut } from "react-icons/fi";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import authEvents from "../utils/authEvents";
-
 
 const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
@@ -12,9 +10,9 @@ const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation(); // Get current location
 
   useEffect(() => {
-    // Check if user is logged in when component mounts
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
     if (token && userData) {
@@ -27,14 +25,17 @@ const Header = () => {
       setUser(userData);
     };
 
-    authEvents.on('login', handleLogin);
+    authEvents.on("login", handleLogin);
 
-    // Clean up the event listener when component unmounts
     return () => {
-      authEvents.off('login', handleLogin);
-
+      authEvents.off("login", handleLogin);
     };
   }, []);
+
+  // Helper function to check if a path is active
+  const isActive = (path) => {
+    return location.pathname === path;
+  };
 
   const toggleSearch = () => {
     setShowSearch((prev) => !prev);
@@ -45,14 +46,11 @@ const Header = () => {
   };
 
   const handleLogout = () => {
-    // Clear user data from storage
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    // Update state
     setIsLoggedIn(false);
     setUser(null);
     setShowProfileMenu(false);
-    // Redirect to home page
     navigate("/");
   };
 
@@ -67,17 +65,48 @@ const Header = () => {
 
       {/* Center: Navigation */}
       <nav className="space-x-8 font-semibold hidden md:flex">
-      <Link to="/" className="text-black hover:text-red-600">Home</Link> {/*Home Page naviagtion */}
-      <Link to="/AboutUs" className="text-black hover:text-red-600">About Us</Link>
-
-        <a href="/customerviewevent" className="text-black hover:text-red-600">Events</a>
-        <Link to="/contactUs" className="text-black hover:text-red-600">Contact Us</Link>
-        
+        <Link
+          to="/"
+          className={`text-black hover:text-red-600 ${
+            isActive("/") ? "text-red-600" : ""
+          }`}
+        >
+          Home
+        </Link>
+        <Link
+          to="/customerviewevent"
+          className={`text-black hover:text-red-600 ${
+            isActive("/customerviewevent") ? "text-red-600" : ""
+          }`}
+        >
+          Events
+        </Link>
         {isLoggedIn && (
-          <Link to={`/orders/${user._id}`} className="text-black hover:text-red-600">
+          <Link
+            to={`/orders/${user._id}`}
+            className={`text-black hover:text-red-600 ${
+              isActive(`/orders/${user._id}`) ? "text-red-600" : ""
+            }`}
+          >
             Order History
           </Link>
         )}
+        <Link
+          to="/AboutUs"
+          className={`text-black hover:text-red-600 ${
+            isActive("/AboutUs") ? "text-red-600" : ""
+          }`}
+        >
+          About Us
+        </Link>
+        <Link
+          to="/contactUs"
+          className={`text-black hover:text-red-600 ${
+            isActive("/contactUs") ? "text-red-600" : ""
+          }`}
+        >
+          Contact Us
+        </Link>
       </nav>
 
       {/* Right: Icons & Buttons */}
@@ -106,6 +135,7 @@ const Header = () => {
             <span className="absolute top-0 right-0 h-2 w-2 bg-red-600 rounded-full"></span>
           </Link>
         </div>
+
         {/* Conditional rendering based on login status */}
         {!isLoggedIn ? (
           <>
@@ -142,7 +172,9 @@ const Header = () => {
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                 <Link
                   to="/customerprofile"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${
+                    isActive("/customerprofile") ? "text-red-600" : ""
+                  }`}
                   onClick={() => setShowProfileMenu(false)}
                 >
                   Profile

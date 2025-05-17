@@ -75,7 +75,8 @@ const AddProductPage = () => {
       setShowModal(false);
       toast.success("Product added successfully");
     } catch (err) {
-      const errMsg = err.response?.data?.message || err.message || "Failed to add product";
+      const errMsg =
+        err.response?.data?.message || err.message || "Failed to add product";
       setError(errMsg);
       toast.error(errMsg);
     } finally {
@@ -89,10 +90,17 @@ const AddProductPage = () => {
 
     try {
       // Validate required fields
-      if (!updatedProduct.pname || !updatedProduct.pprice || !updatedProduct.category) {
+      if (
+        !updatedProduct.pname ||
+        !updatedProduct.pprice ||
+        !updatedProduct.category
+      ) {
         throw new Error("Missing required fields: name, price, or category");
       }
-      if (!Array.isArray(updatedProduct.events) || updatedProduct.events.length === 0) {
+      if (
+        !Array.isArray(updatedProduct.events) ||
+        updatedProduct.events.length === 0
+      ) {
         throw new Error("At least one event is required");
       }
 
@@ -125,9 +133,15 @@ const AddProductPage = () => {
       setEditProduct(null);
       toast.success("Product updated successfully");
     } catch (err) {
-      const errMsg = err.response?.data?.message || err.message || "Failed to update product";
+      const errMsg =
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to update product";
       setError(errMsg);
-      console.error("AddProductPage - Error updating product:", err.response?.data || err);
+      console.error(
+        "AddProductPage - Error updating product:",
+        err.response?.data || err
+      );
       toast.error(errMsg);
     } finally {
       setIsLoading(false);
@@ -229,60 +243,63 @@ const AddProductPage = () => {
               <h1 className="text-2xl font-semibold text-gray-800">
                 Product Management
               </h1>
-              <button
-                onClick={handleDownloadPDF}
-                className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg shadow-sm text-white bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-400"
-                disabled={isDownloadingPDF}
-              >
-                {isDownloadingPDF ? "Downloading..." : "Generate Report"}
-              </button>
-              <div className="flex gap-2 w-full sm:w-auto">
-                <div className="relative flex-grow sm:flex-grow-0 sm:w-64">
-                  <input
-                    type="text"
-                    placeholder="Search products..."
-                    value={searchTerm}
-                    onChange={handleSearch}
-                    className="pl-4 pr-4 py-2 border border-gray-300 rounded-lg w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                  />
-                </div>
+
+              <div className="flex gap-4">
                 <button
-                  onClick={() => {
-                    setShowModal(true);
-                    setIsEditMode(false);
-                    setEditProduct(null);
-                  }}
-                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow-sm whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
-                  disabled={isLoading}
+                  onClick={handleDownloadPDF}
+                  className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg shadow-sm text-white bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-400"
+                  disabled={isDownloadingPDF}
                 >
-                  {isLoading ? (
-                    <span className="flex items-center">
-                      <svg
-                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                      Loading...
-                    </span>
-                  ) : (
-                    "+ Add Product"
-                  )}
+                  {isDownloadingPDF ? "Downloading..." : "Export"}
                 </button>
+                <div className="flex gap-4 w-full sm:w-auto">
+                  <div className="relative flex-grow sm:flex-grow-0 sm:w-64">
+                    <input
+                      type="text"
+                      placeholder="Search products..."
+                      value={searchTerm}
+                      onChange={handleSearch}
+                      className="pl-4 pr-4 py-2 border border-gray-300 rounded-lg w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                    />
+                  </div>
+                  <button
+                    onClick={() => {
+                      setShowModal(true);
+                      setIsEditMode(false);
+                      setEditProduct(null);
+                    }}
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow-sm whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <span className="flex items-center">
+                        <svg
+                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Loading...
+                      </span>
+                    ) : (
+                      "+ Add Product"
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
 
