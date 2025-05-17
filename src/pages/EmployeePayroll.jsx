@@ -105,7 +105,7 @@ const SalaryView = () => {
         totalSalary,
       });
 
-      // Refresh employee data after successful payment
+      
       await fetchEmployees();
 
       toast.success("Salary paid successfully!");
