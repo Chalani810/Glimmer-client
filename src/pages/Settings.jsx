@@ -163,7 +163,7 @@ const RoleSalaryConfig = () => {
                               value={formData.basicSalary}
                               onChange={handleInputChange}
                               className="w-32 p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent"
-                              min="0"
+                              min="1000"
                               step="1000"
                             />
                           ) : (
@@ -178,7 +178,7 @@ const RoleSalaryConfig = () => {
                               value={formData.eventBonus}
                               onChange={handleInputChange}
                               className="w-32 p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent"
-                              min="0"
+                              min="1000"
                               step="1000"
                             />
                           ) : (

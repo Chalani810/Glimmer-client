@@ -5,9 +5,9 @@ import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 import { RiDeleteBinLine } from "react-icons/ri";
 
 const apiUrl = "http://localhost:5000";
-const userData = JSON.parse(localStorage.getItem("user"));
 
 const CartPage = () => {
+  const userData = JSON.parse(localStorage.getItem("user"));
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editingQuantity, setEditingQuantity] = useState(null);
@@ -32,7 +32,7 @@ const CartPage = () => {
 
   useEffect(() => {
     fetchCart();
-  }, []);
+  }, [userData]);
 
   const handleQuantityChange = (productId, value) => {
     const numValue = parseInt(value);
