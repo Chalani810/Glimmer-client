@@ -5,7 +5,6 @@ import authEvents from "../utils/authEvents";
 
 const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
@@ -36,11 +35,7 @@ const Header = () => {
   const isActive = (path) => {
     return location.pathname === path;
   };
-
-  const toggleSearch = () => {
-    setShowSearch((prev) => !prev);
-  };
-
+  
   const toggleProfileMenu = () => {
     setShowProfileMenu((prev) => !prev);
   };
@@ -109,23 +104,7 @@ const Header = () => {
         </Link>
       </nav>
 
-      
-      <div className="flex items-center space-x-4">
-        <div className="flex items-center border border-gray-300 rounded-full px-2 transition-all duration-300 ease-in-out">
-          <FiSearch
-            className="text-2xl cursor-pointer"
-            onClick={toggleSearch}
-          />
-          {showSearch && (
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search..."
-              className="ml-2 outline-none w-40 transition-all duration-300"
-            />
-          )}
-        </div>
+        <div className="flex items-center space-x-4">
 
         {/* Cart Icon */}
         <div className="relative">

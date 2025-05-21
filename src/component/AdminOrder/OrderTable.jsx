@@ -1,5 +1,3 @@
-// src/component/AdminOrder/OrderTable.jsx
-
 import React, { useEffect, useState } from "react";
 import OrderRow from "./OrderRow";
 import OrderModal from "./OrderModal";
@@ -64,6 +62,10 @@ const OrderTable = () => {
   };
 
   const handleDeleteClick = (order) => {
+    if (order.status !== "Cancelled") {
+      toast.error("Only cancelled orders can be deleted");
+      return;
+    }
     setOrderToDelete(order);
     setDeleting(true);
   };
@@ -74,6 +76,13 @@ const OrderTable = () => {
 
   const handleDelete = async (id) => {
     try {
+      // Double check status before deleting (extra safety)
+      const order = orders.find(o => o._id === id);
+      if (order?.status !== "Cancelled") {
+        toast.error("Only cancelled orders can be deleted");
+        return;
+      }
+
       await axios.delete(`${apiUrl}/checkout/delete/${id}`);
       fetchOrders();
       toast.success("Order deleted successfully");
@@ -269,25 +278,27 @@ const OrderTable = () => {
                     />
                   </svg>
                 </button>
-                <button
-                  onClick={() => handleDeleteClick(order)}
-                  className="text-red-500 hover:text-red-700 p-1"
-                  aria-label="Delete order"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                {order.status === "Cancelled" && (
+                  <button
+                    onClick={() => handleDeleteClick(order)}
+                    className="text-red-500 hover:text-red-700 p-1"
+                    aria-label="Delete order"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    />
-                  </svg>
-                </button>
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </button>
+                )}
               </div>
             </div>
           ))}
@@ -341,6 +352,7 @@ const OrderTable = () => {
           onConfirm={() => {
             handleDelete(orderToDelete._id);
           }}
+          message="Are you sure you want to delete this cancelled order?"
         />
       )}
 

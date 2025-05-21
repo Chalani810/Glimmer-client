@@ -35,6 +35,26 @@ const RoleSalaryConfig = () => {
     role.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Validate form inputs
+  const validateInput = (name, value) => {
+    let error = "";
+    
+    if (value === "" || isNaN(value)) {
+      error = "Please enter a valid number";
+    } else if (value < 0) {
+      error = "Value cannot be negative";
+    } else if (!Number.isInteger(Number(value)) && name === "basicSalary") {
+      error = "Basic salary should be a whole number";
+    } else if (!Number.isInteger(Number(value)) && name === "eventBonus") {
+      error = "Event bonus should be a whole number";
+    } else if (value > 1000000) {
+      error = "Value is too large";
+    }
+
+    return error;
+  };
+
+
   // Handle edit click
   const handleEditClick = (role) => {
     setEditingRole(role._id);
@@ -61,9 +81,9 @@ const RoleSalaryConfig = () => {
         role._id === response.data.role._id ? response.data.role : role
       ));
       setEditingRole(null);
-      toast.success("Role updated successfully");
+      toast.success("Role salary updated successfully");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Error updating role");
+      toast.error(error.response?.data?.message || "Error updating salary role");
     }
   };
 

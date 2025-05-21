@@ -12,7 +12,6 @@ const OrderRow = ({
   const [status, setStatus] = useState(order?.status || "Pending");
   const [isChangingStatus, setIsChangingStatus] = useState(false);
   
-
   // Sync status with order prop
   useEffect(() => {
     if (order?.status && order.status !== status) {
@@ -37,22 +36,21 @@ const OrderRow = ({
         {order.orderId || "N/A"}
       </td>
 
-     {/* Event Name - Now properly showing from cart */}
+      {/* Event Name - Now properly showing from cart */}
       <td className="px-4 py-3">
         <span className="md:hidden font-medium">Event: </span>
         {eventName}
       </td>
 
       <td className="px-4 py-3 hidden md:table-cell">
-  {order?.eventDate
-    ? new Date(order.eventDate).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    : "N/A"}
-</td>
-
+        {order?.eventDate
+          ? new Date(order.eventDate).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })
+          : "N/A"}
+      </td>
 
       {/* Amounts - Stacked on mobile */}
       <td className="px-4 py-3">
@@ -117,13 +115,15 @@ const OrderRow = ({
         >
           <FaEdit className="w-4 h-4" />
         </button>
-        <button
-          onClick={() => onDelete?.(order._id)}
-          className="text-red-600 hover:text-red-800"
-          title="Delete Order"
-        >
-          <FaTrash className="w-4 h-4" />
-        </button>
+        {order.status === "Cancelled" && (
+          <button
+            onClick={() => onDelete?.(order._id)}
+            className="text-red-600 hover:text-red-800"
+            title="Delete Order"
+          >
+            <FaTrash className="w-4 h-4" />
+          </button>
+        )}
       </td>
     </tr>
   );

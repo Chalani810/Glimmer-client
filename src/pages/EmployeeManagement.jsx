@@ -6,6 +6,25 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { FaEye, FaEdit, FaTrash, FaUsers } from "react-icons/fa";
 
+// Validation functions
+const validateName = (name) => {
+  const nameRegex = /^[A-Za-z\s'-]+$/;
+  return nameRegex.test(name);
+};
+
+const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const validatePhone = (phone) => {
+  const phoneRegex = /^[0-9]{10,15}$/; // Allows 10-15 digit phone numbers
+  return phoneRegex.test(phone);
+};
+
+const validateRequired = (value) => {
+  return value && value.toString().trim() !== '';
+};
 
 const EmployeeManagement = () => {
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
@@ -19,6 +38,7 @@ const EmployeeManagement = () => {
   const [occupationOptions, setOccupationOptions] = useState([]);
 
   var toastId;
+
   const fetchEmployees = async () => {
     try {
       const response = await axios.get(`${apiUrl}/employee/`);
@@ -75,7 +95,53 @@ const EmployeeManagement = () => {
     setActiveMenu(null);
   };
 
+  const validateEmployeeData = (employee) => {
+    // Validate all required fields
+    if (!validateRequired(employee.name)) {
+      toast.error("Name is required");
+      return false;
+    }
+
+    if (!validateRequired(employee.email)) {
+      toast.error("Email is required");
+      return false;
+    }
+
+    if (!validateRequired(employee.phone)) {
+      toast.error("Phone number is required");
+      return false;
+    }
+
+    if (!validateRequired(employee.occupation)) {
+      toast.error("Occupation is required");
+      return false;
+    }
+
+    // Validate field formats
+    if (!validateName(employee.name)) {
+      toast.error("Name should contain only letters, spaces, hyphens, and apostrophes");
+      return false;
+    }
+
+    if (!validateEmail(employee.email)) {
+      toast.error("Please enter a valid email address");
+      return false;
+    }
+
+    if (!validatePhone(employee.phone)) {
+      toast.error("Please enter a valid phone number (10-15 digits)");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSave = async (employee) => {
+    // Validate employee data before saving
+    if (!validateEmployeeData(employee)) {
+      return;
+    }
+
     try {
       toastId = toast.loading(
         editingEmployee ? "Updating employee..." : "Adding employee..."

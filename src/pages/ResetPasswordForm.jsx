@@ -48,7 +48,7 @@ const ResetPasswordForm = () => {
         </p>
         <button
           onClick={() => navigate("/forgot-password")}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md"
+          className="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md"
         >
           Request New Link
         </button>

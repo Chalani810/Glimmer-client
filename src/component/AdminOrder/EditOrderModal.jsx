@@ -84,30 +84,44 @@ const EditOrderModal = ({ order, onClose, onStatusChange, refresh }) => {
   const requiredCounts = getRequiredStaffCounts();
 
   const validateStaffCount = () => {
-    let isValid = true;
-    setStaffError("");
+  let isValid = true;
+  let errorMessage = "";
 
-    // Validate supervisors
-    if (selectedSupervisors.length < requiredCounts.supervisors) {
-      setStaffError(
-        (prev) =>
-          prev +
-          `At least ${requiredCounts.supervisors} supervisor(s) required. `
-      );
-      isValid = false;
-    }
+  // Validate supervisors - exact count required
+  if (selectedSupervisors.length !== requiredCounts.supervisors) {
+    errorMessage += `Exactly ${requiredCounts.supervisors} supervisor(s) required. `;
+    isValid = false;
+  }
 
-    // Validate assistants
-    if (selectedAssistants.length < requiredCounts.assistants) {
-      setStaffError(
-        (prev) =>
-          prev + `At least ${requiredCounts.assistants} assistant(s) required. `
-      );
-      isValid = false;
-    }
+  // Validate assistants - exact count required
+  if (selectedAssistants.length !== requiredCounts.assistants) {
+    errorMessage += `Exactly ${requiredCounts.assistants} assistant(s) required. `;
+    isValid = false;
+  }
 
-    return isValid;
-  };
+  // Validate no duplicates between supervisors and assistants
+  const allSelected = [...selectedSupervisors, ...selectedAssistants];
+  const uniqueSelected = [...new Set(allSelected)];
+  if (allSelected.length !== uniqueSelected.length) {
+    errorMessage += "The same employee cannot be assigned as both supervisor and assistant. ";
+    isValid = false;
+  }
+
+  // Validate all selected employees are actually available (except those already assigned)
+  const assignedIds = order.employees?.map((emp) => emp._id.toString()) || [];
+  const unavailableSelected = allSelected.filter(id => {
+    const emp = employees.find(e => e._id.toString() === id);
+    return emp && !emp.availability && !assignedIds.includes(id);
+  });
+
+  if (unavailableSelected.length > 0) {
+    errorMessage += "Some selected employees are currently unavailable. ";
+    isValid = false;
+  }
+
+  setStaffError(errorMessage);
+  return isValid;
+};
 
   const handleStatusSave = async () => {
     if (!newStatus) {

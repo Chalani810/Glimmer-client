@@ -9,8 +9,9 @@ const ProductForm = ({
   isLoading,
   isEditMode,
   productId,
-}) => {
+  }) => {
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
+  const MIN_PRICE = 100; // Minimum price allowed
 
   const [productName, setProductName] = useState("");
   const [selectedEvents, setSelectedEvents] = useState([]);
@@ -20,6 +21,7 @@ const ProductForm = ({
   const [imageFile, setImageFile] = useState(null);
   const [events, setEvents] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [priceError, setPriceError] = useState("");
 
   const categories = [
     "Chair",
@@ -54,6 +56,18 @@ const ProductForm = ({
         ? prev.filter((id) => id !== eventId)
         : [...prev, eventId]
     );
+  };
+
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+    setPrice(value);
+    
+    // Validate price
+    if (value && parseFloat(value) < MIN_PRICE) {
+      setPriceError(`Price must be at least ${MIN_PRICE}`);
+    } else {
+      setPriceError("");
+    }
   };
 
   useEffect(() => {
@@ -94,6 +108,7 @@ const ProductForm = ({
       productName.trim() &&
       selectedEvents.length > 0 &&
       price &&
+      parseFloat(price) >= MIN_PRICE &&
       category &&
       (isEditMode || imageFile)
     );
@@ -113,6 +128,10 @@ const ProductForm = ({
     }
     if (!price) {
       toast.error("Price is required");
+      return;
+    }
+    if (parseFloat(price) < MIN_PRICE) {
+      toast.error(`Price must be at least ${MIN_PRICE}`);
       return;
     }
     if (!category) {
@@ -276,12 +295,18 @@ const ProductForm = ({
         <input
           type="number"
           step="0.01"
+          min={MIN_PRICE}
           value={price}
-          onChange={(e) => setPrice(e.target.value)}
+          onChange={handlePriceChange}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded"
-          placeholder="E.g., 1000.00"
+          className={`w-full px-3 py-2 border ${
+            priceError ? "border-red-500" : "border-gray-300"
+          } rounded`}
+          placeholder={`E.g., ${MIN_PRICE}.00`}
         />
+        {priceError && (
+          <p className="text-sm text-red-500 mt-1">{priceError}</p>
+        )}
       </div>
 
       <div className="flex justify-end gap-3 pt-2">
